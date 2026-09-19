@@ -1,0 +1,531 @@
+import React, { useState } from 'react';
+import { 
+  ShieldAlert, 
+  Search, 
+  CheckCircle2, 
+  TrendingUp, 
+  HelpCircle, 
+  Coins, 
+  Lock, 
+  Flame, 
+  ArrowRight, 
+  Terminal, 
+  Copy, 
+  Check, 
+  Layers, 
+  Eye, 
+  Key, 
+  ExternalLink,
+  Sparkles
+} from 'lucide-react';
+
+interface HowItWorksTimelineProps {
+  onSelectPreset?: (address: string, chain?: any) => void;
+}
+
+export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelectPreset }) => {
+  const [activeTabT2, setActiveTabT2] = useState<'observed' | 'inferred' | 'unknown'>('observed');
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [simulatedRevoked, setSimulatedRevoked] = useState(false);
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText("approve(0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45, 0)");
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  // Top Rolling Track (Leftwards)
+  const rollLeftItems = [
+    { icon: <CheckCircle2 className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "OBSERVED ON-CHAIN FACTS", tag: "100% Cryptographic Truth" },
+    { icon: <Flame className="w-3.5 h-3.5 text-[#fca5a5]" />, text: "EXACT $ BLAST RADIUS", tag: "Liquid Dollars at Risk" },
+    { icon: <Lock className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "1-CLICK ZERO-GAS REVOKE", tag: "Simulated Calldata" },
+    { icon: <Eye className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "NO FAKE 'SAFE' BADGES", tag: "Epistemic Transparency" },
+    { icon: <Terminal className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "RPC STORAGE SLOT DECODING", tag: "mapping(owner => spender)" },
+    { icon: <ShieldAlert className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "ZERO GUESSWORK ALERTS", tag: "Deterministic Analysis" },
+    { icon: <Layers className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "48h TIMELOCK VERIFICATION", tag: "Governance Audit" },
+    { icon: <Key className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "MULTISIG QUORUM TELEMETRY", tag: "3/5 Safe Signers" },
+  ];
+
+  // Bottom Rolling Track (Rightwards)
+  const rollRightItems = [
+    { icon: <Sparkles className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "FROM ALERT TO EVIDENCE", tag: "The Sentinel Standard" },
+    { icon: <Coins className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "MULTI-CHAIN INDEXING", tag: "Ethereum • Multipli • Base" },
+    { icon: <HelpCircle className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "HONEST UNKNOWN LIMITS", tag: "Absence ≠ Absence of Risk" },
+    { icon: <Search className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "UNLIMITED APPROVAL AUDITOR", tag: "MAX_UINT256 Interceptor" },
+    { icon: <TrendingUp className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "INFERRED ATTACK PATHWAYS", tag: "Spender Bytecode Check" },
+    { icon: <Lock className="w-3.5 h-3.5 text-[#fca5a5]" />, text: "DOLLAR VALUE EXPOSURE METER", tag: "$3,840.00 At Risk" },
+    { icon: <Terminal className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "RAW EVM PROOF RECONSTRUCTION", tag: "Zero Alarm Fatigue" },
+    { icon: <CheckCircle2 className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "CONTINUOUS PROTOCOL HEALTH", tag: "Autonomous Telemetry" },
+  ];
+
+  return (
+    <section className="relative w-full py-20 bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 border-t border-white/5">
+      
+      {/* Ambient background glow mesh */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[45rem] h-[25rem] bg-gradient-to-r from-[#a7f3d0]/5 via-[#fed7aa]/5 to-[#d8b4fe]/5 rounded-full blur-[140px] pointer-events-none" />
+
+      {/* ==========================================================================
+          SECTION 1: DEVJAMS-STYLE ROLLING ANIMATIONS (LEFT & RIGHT)
+          ========================================================================== */}
+      <div className="max-w-7xl mx-auto mb-20">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#a7f3d0] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#a7f3d0] animate-ping" />
+            Continuous On-Chain Tickers
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight font-mono">
+            LIVE VERIFICATION STREAM
+          </h2>
+          <p className="text-xs text-stone-400 max-w-lg mx-auto mt-1 font-sans">
+            Every vector audited by Sentinel in real-time. Hover on any item to pause and inspect.
+          </p>
+        </div>
+
+        {/* Ticker 1: Rolling to the LEFT */}
+        <div className="relative w-full overflow-hidden py-2 border-y border-white/5 bg-black/20 backdrop-blur-md mb-3 group">
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#07080d] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#07080d] to-transparent z-10 pointer-events-none" />
+          
+          <div className="animate-roll-left gap-3">
+            {[...rollLeftItems, ...rollLeftItems].map((item, idx) => (
+              <div
+                key={idx}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl liquid-glass-subtle border border-[#e6ded6]/15 hover:border-[#a7f3d0]/40 transition shadow-sm cursor-default shrink-0"
+              >
+                {item.icon}
+                <span className="text-xs font-mono font-bold text-stone-200 whitespace-nowrap">
+                  {item.text}
+                </span>
+                <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/5 whitespace-nowrap">
+                  {item.tag}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Ticker 2: Rolling to the RIGHT */}
+        <div className="relative w-full overflow-hidden py-2 border-b border-white/5 bg-black/20 backdrop-blur-md group">
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#07080d] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#07080d] to-transparent z-10 pointer-events-none" />
+          
+          <div className="animate-roll-right gap-3">
+            {[...rollRightItems, ...rollRightItems].map((item, idx) => (
+              <div
+                key={idx}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl liquid-glass-subtle border border-[#e6ded6]/15 hover:border-[#fed7aa]/40 transition shadow-sm cursor-default shrink-0"
+              >
+                {item.icon}
+                <span className="text-xs font-mono font-bold text-stone-200 whitespace-nowrap">
+                  {item.text}
+                </span>
+                <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/5 whitespace-nowrap">
+                  {item.tag}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ==========================================================================
+          SECTION 2: 3 TIMELINES ONE BELOW THE OTHER (LAYMAN'S GUIDE)
+          ========================================================================== */}
+      <div className="max-w-6xl mx-auto relative">
+        
+        {/* Section Header */}
+        <div className="text-center mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#fed7aa] mb-3">
+            Architecture In Plain English
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-100 tracking-tight">
+            How Sentinel Works
+          </h2>
+          <p className="text-sm text-stone-300 max-w-2xl mx-auto mt-3 leading-relaxed">
+            No confusing computer science jargon or fake safety badges. Here is exactly what happens behind the scenes in 3 simple chronological steps.
+          </p>
+        </div>
+
+        {/* The Timeline Container with Center Spine */}
+        <div className="relative w-full flex flex-col items-center mt-6 sm:mt-10">
+          
+          {/* Vertical Pastel Gradient Spine (Matching DevJams style) */}
+          <div 
+            className="absolute left-4 sm:left-6 md:left-1/2 top-0 bottom-0 w-1.5 sm:w-2 md:w-3 -translate-x-1/2 rounded-full opacity-90 shadow-[0_0_24px_rgba(167,243,208,0.25)]"
+            style={{
+              background: 'linear-gradient(180deg, #a7f3d0 0%, #fed7aa 48%, #d8b4fe 100%)'
+            }}
+          />
+
+          {/* Timeline Nodes Container */}
+          <div className="w-full flex flex-col gap-24 sm:gap-28 md:gap-36 relative z-10">
+
+            {/* ================================================================
+                TIMELINE 1: THE INCOMING WARNING
+                (Left Visual Mockup / Right Plain-English Explanation)
+                ================================================================ */}
+            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+              
+              {/* Center Spine Node Indicator */}
+              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
+                <div className="relative flex items-center justify-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 border-[#a7f3d0] shadow-[0_0_18px_rgba(167,243,208,0.8)] flex items-center justify-center">
+                    <span className="text-[10px] font-mono font-extrabold text-[#a7f3d0]">01</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-[#a7f3d0]/30 animate-ping" />
+                </div>
+              </div>
+
+              {/* LEFT: Visual Snapshot Card (DevJams historical image aesthetic) */}
+              <div className="w-full md:w-[46%] group">
+                <div className="liquid-glass rounded-3xl p-5 border border-[#a7f3d0]/30 shadow-2xl relative overflow-hidden liquid-card-hover">
+                  
+                  {/* Mockup Header */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#a7f3d0] animate-pulse" />
+                      <span className="font-bold text-stone-200">SCANNER DETECTED // ON-CHAIN TRIGGER</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[9px] bg-[#a7f3d0]/15 text-[#a7f3d0] border border-[#a7f3d0]/30">
+                      Block #19,402,118
+                    </span>
+                  </div>
+
+                  {/* Visual Simulation Graphic */}
+                  <div className="space-y-2.5 font-mono text-xs">
+                    <div className="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1.5">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-stone-400">Target Wallet:</span>
+                        <span className="text-stone-200 font-bold">alex-defi.eth</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-stone-400">Transaction:</span>
+                        <span className="text-[#d8b4fe]">0x4f82...3e9a</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-stone-400">Granted Right:</span>
+                        <span className="text-[#fca5a5] font-bold bg-[#fca5a5]/10 px-2 py-0.5 rounded">
+                          USDC (UNLIMITED ALLOWANCE)
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-rose-950/20 rounded-2xl border border-[#fca5a5]/30 flex items-start gap-2.5">
+                      <ShieldAlert className="w-4 h-4 text-[#fca5a5] shrink-0 mt-0.5" />
+                      <div className="text-[11px] text-stone-300">
+                        <span className="font-bold text-[#fca5a5] block mb-0.5">Vulnerable Permission Found:</span>
+                        Contract <span className="text-stone-100 underline">0x68b...Fc45</span> has full authority to withdraw tokens without further permission.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interactive Button */}
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-stone-400">Simulated Investigation</span>
+                    {onSelectPreset && (
+                      <button
+                        onClick={() => onSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
+                        className="text-[11px] font-mono text-[#a7f3d0] hover:underline flex items-center gap-1 font-semibold"
+                      >
+                        <span>Test This Scenario</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT: Layman's Explanation */}
+              <div className="w-full md:w-[46%] text-left">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#a7f3d0] uppercase tracking-wider mb-2">
+                  Timeline 01 • The Trigger
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                  You Connect or Swap — But What Did You Actually Sign?
+                </h3>
+                
+                {/* Layman Analogy Callout */}
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#a7f3d0] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
+                  <strong className="text-stone-100 block mb-1">💡 The Everyday Analogy:</strong>
+                  "Think of it like valet parking your car: you intended to hand the valet a single key to park it today, but the paperwork secretly gave them a master key to your entire garage forever."
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                  <span>When you interact with a crypto website, you frequently click "Approve". Most apps quietly ask for <strong>"Unlimited Allowance"</strong> so you never have to click approve again.</span>
+                  <span className="block mt-2">
+                    Sentinel immediately scans the blockchain’s official storage slots to uncover every active master key connected to your wallet — before anyone abuses it.
+                  </span>
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">✓ No black-box scores</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-stone-300">✓ Direct RPC storage proof</span>
+                </div>
+              </div>
+
+            </div>
+
+
+            {/* ================================================================
+                TIMELINE 2: SEPARATING PROOF FROM GUESSWORK
+                (Left Plain-English Explanation / Right Visual Mockup)
+                ================================================================ */}
+            <div className="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+              
+              {/* Center Spine Node Indicator */}
+              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
+                <div className="relative flex items-center justify-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 border-[#fed7aa] shadow-[0_0_18px_rgba(254,215,170,0.8)] flex items-center justify-center">
+                    <span className="text-[10px] font-mono font-extrabold text-[#fed7aa]">02</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-[#fed7aa]/30 animate-ping" />
+                </div>
+              </div>
+
+              {/* RIGHT: Visual Snapshot Card (Interactive Tripartite decomposition) */}
+              <div className="w-full md:w-[46%] group">
+                <div className="liquid-glass rounded-3xl p-5 border border-[#fed7aa]/30 shadow-2xl relative overflow-hidden liquid-card-hover">
+                  
+                  {/* Mockup Header */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#fed7aa]" />
+                      <span className="font-bold text-stone-200">TRIPARTITE REASONING MATRIX</span>
+                    </div>
+                    <span className="text-stone-400 text-[9px]">Epistemic Clarity</span>
+                  </div>
+
+                  {/* Interactive Tripartite Tabs */}
+                  <div className="flex gap-1 mb-3 bg-black/40 p-1 rounded-xl">
+                    <button
+                      onClick={() => setActiveTabT2('observed')}
+                      className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
+                        activeTabT2 === 'observed' ? 'bg-[#a7f3d0]/20 text-[#a7f3d0] border border-[#a7f3d0]/40' : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      1. Observed
+                    </button>
+                    <button
+                      onClick={() => setActiveTabT2('inferred')}
+                      className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
+                        activeTabT2 === 'inferred' ? 'bg-[#fed7aa]/20 text-[#fed7aa] border border-[#fed7aa]/40' : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      2. Inferred
+                    </button>
+                    <button
+                      onClick={() => setActiveTabT2('unknown')}
+                      className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
+                        activeTabT2 === 'unknown' ? 'bg-[#d8b4fe]/20 text-[#d8b4fe] border border-[#d8b4fe]/40' : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      3. Unknown
+                    </button>
+                  </div>
+
+                  {/* Content Container */}
+                  <div className="p-4 bg-black/50 rounded-2xl border border-white/5 min-h-[140px] flex flex-col justify-center">
+                    {activeTabT2 === 'observed' && (
+                      <div className="space-y-1.5 animate-in fade-in duration-200">
+                        <div className="flex items-center gap-2 text-[#a7f3d0] font-mono font-bold text-xs">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>OBSERVED: Mathematical Facts</span>
+                        </div>
+                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                          "Storage Slot [0x02] in USDC token contract holds value 0xffffff... for Spender 0x68b...Fc45."
+                        </p>
+                        <span className="inline-block text-[9px] font-mono text-[#a7f3d0] bg-[#a7f3d0]/10 px-2 py-0.5 rounded border border-[#a7f3d0]/25">
+                          Verified by EVM Merkle Patricia Proof
+                        </span>
+                      </div>
+                    )}
+
+                    {activeTabT2 === 'inferred' && (
+                      <div className="space-y-1.5 animate-in fade-in duration-200">
+                        <div className="flex items-center gap-2 text-[#fed7aa] font-mono font-bold text-xs">
+                          <TrendingUp className="w-4 h-4" />
+                          <span>INFERRED: Deductions & Attack Vectors</span>
+                        </div>
+                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                          "If that unverified spender contract is compromised, the attacker can drain up to your entire 3,840 USDC balance."
+                        </p>
+                        <span className="inline-block text-[9px] font-mono text-[#fed7aa] bg-[#fed7aa]/10 px-2 py-0.5 rounded border border-[#fed7aa]/25">
+                          Logical deduction from bytecode authority
+                        </span>
+                      </div>
+                    )}
+
+                    {activeTabT2 === 'unknown' && (
+                      <div className="space-y-1.5 animate-in fade-in duration-200">
+                        <div className="flex items-center gap-2 text-[#d8b4fe] font-mono font-bold text-xs">
+                          <HelpCircle className="w-4 h-4" />
+                          <span>UNKNOWN: Our Honest Limits</span>
+                        </div>
+                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                          "We cannot prove off-chain identity. Whether the counterparty is evil or well-intentioned cannot be proven by code alone."
+                        </p>
+                        <span className="inline-block text-[9px] font-mono text-[#d8b4fe] bg-[#d8b4fe]/10 px-2 py-0.5 rounded border border-[#d8b4fe]/25">
+                          Never a fake green 'SAFE' badge
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-stone-400">
+                    <span>Click tabs above to preview how Sentinel separates evidence</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* LEFT: Layman's Explanation */}
+              <div className="w-full md:w-[46%] text-left">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#fed7aa] uppercase tracking-wider mb-2">
+                  Timeline 02 • Evidence Separation
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                  We Never Guess. We Split Reality Into 3 Honest Truths.
+                </h3>
+                
+                {/* Layman Analogy Callout */}
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#fed7aa] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
+                  <strong className="text-stone-100 block mb-1">⚖️ The Courtroom Analogy:</strong>
+                  "A real courtroom strictly separates security camera footage (undeniable facts), detective hypotheses (deductions), and things no one witnessed (unknowns). Sentinel does the exact same thing for Web3."
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                  <span>Most security scanners spit out an opaque number like "Risk: 85%". That causes panic and tells you nothing useful.</span>
+                  <span className="block mt-2">
+                    Sentinel strictly separates <strong>Observed Facts</strong> (verified on-chain with math), <strong>Inferred Risks</strong> (what the code allows), and <strong>Unknowns</strong> (what no algorithm can verify).
+                  </span>
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">🟢 Facts Proved</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#fed7aa]">🟠 Deductions</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#d8b4fe]">🟣 Honest Limits</span>
+                </div>
+              </div>
+
+            </div>
+
+
+            {/* ================================================================
+                TIMELINE 3: EXACT DOLLARS IN DANGER & 1-CLICK RESOLUTION
+                (Left Visual Mockup / Right Plain-English Explanation)
+                ================================================================ */}
+            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+              
+              {/* Center Spine Node Indicator */}
+              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
+                <div className="relative flex items-center justify-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 border-[#fca5a5] shadow-[0_0_18px_rgba(252,165,165,0.8)] flex items-center justify-center">
+                    <span className="text-[10px] font-mono font-extrabold text-[#fca5a5]">03</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-[#fca5a5]/30 animate-ping" />
+                </div>
+              </div>
+
+              {/* LEFT: Visual Snapshot Card (Blast radius dollar meter & revoke button) */}
+              <div className="w-full md:w-[46%] group">
+                <div className="liquid-glass rounded-3xl p-5 border border-[#fca5a5]/30 shadow-2xl relative overflow-hidden liquid-card-hover">
+                  
+                  {/* Mockup Header */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
+                    <div className="flex items-center gap-2">
+                      <Flame className="w-3.5 h-3.5 text-[#fca5a5]" />
+                      <span className="font-bold text-stone-200">VERIFIABLE BLAST RADIUS METER</span>
+                    </div>
+                    <span className="text-[#fca5a5] font-bold text-[9px] bg-[#fca5a5]/10 px-2 py-0.5 rounded border border-[#fca5a5]/30">
+                      Calculated Down to the Penny
+                    </span>
+                  </div>
+
+                  {/* Big Dollar Blast Radius Display */}
+                  <div className="p-4 bg-gradient-to-b from-rose-950/30 to-black/50 rounded-2xl border border-[#fca5a5]/30 text-center mb-3">
+                    <div className="text-[10px] font-mono text-stone-400 uppercase tracking-wider">
+                      Liquid Cash Drainable Right Now:
+                    </div>
+                    <div className="text-3xl sm:text-4xl font-black font-mono text-[#fca5a5] my-1">
+                      {simulatedRevoked ? '$0.00' : '$3,840.00'}
+                    </div>
+                    <div className="text-[11px] font-mono text-stone-300">
+                      {simulatedRevoked ? '✅ Permission Revoked • Vault 100% Sealed' : '3,840 USDC in alex-defi.eth'}
+                    </div>
+                  </div>
+
+                  {/* 1-Click Revoke Simulation Box */}
+                  <div className="p-3.5 bg-black/40 rounded-2xl border border-white/5 space-y-2">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-stone-400">
+                      <span>Generated Zero-Allowance Calldata:</span>
+                      <button
+                        onClick={handleCopyCode}
+                        className="text-[#a7f3d0] hover:underline flex items-center gap-1"
+                      >
+                        {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedCode ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
+
+                    <div className="p-2 bg-black/70 rounded-xl font-mono text-[10px] text-[#a7f3d0] break-all border border-white/5">
+                      0x095ea7b3...0000000000000000000000000000000000000000
+                    </div>
+
+                    <button
+                      onClick={() => setSimulatedRevoked(!simulatedRevoked)}
+                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold font-mono transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
+                        simulatedRevoked
+                          ? 'bg-[#a7f3d0] text-black hover:bg-[#a7f3d0]/90'
+                          : 'bg-gradient-to-r from-[#fca5a5] to-[#fed7aa] text-black hover:opacity-90'
+                      }`}
+                    >
+                      <span>{simulatedRevoked ? 'Vault Sealed (Click to Reset)' : 'Simulate Revoke Tx (Zero Gas)'}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="mt-3 pt-2 text-[10px] font-mono text-center text-stone-400">
+                    Try clicking the button above to simulate how Sentinel neutralizes threats instantly.
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT: Layman's Explanation */}
+              <div className="w-full md:w-[46%] text-left">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#fca5a5] uppercase tracking-wider mb-2">
+                  Timeline 03 • Action & Fix
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                  Exact Cash in Danger + A 1-Click Button to Lock the Door.
+                </h3>
+                
+                {/* Layman Analogy Callout */}
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#fca5a5] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
+                  <strong className="text-stone-100 block mb-1">🚒 The Fire Extinguisher Analogy:</strong>
+                  "If your house is in danger, you don't want someone to tell you 'Threat Level 7'. You want to know exactly what is at risk, and you want someone to hand you the fire extinguisher immediately."
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                  <span>Sentinel calculates your exact <strong>Liquid Blast Radius</strong> down to the penny (e.g. <strong>$3,840.00</strong>) — not an abstract rating.</span>
+                  <span className="block mt-2">
+                    Then, Sentinel generates the exact zero-allowance transaction calldata required to revoke that permission forever. You click one button, and the dangerous access is sealed shut before any hacker can exploit it.
+                  </span>
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#fca5a5] font-bold">Exact Dollar Exposure</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">1-Click Revoke</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-stone-300">Zero Guesswork</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+  );
+};

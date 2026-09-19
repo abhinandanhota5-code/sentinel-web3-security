@@ -96,6 +96,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Navigation Tabs (Liquid Glass Pills) */}
         <nav className="flex items-center gap-1 bg-black/20 border border-white/5 p-1 rounded-xl">
           <button
+            onClick={() => {
+              onSelectView('landing');
+              setTimeout(() => {
+                const el = document.getElementById('how-it-works');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+            }}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-stone-400 hover:text-stone-200 hover:bg-white/5"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#fed7aa]" />
+            <span className="hidden sm:inline">How It Works</span>
+          </button>
+
+          <button
             onClick={() => onSelectView('dashboard')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
               currentView === 'dashboard'

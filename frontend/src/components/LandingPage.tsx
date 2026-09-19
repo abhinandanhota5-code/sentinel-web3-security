@@ -4,10 +4,12 @@ import {
   Eye, 
   Compass, 
   Zap, 
-  Sparkles
+  Sparkles,
+  ChevronDown
 } from 'lucide-react';
 import { SUPPORTED_CHAINS } from '../services/sentinelApi';
 import type { NetworkChainId } from '../types/sentinel';
+import { HowItWorksTimeline } from './HowItWorksTimeline';
 
 interface LandingPageProps {
   onInvestigate: (address: string, chain: NetworkChainId) => void;
@@ -169,6 +171,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               Cold Multisig Safe (Clean)
             </button>
           </div>
+
+          {/* Quick Scroll to How It Works */}
+          <div className="mt-7">
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full liquid-pill text-xs font-mono text-stone-300 hover:text-white hover:border-[#a7f3d0]/40 transition shadow-lg group"
+            >
+              <span>See How Sentinel Works in 3 Timelines</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#a7f3d0] group-hover:translate-y-0.5 transition" />
+            </a>
+          </div>
         </div>
 
         {/* 3 Core Pillars (Translucent Pastel/Nude Liquid Glass) */}
@@ -212,6 +225,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         </div>
 
+      </div>
+
+      {/* ==========================================================================
+          DEVJAMS-STYLE HOW IT WORKS SECTION (ROLLING ANIMATIONS + 3 TIMELINES)
+          ========================================================================== */}
+      <div id="how-it-works" className="w-full">
+        <HowItWorksTimeline onSelectPreset={(addr, chain) => handleSelectPreset(addr, chain)} />
       </div>
 
     </div>

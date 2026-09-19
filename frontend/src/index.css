@@ -117,3 +117,42 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(230, 220, 210, 0.3);
 }
+
+/* ==========================================================================
+   DEVJAMS-STYLE ROLLING ANIMATIONS (Infinite Tickers Left & Right)
+   ========================================================================== */
+
+@keyframes roll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes roll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-roll-left {
+  display: flex;
+  width: max-content;
+  animation: roll-left 36s linear infinite;
+}
+
+.animate-roll-right {
+  display: flex;
+  width: max-content;
+  animation: roll-right 36s linear infinite;
+}
+
+.animate-roll-left:hover,
+.animate-roll-right:hover {
+  animation-play-state: paused;
+}
