@@ -13,6 +13,17 @@ function addressFromWord(word) {
   return `0x${word.replace(/^0x/, '').slice(-40)}`;
 }
 
+// EIP-7702 (Pectra): EOAs can delegate code. 0xef0100 || address is a
+// delegation designator, not contract bytecode — the address remains an EOA.
+// Shape: "0x" + 3-byte magic (6 hex) + 20-byte address (40 hex) = 48 chars.
+const EIP7702_DELEGATION_PREFIX = 'ef0100';
+
+function isDelegationDesignator(code) {
+  if (typeof code !== 'string') return false;
+  const hex = code.toLowerCase().replace(/^0x/, '');
+  return hex.startsWith(EIP7702_DELEGATION_PREFIX) && hex.length === 46;
+}
+
 function quantityToNumber(value) {
   const number = Number.parseInt(value, 16);
   return Number.isFinite(number) ? number : undefined;
@@ -58,7 +69,8 @@ class RpcBlockchainProvider extends BlockchainProvider {
   async getAddressType(address) {
     const code = await this.rpc('eth_getCode', [address, 'latest']);
     if (code === '0x') return 'EOA';
-    if (code) return 'SMART_CONTRACT';
+    if (code && !isDelegationDesignator(code)) return 'SMART_CONTRACT';
+    if (code) return 'EOA';
     return 'UNKNOWN';
   }
 

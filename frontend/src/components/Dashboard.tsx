@@ -54,66 +54,66 @@ export const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* Liquid Glass Sub-Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6 border border-white/15">
+      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6">
         <button
           onClick={() => setCurrentSubTab('findings')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-2 ${
             currentSubTab === 'findings'
-              ? 'liquid-pill text-[#7dd3fc] font-bold border-[#7dd3fc]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
+              : 'text-ink-3 hover:text-ink hover:bg-white/55'
           }`}
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-[#7dd3fc]" />
+          <ShieldAlert className="w-3.5 h-3.5" />
           <span>Findings & Evidence ({report.findings.length})</span>
         </button>
 
         <button
           onClick={() => setCurrentSubTab('history_exposure')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-2 ${
             currentSubTab === 'history_exposure'
-              ? 'liquid-pill text-[#fde68a] font-bold border-[#fde68a]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
+              : 'text-ink-3 hover:text-ink hover:bg-white/55'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-[#fde68a]" />
+          <Zap className="w-3.5 h-3.5" />
           <span>History vs Exposure</span>
         </button>
 
         <button
           onClick={() => setCurrentSubTab('graph')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-2 ${
             currentSubTab === 'graph'
-              ? 'liquid-pill text-[#93c5fd] font-bold border-[#93c5fd]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
+              : 'text-ink-3 hover:text-ink hover:bg-white/55'
           }`}
         >
-          <GitBranch className="w-3.5 h-3.5 text-[#93c5fd]" />
+          <GitBranch className="w-3.5 h-3.5" />
           <span>Evidence Graph</span>
         </button>
 
         {report.protocolHealth && (
           <button
             onClick={() => setCurrentSubTab('protocol')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-2 ${
               currentSubTab === 'protocol'
-                ? 'liquid-pill text-[#fef3c7] font-bold border-[#fef3c7]/50 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
+                : 'text-ink-3 hover:text-ink hover:bg-white/55'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-[#fef3c7]" />
+            <Layers className="w-3.5 h-3.5" />
             <span>Protocol Health</span>
           </button>
         )}
 
         <button
           onClick={() => setCurrentSubTab('coverage')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-2 ${
             currentSubTab === 'coverage'
-              ? 'liquid-pill text-[#bae6fd] font-bold border-[#bae6fd]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
+              : 'text-ink-3 hover:text-ink hover:bg-white/55'
           }`}
         >
-          <FileCheck2 className="w-3.5 h-3.5 text-[#bae6fd]" />
+          <FileCheck2 className="w-3.5 h-3.5" />
           <span>Coverage Scope</span>
         </button>
       </div>

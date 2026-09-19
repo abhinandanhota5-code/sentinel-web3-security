@@ -159,6 +159,12 @@ export function serializeExplanation(e: Explanation): Record<string, unknown> {
     text: e.text,
     blocked: e.blocked,
     refused: e.refused ?? null,
+    // Exact provider failure cause (already sanitized upstream: secrets
+    // redacted, message text only). Present only for provider_error so clients
+    // can report e.g. "Gemini 429 quota" instead of an opaque refusal.
+    ...(e.refused === "provider_error" && e.providerError
+      ? { providerError: e.providerError }
+      : {}),
     citations: Object.fromEntries(e.citations),
     knowledgeByCitation: Object.fromEntries(e.knowledgeByCitation),
     validation: {
@@ -363,6 +369,17 @@ export function buildApp(deps: AppDeps): Express {
     }
     if (anyErr?.type === "entity.parse.failed") {
       res.status(400).json({ error: "malformed JSON body" });
+      return;
+    }
+    // GeminiProviderError: sanitized upstream (secrets redacted, message only).
+    // Report the exact provider failure (e.g. HTTP 429 quota exhaustion)
+    // instead of hiding it behind a generic 500.
+    // Structural name check: avoids importing the vendor SDK into the API
+    // layer while still surfacing exactly the provider's sanitized message.
+    const providerMessage =
+      anyErr instanceof Error && anyErr.name === "GeminiProviderError" ? anyErr.message : undefined;
+    if (providerMessage) {
+      res.status(502).json({ error: providerMessage });
       return;
     }
     // Unknown errors: generic message, no stack, no provider details.

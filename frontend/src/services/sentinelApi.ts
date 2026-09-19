@@ -1027,12 +1027,13 @@ function deriveTripartite(f: RawEngineFinding, allUnknowns: UnknownFieldItem[]):
 }
 
 function extractCurrentExposures(findings: RawEngineFinding[], subjectAddress: string): CurrentExposureItem[] {
-  const exposureFindings = findings.filter(f => 
-    f.kind === 'exposure' || 
-    f.kind === 'approval' || 
-    f.kind === 'upgradeability' || 
-    f.kind === 'privilege' ||
-    ['UNLIMITED_ALLOWANCE', 'CURRENT_TOKEN_EXPOSURE', 'PROXY_DETECTED', 'PRIVILEGED_ADMIN', 'TIMELOCK_ABSENT'].includes(f.findingType)
+  // "Active Vectors" must contain only genuine current exposures: findings
+  // that represent actionable, revocable state right now. Passive/probe
+  // findings (proxy detection, admin metadata, plain approvals) are context,
+  // not exposures, and must not inflate this list or the blast radius.
+  const exposureFindings = findings.filter(f =>
+    f.knowledgeType === 'INFERRED' &&
+    ['UNLIMITED_ALLOWANCE', 'CURRENT_TOKEN_EXPOSURE', 'APPROVAL_WITHOUT_CURRENT_BALANCE'].includes(f.findingType)
   );
 
   return exposureFindings.map((f, idx) => {

@@ -88,6 +88,13 @@ export interface Explanation {
   blocked: boolean;
   /** Set when generation was refused or produced nothing usable. */
   refused?: "no_evidence" | "provider_error";
+  /**
+   * Exact provider failure detail when `refused === "provider_error"`.
+   * Already sanitized by the provider (secrets redacted, no stacks); surfaced
+   * verbatim so callers can report the real cause (e.g. HTTP 429 quota)
+   * instead of a generic refusal. Never present for fabricated text.
+   */
+  providerError?: string;
 }
 
 /**
@@ -130,7 +137,13 @@ export class GroundedExplanationEngine implements ExplanationEngine {
     let draft: string;
     try {
       draft = await this.provider.generate(prompt, {});
-    } catch {
+    } catch (err) {
+      // The provider already sanitized its errors (GeminiProviderError goes
+      // through redactSecrets; no stacks, no config). Surface the exact cause
+      // to the caller while the narrative itself stays a fixed refusal text —
+      // the evidence is never fabricated to compensate for a failed model.
+      const providerError =
+        err instanceof Error ? err.message : err !== undefined ? String(err) : undefined;
       return {
         text: "Explanation is temporarily unavailable. The underlying evidence remains valid.",
         citations: new Map(),
@@ -138,6 +151,9 @@ export class GroundedExplanationEngine implements ExplanationEngine {
         validation: { strippedCitations: [], unsupportedClaims: [], clean: true },
         blocked: false,
         refused: "provider_error",
+        providerError: providerError
+          ? providerError.slice(0, 500)
+          : "provider generate() failed without an error message",
       };
     }
 
