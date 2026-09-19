@@ -54,3 +54,25 @@ PowerPoint deck: `ChainLens-Multipli-Hackathon.pptx` contains full presenter spe
 - `index.html` — Reveal.js interactive deck (slides + speaker notes inline)
 - `deck/sass/theme.scss` — Theme source (dark security ops palette)
 - `deck/theme.css` — Compiled theme (generated, do not edit)
+
+## Security Engine
+
+The evidence-first engine lives in `src/security-engine` and is independent of the presentation deck. It exposes two async entry points:
+
+```js
+const {
+  DemoBlockchainProvider,
+  analyzeAddressSecurity,
+  analyzeProtocolSecurity
+} = require('./src/security-engine');
+
+const addressResult = await analyzeAddressSecurity({
+  provider: new DemoBlockchainProvider(),
+  address: '0x1111111111111111111111111111111111111111',
+  chain: 'ethereum'
+});
+```
+
+Results contain `address`, `chain`, `addressType`, `dataMode`, and `findings`. Every finding has `findingType`, `status`, `severity`, `entity`, `chain`, structured `evidence`, `explanationInputs`, and `limitations`. Status is always `OBSERVED`, `INFERRED`, or `UNKNOWN`; the engine does not emit a generic risk score.
+
+`BlockchainProvider` is the adapter contract for a future RPC/indexer implementation. `DemoBlockchainProvider` is deterministic and marks results with `dataMode: "DEMO"`; its addresses and transaction identifiers are demonstration fixtures, not claims about a live chain. Providers should set `mode` to `REAL` only when backed by a verified live source; otherwise results are marked `UNSPECIFIED`. The AI layer can consume the findings as evidence, but it is not involved in discovering them.
