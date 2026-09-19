@@ -7,6 +7,9 @@ explored as a *complement* to detection systems (Forta) and protection systems (
 > (BlockConvey) observability adapter lives in [`sentinel-ai/`](./sentinel-ai) —
 > TypeScript, fully tested, isolated from the frontend. See its README for the
 > OBSERVED/INFERRED/UNKNOWN contract and hallucination safeguards.
+>
+> **Sentinel API:** the backend that serves it (explain/evaluate endpoints,
+> server-side Gemini key) lives in [`sentinel-api/`](./sentinel-api).
 
 ## View & Export the Deck
 

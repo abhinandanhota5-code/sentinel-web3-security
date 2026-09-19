@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 sentinel-ai/node_modules/
 sentinel-ai/dist/
+sentinel-api/node_modules/
+sentinel-api/dist/
