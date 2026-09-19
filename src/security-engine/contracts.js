@@ -10,6 +10,10 @@ async function analyzeContract(provider, address, chain) {
     return [unknownFinding({ findingType: 'CONTRACT_SECURITY_SIGNALS', entity: address, chain, limitations: [`Provider contract metadata failed: ${error.message}`] })];
   }
   if (!metadata) return [unknownFinding({ findingType: 'CONTRACT_SECURITY_SIGNALS', entity: address, chain, limitations: ['Contract metadata was not available.'] })];
+  if (!metadata.owner && typeof provider.getOwner === 'function') {
+    const owner = await provider.getOwner(address, chain).catch(() => null);
+    if (owner?.owner) metadata = { ...metadata, owner: owner.owner, ownerBlockNumber: owner.blockNumber };
+  }
   const findings = [];
   for (const signal of PRIVILEGED_SIGNALS) {
     const value = metadata[signal];

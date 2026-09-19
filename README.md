@@ -73,6 +73,50 @@ const addressResult = await analyzeAddressSecurity({
 });
 ```
 
-Results contain `address`, `chain`, `addressType`, `dataMode`, and `findings`. Every finding has `findingType`, `status`, `severity`, `entity`, `chain`, structured `evidence`, `explanationInputs`, and `limitations`. Status is always `OBSERVED`, `INFERRED`, or `UNKNOWN`; the engine does not emit a generic risk score.
+Both entry points return the same `EvidenceBundle` shape:
+
+```js
+{
+  schemaVersion: '1.0',
+  bundleType: 'SENTINEL_EVIDENCE',
+  dataMode: 'DEMO',
+  chain: 'ethereum',
+  address: '0x...',
+  addressType: 'EOA',
+  subject: { address: '0x...', addressType: 'EOA' },
+  evidence: [{
+    id: 'E1',
+    kind: 'approval',
+    findingType: 'UNLIMITED_ALLOWANCE',
+    knowledgeType: 'OBSERVED',
+    severity: 'HIGH',
+    entity: '0x...',
+    chain: 'ethereum',
+    wallet: '0x...',
+    token: '0x...',
+    spender: '0x...',
+    allowance: '0xffff...',
+    transactionHash: '0x...',
+    blockNumber: 12345678,
+    timestamp: '2026-01-02T00:00:00Z',
+    evidence: {},
+    sourceReferences: {},
+    explanationInputs: {},
+    coverageGaps: []
+  }],
+  coverageGaps: []
+}
+```
+
+The `evidence` entry retains the original structured provider evidence and normalized identifiers. `knowledgeType` is always `OBSERVED`, `INFERRED`, or `UNKNOWN`; no missing blockchain field is filled with a fabricated value. The engine does not emit a generic risk score.
+
+The handoff to Sentinel AI is intentionally direct and one-way:
+
+```js
+const bundle = await analyzeAddressSecurity({ provider, address, chain });
+const explanation = await createSentinelAi().engine.explain(bundle);
+```
+
+The security engine stops at `EvidenceBundle`. It has no AI dependency, does not call an LLM, and does not know about PRISM. The current repository does not contain the `sentinel-ai` package, so the integration test uses an injected `engine.explain` contract fixture and verifies that IDs, citations, addresses, allowances, hashes, and tri-state knowledge values survive the handoff.
 
 `BlockchainProvider` is the adapter contract for a future RPC/indexer implementation. `DemoBlockchainProvider` is deterministic and marks results with `dataMode: "DEMO"`; its addresses and transaction identifiers are demonstration fixtures, not claims about a live chain. Providers should set `mode` to `REAL` only when backed by a verified live source; otherwise results are marked `UNSPECIFIED`. The AI layer can consume the findings as evidence, but it is not involved in discovering them.
