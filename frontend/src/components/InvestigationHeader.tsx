@@ -68,7 +68,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
             </h2>
 
             {(report.ensName || report.contractName) && (
-              <span className="text-xs font-mono text-slate-400 bg-black/30 px-2 py-0.5 rounded-lg border border-white/10">
+              <span className="text-xs font-mono text-slate-200 bg-white/[0.08] backdrop-blur-md px-2 py-0.5 rounded-lg border border-white/15">
                 {report.targetAddress.slice(0, 6)}...{report.targetAddress.slice(-4)}
               </span>
             )}

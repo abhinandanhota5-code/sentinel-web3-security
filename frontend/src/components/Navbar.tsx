@@ -74,19 +74,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         <form onSubmit={handleSearchSubmit} className="flex-1 max-w-sm hidden md:block">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-3.5 w-3.5 text-slate-400" />
+              <Search className="h-3.5 w-3.5 text-slate-300" />
             </div>
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Query address, ENS, or contract..."
-              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-black/30 border border-slate-400/20 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#7dd3fc]/70 focus:ring-1 focus:ring-[#7dd3fc]/40 transition backdrop-blur-md"
+              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-white/[0.07] border border-white/20 rounded-xl text-[#fdfbf7] placeholder-slate-400 focus:outline-none focus:border-[#fde68a]/80 focus:ring-1 focus:ring-[#fde68a]/30 transition backdrop-blur-md"
             />
             <button
               type="submit"
               disabled={isInvestigating}
-              className="absolute inset-y-1 right-1 px-2.5 bg-white/10 hover:bg-[#7dd3fc]/20 border border-white/20 text-[#fdfbf7] rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50"
+              className="absolute inset-y-1 right-1 px-2.5 bg-white/15 hover:bg-[#fde68a]/20 border border-white/25 text-[#fdfbf7] rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50 cursor-pointer"
             >
               {isInvestigating ? 'Scanning' : 'Inspect'}
             </button>
@@ -94,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </form>
 
         {/* Navigation Tabs (Liquid Glass Pills) */}
-        <nav className="flex items-center gap-1 bg-black/25 border border-white/10 p-1 rounded-xl">
+        <nav className="flex items-center gap-1 bg-white/[0.08] backdrop-blur-md border border-white/15 p-1 rounded-xl">
           <button
             onClick={() => {
               onSelectView('landing');
@@ -103,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 100);
             }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#fde68a]" />
             <span className="hidden sm:inline">How It Works</span>
@@ -111,10 +111,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectView('dashboard')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'dashboard'
-                ? 'liquid-pill text-[#7dd3fc] font-semibold border-[#7dd3fc]/40 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'liquid-pill text-[#7dd3fc] font-semibold border-[#7dd3fc]/50 shadow-sm'
+                : 'text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10'
             }`}
           >
             <Activity className="w-3.5 h-3.5 text-[#7dd3fc]" />
@@ -123,10 +123,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectView('graph')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'graph'
-                ? 'liquid-pill text-[#fdfbf7] font-semibold border-white/30 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'liquid-pill text-[#fdfbf7] font-semibold border-white/40 shadow-sm'
+                : 'text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10'
             }`}
           >
             <GitBranch className="w-3.5 h-3.5 text-[#93c5fd]" />
@@ -136,23 +136,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectView('protocol')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'protocol'
-                ? 'liquid-pill text-[#fef3c7] font-semibold border-[#fde68a]/40 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'liquid-pill text-[#fde68a] font-semibold border-[#fde68a]/50 shadow-sm'
+                : 'text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-[#fef3c7]" />
+            <Layers className="w-3.5 h-3.5 text-[#fde68a]" />
             <span className="hidden sm:inline">Protocol Health</span>
             <span className="sm:hidden">Protocol</span>
           </button>
 
           <button
             onClick={() => onSelectView('coverage')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'coverage'
-                ? 'liquid-pill text-[#bae6fd] font-semibold border-[#bae6fd]/40 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'liquid-pill text-[#bae6fd] font-semibold border-[#bae6fd]/50 shadow-sm'
+                : 'text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10'
             }`}
           >
             <FileCheck2 className="w-3.5 h-3.5 text-[#bae6fd]" />
@@ -168,15 +168,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <select
               value={selectedChain}
               onChange={(e) => onSelectChain(e.target.value as NetworkChainId)}
-              className="appearance-none bg-black/30 border border-slate-400/20 rounded-xl py-1.5 pl-3 pr-7 text-xs font-mono text-slate-200 focus:outline-none focus:border-[#7dd3fc]/50 cursor-pointer backdrop-blur-md"
+              className="appearance-none bg-white/[0.08] border border-white/20 rounded-xl py-1.5 pl-3 pr-7 text-xs font-mono text-[#fdfbf7] focus:outline-none focus:border-[#fde68a]/60 cursor-pointer backdrop-blur-md"
             >
               {Object.values(SUPPORTED_CHAINS).map((chain) => (
-                <option key={chain.id} value={chain.id} className="bg-[#0b101b] text-slate-200">
+                <option key={chain.id} value={chain.id} className="bg-[#0e1424] text-slate-200">
                   {chain.icon} {chain.name}
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-300 absolute right-2.5 top-2.5 pointer-events-none" />
           </div>
 
           {/* Inspection Presets Menu */}

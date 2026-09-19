@@ -46,13 +46,16 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col selection:bg-[#7dd3fc] selection:text-[#070b14] relative overflow-x-hidden cyber-grid">
+    <div className="min-h-screen bg-[#080c16] text-slate-100 flex flex-col selection:bg-[#fde68a] selection:text-[#0c1220] relative overflow-x-hidden ambient-mesh">
       
-      {/* Persistent Ambient Soft Blue, Cream, and Soft Gray Liquid Mesh behind all views */}
-      <div className="fixed top-[-10%] left-[15%] w-[48rem] h-[48rem] bg-[#7dd3fc]/10 rounded-full blur-[160px] pointer-events-none -z-10 animate-pulse" />
-      <div className="fixed top-[32%] right-[5%] w-[42rem] h-[42rem] bg-[#fdfbf7]/8 rounded-full blur-[150px] pointer-events-none -z-10" />
-      <div className="fixed bottom-[-10%] left-[22%] w-[50rem] h-[50rem] bg-[#93c5fd]/8 rounded-full blur-[170px] pointer-events-none -z-10" />
-      <div className="fixed top-[60%] left-[2%] w-[32rem] h-[32rem] bg-[#cbd5e1]/6 rounded-full blur-[140px] pointer-events-none -z-10" />
+      {/* Luminous Ambient Liquid Mesh (Mixed Soft Blue, Warm Cream, Light Beige & Pearlescent Gray) */}
+      <div className="fixed top-[-15%] left-[20%] w-[58rem] h-[58rem] bg-[#fdfbf7]/18 rounded-full blur-[180px] pointer-events-none -z-10" />
+      <div className="fixed top-[15%] right-[-5%] w-[52rem] h-[52rem] bg-[#efe4d0]/16 rounded-full blur-[170px] pointer-events-none -z-10" />
+      <div className="fixed top-[5%] left-[-10%] w-[48rem] h-[48rem] bg-[#7dd3fc]/14 rounded-full blur-[170px] pointer-events-none -z-10 animate-pulse" />
+      <div className="fixed top-[45%] left-[25%] w-[46rem] h-[46rem] bg-[#f7f1e4]/14 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[-10%] left-[10%] w-[54rem] h-[54rem] bg-[#93c5fd]/12 rounded-full blur-[170px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[15%] right-[5%] w-[44rem] h-[44rem] bg-[#fde68a]/12 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="fixed top-[65%] left-[-5%] w-[38rem] h-[38rem] bg-[#cbd5e1]/10 rounded-full blur-[150px] pointer-events-none -z-10" />
 
       {/* Liquid Floating Navigation */}
       <Navbar
@@ -73,10 +76,10 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         {isLoading && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xl flex items-center justify-center animate-in fade-in duration-150">
-            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center shadow-2xl border border-white/25">
+          <div className="fixed inset-0 z-50 bg-[#080c16]/60 backdrop-blur-2xl flex items-center justify-center animate-in fade-in duration-150">
+            <div className="liquid-glass-beige rounded-3xl p-8 max-w-sm text-center shadow-2xl border border-white/30">
               <div className="relative w-14 h-14 mx-auto mb-4">
-                <div className="w-14 h-14 rounded-full border-2 border-white/10 border-t-[#7dd3fc] animate-spin" />
+                <div className="w-14 h-14 rounded-full border-2 border-white/20 border-t-[#7dd3fc] animate-spin" />
                 <ShieldCheck className="w-5 h-5 text-[#7dd3fc] absolute inset-0 m-auto" />
               </div>
               <h3 className="text-base font-bold text-[#fdfbf7] mb-1 font-mono">Reconstructing State...</h3>

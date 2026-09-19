@@ -181,23 +181,23 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                   </div>
 
                   {/* Metadata Proof Chips */}
-                  <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px] font-mono text-slate-400">
+                  <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px] font-mono text-slate-300">
                     {f.evidence.transactionHash && (
-                      <div className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-md border border-white/10">
+                      <div className="flex items-center gap-1 bg-white/[0.08] backdrop-blur-md px-2 py-0.5 rounded-md border border-white/15">
                         <Hash className="w-3 h-3 text-[#bae6fd]" />
-                        <span>Tx: {f.evidence.transactionHash.slice(0, 8)}...</span>
+                        <span className="text-slate-200">Tx: {f.evidence.transactionHash.slice(0, 8)}...</span>
                       </div>
                     )}
                     {f.token && (
-                      <div className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-md border border-white/10">
+                      <div className="flex items-center gap-1 bg-white/[0.08] backdrop-blur-md px-2 py-0.5 rounded-md border border-white/15">
                         <Coins className="w-3 h-3 text-[#fde68a]" />
-                        <span>Asset: {f.token.symbol}</span>
+                        <span className="text-slate-200">Asset: {f.token.symbol}</span>
                       </div>
                     )}
                     {f.spender && (
-                      <div className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-md border border-white/10">
-                        <Layers className="w-3 h-3 text-[#cbd5e1]" />
-                        <span>Spender: {f.spender.label || `${f.spender.address.slice(0, 6)}...`}</span>
+                      <div className="flex items-center gap-1 bg-white/[0.08] backdrop-blur-md px-2 py-0.5 rounded-md border border-white/15">
+                        <Layers className="w-3 h-3 text-[#fdfbf7]" />
+                        <span className="text-slate-200">Spender: {f.spender.label || `${f.spender.address.slice(0, 6)}...`}</span>
                       </div>
                     )}
                     {f.evidence.blockNumber && (

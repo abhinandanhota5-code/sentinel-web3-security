@@ -124,7 +124,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 <ul className="space-y-2">
                   {finding.tripartite.observed.map((obs, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl border border-white/10 font-mono">
                       <span className="text-[#7dd3fc] font-bold shrink-0 mt-0.5">[{i + 1}]</span>
                       <span className="leading-relaxed">{obs}</span>
                     </li>
@@ -134,15 +134,15 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 {/* Evidence Details */}
                 <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono">
                   {finding.evidence.transactionHash && (
-                    <div className="bg-black/40 p-2 rounded-lg border border-white/5 flex items-center justify-between">
-                      <span className="text-slate-400">Tx Hash:</span>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-300">Tx Hash:</span>
                       <div className="flex items-center gap-1">
                         <span className="text-[#bae6fd] truncate max-w-[120px]">
                           {finding.evidence.transactionHash.slice(0, 8)}...
                         </span>
                         <button
                           onClick={() => handleCopy(finding.evidence.transactionHash!, 'tx')}
-                          className="text-slate-400 hover:text-white"
+                          className="text-slate-300 hover:text-white"
                         >
                           {copiedField === 'tx' ? <Check className="w-3 h-3 text-[#7dd3fc]" /> : <Copy className="w-3 h-3" />}
                         </button>
@@ -151,15 +151,15 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                   )}
 
                   {finding.evidence.blockNumber && (
-                    <div className="bg-black/40 p-2 rounded-lg border border-white/5 flex items-center justify-between">
-                      <span className="text-slate-400">Block:</span>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-300">Block:</span>
                       <span className="text-slate-200">#{finding.evidence.blockNumber}</span>
                     </div>
                   )}
 
                   {finding.evidence.formattedAllowance && (
-                    <div className="bg-black/40 p-2 rounded-lg border border-white/5 flex items-center justify-between sm:col-span-2">
-                      <span className="text-slate-400">Active Allowance:</span>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between sm:col-span-2">
+                      <span className="text-slate-300">Active Allowance:</span>
                       <span className="text-[#fde68a] font-bold">{finding.evidence.formattedAllowance}</span>
                     </div>
                   )}
@@ -180,7 +180,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 <ul className="space-y-2">
                   {finding.tripartite.inferred.map((inf, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl border border-white/10 font-mono">
                       <span className="text-[#fde68a] font-bold shrink-0 mt-0.5">↳</span>
                       <span className="leading-relaxed">{inf}</span>
                     </li>
@@ -191,18 +191,18 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
               {/* Section 3: UNKNOWN */}
               <div className="liquid-glass-subtle rounded-2xl p-5 border-l-4 border-l-[#cbd5e1]">
                 <div className="flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-2 text-[#cbd5e1] font-mono font-bold text-xs">
-                    <HelpCircle className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-[#fdfbf7] font-mono font-bold text-xs">
+                    <HelpCircle className="w-4 h-4 text-slate-300" />
                     <span>UNKNOWN // EXPLICIT BOUNDARIES</span>
                   </div>
-                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#cbd5e1]/15 text-[#cbd5e1] border border-slate-400/30">
+                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-[#fdfbf7] border border-white/20">
                     Epistemic Bound
                   </span>
                 </div>
 
                 <ul className="space-y-2">
                   {finding.tripartite.unknown.map((unk, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl border border-white/10 font-mono">
                       <span className="text-[#cbd5e1] font-bold shrink-0 mt-0.5">?</span>
                       <span className="leading-relaxed">{unk}</span>
                     </li>
@@ -217,7 +217,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
           {activeTab === 'raw_proof' && (
             <div className="space-y-4">
               <div className="liquid-glass-subtle rounded-2xl p-4">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
+                <div className="flex items-center justify-between text-xs font-mono text-slate-300 mb-3">
                   <span className="flex items-center gap-1.5 text-[#bae6fd]">
                     <Database className="w-3.5 h-3.5" />
                     Method: {finding.evidence.verificationMethod}
@@ -227,12 +227,12 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 {finding.evidence.contractAddress && (
                   <div className="mb-3">
-                    <label className="text-[10px] font-mono text-slate-400 block mb-1">Contract Address Under Audit</label>
-                    <div className="bg-black/50 p-2.5 rounded-xl font-mono text-xs text-slate-200 break-all flex items-center justify-between border border-white/5">
+                    <label className="text-[10px] font-mono text-slate-300 block mb-1">Contract Address Under Audit</label>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-slate-200 break-all flex items-center justify-between border border-white/10">
                       <span>{finding.evidence.contractAddress}</span>
                       <button 
                         onClick={() => handleCopy(finding.evidence.contractAddress!, 'contract')}
-                        className="text-slate-400 hover:text-white"
+                        className="text-slate-300 hover:text-white"
                       >
                         {copiedField === 'contract' ? <Check className="w-3.5 h-3.5 text-[#7dd3fc]" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
@@ -242,8 +242,8 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 {finding.evidence.stateSlot && (
                   <div className="mb-3">
-                    <label className="text-[10px] font-mono text-slate-400 block mb-1">EVM Storage Slot / Mapping</label>
-                    <div className="bg-black/50 p-2.5 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/5">
+                    <label className="text-[10px] font-mono text-slate-300 block mb-1">EVM Storage Slot / Mapping</label>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/10">
                       {finding.evidence.stateSlot}
                     </div>
                   </div>
@@ -251,8 +251,8 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 {finding.evidence.rawCalldata && (
                   <div className="mb-3">
-                    <label className="text-[10px] font-mono text-slate-400 block mb-1">Raw Calldata Payload</label>
-                    <div className="bg-black/50 p-2.5 rounded-xl font-mono text-xs text-slate-300 break-all max-h-28 overflow-y-auto border border-white/5">
+                    <label className="text-[10px] font-mono text-slate-300 block mb-1">Raw Calldata Payload</label>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-slate-200 break-all max-h-28 overflow-y-auto border border-white/10">
                       {finding.evidence.rawCalldata}
                     </div>
                   </div>
@@ -260,8 +260,8 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 {finding.allowance && (
                   <div>
-                    <label className="text-[10px] font-mono text-slate-400 block mb-1">Decoded Raw Allowance (uint256)</label>
-                    <div className="bg-black/50 p-2.5 rounded-xl font-mono text-xs text-rose-300 break-all border border-white/5">
+                    <label className="text-[10px] font-mono text-slate-300 block mb-1">Decoded Raw Allowance (uint256)</label>
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-rose-300 break-all border border-white/10">
                       {finding.allowance}
                     </div>
                   </div>
@@ -271,16 +271,16 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
               {/* JSON export */}
               <div className="liquid-glass-subtle rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-mono text-slate-400">Structured Backend JSON Payload</span>
+                  <span className="text-[11px] font-mono text-slate-300">Structured Backend JSON Payload</span>
                   <button
                     onClick={() => handleCopy(JSON.stringify(finding, null, 2), 'json')}
-                    className="text-xs font-mono text-[#7dd3fc] hover:underline flex items-center gap-1"
+                    className="text-xs font-mono text-[#7dd3fc] hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    {copiedField === 'json' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    {copiedField === 'json' ? <Check className="w-3 h-3 text-[#7dd3fc]" /> : <Copy className="w-3 h-3" />}
                     <span>Copy JSON</span>
                   </button>
                 </div>
-                <pre className="text-[10px] font-mono text-slate-300 bg-black/50 p-3 rounded-xl overflow-x-auto max-h-52 border border-white/5">
+                <pre className="text-[10px] font-mono text-slate-200 bg-white/[0.06] backdrop-blur-md p-3 rounded-xl overflow-x-auto max-h-52 border border-white/10">
                   {JSON.stringify({
                     findingType: finding.findingType,
                     status: finding.confidence,
@@ -310,16 +310,16 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
                 {finding.remediation?.suggestedCalldata && (
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono text-slate-400 block">
+                    <label className="text-[10px] font-mono text-slate-300 block">
                       Generated Zero-Allowance Revoke Calldata:
                     </label>
-                    <div className="bg-black/50 p-3 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/5 flex items-start justify-between gap-2">
+                    <div className="bg-white/[0.06] backdrop-blur-md p-3 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/10 flex items-start justify-between gap-2">
                       <span>{finding.remediation.suggestedCalldata}</span>
                       <button
                         onClick={() => handleCopy(finding.remediation!.suggestedCalldata!, 'calldata')}
-                        className="p-1 text-slate-400 hover:text-white shrink-0"
+                        className="p-1 text-slate-300 hover:text-white shrink-0 cursor-pointer"
                       >
-                        {copiedField === 'calldata' ? <Check className="w-3.5 h-3.5 text-[#7dd3fc]" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedField === 'calldata' ? <Check className="w-3.5 h-3.5 text-[#7dd3fc]" /> : <Copy className="w-3.5 h-3.5 text-slate-300" />}
                       </button>
                     </div>
                   </div>
@@ -328,10 +328,10 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 <div className="mt-5 flex items-center gap-3">
                   <button
                     onClick={() => alert(`Simulating on-chain transaction to revoke allowance... Target: ${finding.evidence.contractAddress}`)}
-                    className="px-4 py-2 bg-gradient-to-r from-[#fdfbf7] via-[#bae6fd] to-[#7dd3fc] hover:opacity-95 text-[#070b14] font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 border border-white/40"
+                    className="px-4 py-2 bg-gradient-to-r from-[#fdfbf7] via-[#f7efe1] to-[#e8d7be] hover:opacity-95 text-[#14120f] font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 border border-white/50 cursor-pointer"
                   >
                     <span>Simulate Revoke Tx</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#070b14]" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#14120f]" />
                   </button>
                   <span className="text-[10px] text-slate-400 font-mono">Zero gas estimation check</span>
                 </div>

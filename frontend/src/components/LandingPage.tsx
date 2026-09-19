@@ -40,20 +40,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-center overflow-hidden cyber-grid">
+    <div className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-center overflow-hidden ambient-mesh">
       
-      {/* Soft Blue + Cream + Soft Gray Ambient Liquid Mesh in Background */}
-      <div className="absolute top-1/4 left-1/4 w-[32rem] h-[32rem] bg-[#7dd3fc]/10 rounded-full blur-[150px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[#fdfbf7]/8 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] bg-[#cbd5e1]/7 rounded-full blur-[160px] pointer-events-none" />
+      {/* Soft Blue + Cream + Light Beige Ambient Caustics in Background (Seamless, no rigid boundaries) */}
+      <div className="absolute top-1/4 left-1/4 w-[38rem] h-[38rem] bg-[#fdfbf7]/16 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-[36rem] h-[36rem] bg-[#efe4d0]/15 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/3 w-[34rem] h-[34rem] bg-[#7dd3fc]/14 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42rem] h-[42rem] bg-[#f7f1e4]/14 rounded-full blur-[170px] pointer-events-none" />
 
       {/* Main Hero Container */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 py-12">
         
         {/* Independent Enterprise Category Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full liquid-pill mb-6">
-          <span className="flex h-2 w-2 rounded-full bg-[#7dd3fc]"></span>
-          <span className="text-[11px] font-mono tracking-wider text-[#cbd5e1]">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full liquid-pill mb-6 border border-[#efe4d0]/30 bg-[#fdfbf7]/10">
+          <span className="flex h-2 w-2 rounded-full bg-[#fde68a]"></span>
+          <span className="text-[11px] font-mono tracking-wider text-[#fdfbf7]">
             WEB3 SECURITY & PROTOCOL HEALTH INTELLIGENCE
           </span>
         </div>
@@ -63,7 +64,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <span className="block font-mono tracking-tighter text-[#fdfbf7]">
             SENTINEL
           </span>
-          <span className="text-2xl sm:text-4xl lg:text-5xl font-medium bg-clip-text text-transparent bg-gradient-to-r from-[#fdfbf7] via-[#93c5fd] to-[#e2e8f0] block mt-2">
+          <span className="text-2xl sm:text-4xl lg:text-5xl font-medium bg-clip-text text-transparent bg-gradient-to-r from-[#fdfbf7] via-[#fde68a] to-[#bae6fd] block mt-2">
             From Alert to Evidence.
           </span>
         </h1>
@@ -72,25 +73,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 mb-8 leading-relaxed font-normal">
           Replace opaque risk scores and alarm fatigue with verifiable clarity. Sentinel decomposes on-chain threats into 
           <span className="text-[#7dd3fc] font-medium"> Observed Facts</span>, 
-          <span className="text-[#fef3c7] font-medium"> Inferred Hypotheses</span>, and 
-          <span className="text-[#cbd5e1] font-medium"> Epistemic Bounds</span>.
+          <span className="text-[#fde68a] font-medium"> Inferred Hypotheses</span>, and 
+          <span className="text-[#fdfbf7] font-medium"> Epistemic Bounds</span>.
         </p>
 
         {/* Translucent Liquid Glass Search Box */}
         <div className="max-w-2xl mx-auto mb-6">
           <form 
             onSubmit={handleSubmit}
-            className="liquid-glass rounded-2xl p-2.5 shadow-2xl flex flex-col sm:flex-row gap-2 border border-white/25"
+            className="liquid-glass rounded-2xl p-2.5 shadow-2xl flex flex-col sm:flex-row gap-2 border border-white/30"
           >
             {/* Chain Selector */}
             <div className="sm:w-44">
               <select
                 value={selectedChain}
                 onChange={(e) => onSelectChain(e.target.value as NetworkChainId)}
-                className="w-full h-11 bg-black/30 border border-slate-400/20 rounded-xl px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-[#7dd3fc]/60 backdrop-blur-md cursor-pointer"
+                className="w-full h-11 bg-white/[0.08] border border-white/20 rounded-xl px-3 text-xs font-mono text-[#fdfbf7] focus:outline-none focus:border-[#fde68a]/80 backdrop-blur-md cursor-pointer"
               >
                 {Object.values(SUPPORTED_CHAINS).map((c) => (
-                  <option key={c.id} value={c.id} className="bg-[#0b101b] text-slate-200">
+                  <option key={c.id} value={c.id} className="bg-[#0e1424] text-slate-200">
                     {c.icon} {c.name}
                   </option>
                 ))}
@@ -104,7 +105,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 value={addressInput}
                 onChange={(e) => setAddressInput(e.target.value)}
                 placeholder="Paste EVM address, ENS, or protocol contract..."
-                className="w-full h-11 bg-black/25 border border-slate-400/20 rounded-xl px-4 text-xs sm:text-sm font-mono text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#7dd3fc]/80 focus:ring-1 focus:ring-[#7dd3fc]/30 transition backdrop-blur-md"
+                className="w-full h-11 bg-white/[0.06] border border-white/20 rounded-xl px-4 text-xs sm:text-sm font-mono text-[#fdfbf7] placeholder-slate-400 focus:outline-none focus:border-[#fde68a]/80 focus:ring-1 focus:ring-[#fde68a]/30 transition backdrop-blur-md"
               />
             </div>
 
@@ -112,7 +113,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="submit"
               disabled={isLoading || !addressInput.trim()}
-              className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#fdfbf7] via-[#bae6fd] to-[#7dd3fc] hover:opacity-95 text-[#070b14] font-bold text-xs sm:text-sm tracking-wide shadow-lg shadow-[#7dd3fc]/25 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer border border-white/40"
+              className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#fdfbf7] via-[#f7efe1] to-[#e8d7be] hover:opacity-95 text-[#14120f] font-bold text-xs sm:text-sm tracking-wide shadow-lg shadow-[#fde68a]/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer border border-white/60"
             >
               {isLoading ? (
                 <>
@@ -122,7 +123,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               ) : (
                 <>
                   <span>Investigate</span>
-                  <ArrowRight className="w-4 h-4 text-[#070b14]" />
+                  <ArrowRight className="w-4 h-4 text-[#14120f]" />
                 </>
               )}
             </button>
@@ -130,7 +131,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           {/* Quick Scenario Pills */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+            <span className="text-[11px] font-mono text-slate-300 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-[#fde68a]" />
               Scenarios:
             </span>
@@ -165,9 +166,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => handleSelectPreset('0x1010101010101010101010101010101010101010', 'ethereum')}
-              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#cbd5e1] hover:border-white/30 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#fdfbf7] hover:border-white/40 transition flex items-center gap-1.5"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#cbd5e1]"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#fdfbf7]"></span>
               Cold Multisig Safe (Clean)
             </button>
           </div>
@@ -176,15 +177,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="mt-7">
             <a
               href="#how-it-works"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full liquid-pill text-xs font-mono text-slate-300 hover:text-white hover:border-[#7dd3fc]/50 transition shadow-lg group"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full liquid-pill text-xs font-mono text-slate-300 hover:text-white hover:border-[#fde68a]/50 transition shadow-lg group"
             >
               <span>See How Sentinel Works in 3 Timelines</span>
-              <ChevronDown className="w-3.5 h-3.5 text-[#7dd3fc] group-hover:translate-y-0.5 transition" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#fde68a] group-hover:translate-y-0.5 transition" />
             </a>
           </div>
         </div>
 
-        {/* 3 Core Pillars (Translucent Soft Blue + Cream + Soft Gray Liquid Glass) */}
+        {/* 3 Core Pillars (Translucent Soft Blue + Light Beige + Cream Liquid Glass) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left mt-12">
           
           {/* Card 1: Evidence Decompression (Soft Blue) */}
@@ -199,24 +200,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </p>
           </div>
 
-          {/* Card 2: Confidence Classes (Warm Cream) */}
-          <div className="liquid-glass-cream rounded-3xl p-6 liquid-card-hover">
-            <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-[#fef3c7]">
+          {/* Card 2: Confidence Classes (Luminous Light Beige) */}
+          <div className="liquid-glass-beige rounded-3xl p-6 liquid-card-hover">
+            <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-[#fde68a]">
               <Compass className="w-5 h-5" />
             </div>
             <div className="text-[10px] font-mono text-[#fde68a] uppercase tracking-wider mb-1">Pillar 2</div>
             <h3 className="text-base font-bold text-[#fdfbf7] mb-2">Confidence Classes</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Strict epistemics: <span className="text-[#7dd3fc] font-medium">Observed facts</span> (on-chain truth) vs. <span className="text-[#fef3c7] font-medium">Inferred risks</span> (deductions) vs. <span className="text-[#cbd5e1] font-medium">Unknowns</span> (bounds).
+              Strict epistemics: <span className="text-[#7dd3fc] font-medium">Observed facts</span> (on-chain truth) vs. <span className="text-[#fde68a] font-medium">Inferred risks</span> (deductions) vs. <span className="text-[#fdfbf7] font-medium">Unknowns</span> (bounds).
             </p>
           </div>
 
-          {/* Card 3: History vs Current Exposure (Soft Slate Gray) */}
-          <div className="liquid-glass rounded-3xl p-6 liquid-card-hover border-t border-t-slate-300/60">
-            <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-[#cbd5e1]">
+          {/* Card 3: History vs Current Exposure (Warm Cream) */}
+          <div className="liquid-glass-cream rounded-3xl p-6 liquid-card-hover">
+            <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-[#fdfbf7]">
               <Zap className="w-5 h-5" />
             </div>
-            <div className="text-[10px] font-mono text-[#cbd5e1] uppercase tracking-wider mb-1">Pillar 3</div>
+            <div className="text-[10px] font-mono text-[#fdfbf7] uppercase tracking-wider mb-1">Pillar 3</div>
             <h3 className="text-base font-bold text-[#fdfbf7] mb-2">History vs. Exposure</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
               Past transactions do not equal current danger. Sentinel isolates the exact liquid dollar blast radius currently drainable through active rights.

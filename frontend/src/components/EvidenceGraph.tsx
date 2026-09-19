@@ -135,10 +135,10 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
       </div>
 
       {/* Main Graph Arena */}
-      <div className="bg-[#070b14]/50 border border-white/10 rounded-2xl p-6 min-h-[420px] relative overflow-hidden flex flex-col justify-between backdrop-blur-xl">
+      <div className="bg-white/[0.04] border border-white/15 rounded-2xl p-6 min-h-[420px] relative overflow-hidden flex flex-col justify-between backdrop-blur-2xl">
         
-        {/* Subtle grid backdrop */}
-        <div className="absolute inset-0 cyber-grid opacity-35 pointer-events-none" />
+        {/* Subtle ambient mesh backdrop (Zero check lines) */}
+        <div className="absolute inset-0 ambient-mesh opacity-50 pointer-events-none" />
 
         {/* Nodes Capsules */}
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -179,7 +179,7 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                 )}
 
                 {node.badge && (
-                  <div className="text-[10px] font-mono text-slate-400 bg-black/40 px-2 py-1 rounded-lg border border-white/10 truncate">
+                  <div className="text-[10px] font-mono text-slate-300 bg-white/[0.08] backdrop-blur-md px-2 py-1 rounded-lg border border-white/15 truncate">
                     {node.badge}
                   </div>
                 )}
@@ -190,7 +190,7 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
 
         {/* Edges List */}
         <div className="relative z-10 border-t border-white/10 pt-5">
-          <div className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+          <div className="text-xs font-mono uppercase tracking-wider text-slate-300 mb-3 flex items-center justify-between">
             <span>Verified Connections ({filteredEdges.length})</span>
             <span className="text-[10px] text-[#7dd3fc] font-normal">Click edge to view state proof</span>
           </div>
@@ -235,7 +235,7 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                   </div>
 
                   {edge.evidenceRef && (
-                    <div className="text-[10px] text-slate-300 font-mono bg-black/40 p-2 rounded-lg border border-white/10">
+                    <div className="text-[10px] text-slate-200 font-mono bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/15">
                       <span className="text-[#7dd3fc] font-semibold">Evidence: </span>
                       {edge.evidenceRef}
                     </div>
