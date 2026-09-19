@@ -65,8 +65,10 @@ const explanation = await ai.engine.explain({
 `@google/genai` SDK. It reads the API key **only** from `GEMINI_API_KEY`
 (never hardcoded, never logged, errors are redacted before surfacing), maps
 `PromptPair.system` -> Gemini `systemInstruction` and `PromptPair.user` ->
-`contents`, enforces a request timeout (default 30s) and honors external
-`AbortSignal`s, and returns only the generated text. All output still passes
+`contents`, enforces a per-attempt timeout (default 30s), honors external
+`AbortSignal`s, retries transient 429/500/503 capacity errors with jittered
+exponential backoff (default 3 retries), and fails fast on daily-quota
+exhaustion. It returns only the generated text. All output still passes
 through the engine's `validateDraft()`/`sanitizeDraft()` safeguards.
 
 ```ts
@@ -81,6 +83,14 @@ const mock = new MockExplanationProvider(() => "Grounded explanation [E0].");
 ```
 
 Required environment variable: `GEMINI_API_KEY` (see `.env.example`).
+
+Live smoke check (uses one or two real API calls, requires the key):
+
+```bash
+cd sentinel-ai && npm run build
+node --env-file=../.env --experimental-strip-types --no-warnings scripts/verify-gemini.ts
+# optional: GEMINI_MODEL=gemini-2.5-flash node --env-file=../.env ... scripts/verify-gemini.ts
+```
 
 ## Evaluation signals (for PRISM)
 

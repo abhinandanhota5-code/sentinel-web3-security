@@ -113,6 +113,80 @@ void test("API failure is normalized into GeminiProviderError", async () => {
   }
 });
 
+void test("transient 503 is retried and recovers within one generate() call", async () => {
+  process.env.GEMINI_API_KEY = "test-key-1234567890";
+  try {
+    let attempts = 0;
+    const { client } = fakeClient(async () => {
+      attempts++;
+      if (attempts < 3) throw new Error('503 UNAVAILABLE: high demand');
+      return okResponse("recovered");
+    });
+    const provider = new GeminiExplanationProvider({
+      clientFactory: () => client,
+      maxRetries: 2,
+      timeoutMs: 1_000,
+    });
+    const out = await provider.generate({ system: "s", user: "u" }, {});
+    assert.equal(out, "recovered");
+    assert.equal(attempts, 3);
+  } finally {
+    delete process.env.GEMINI_API_KEY;
+  }
+});
+
+void test("persistent 503 exhausts retries and surfaces GeminiProviderError", async () => {
+  process.env.GEMINI_API_KEY = "test-key-1234567890";
+  try {
+    let attempts = 0;
+    const { client } = fakeClient(async () => {
+      attempts++;
+      throw new Error("503 UNAVAILABLE");
+    });
+    const provider = new GeminiExplanationProvider({ clientFactory: () => client, maxRetries: 1, timeoutMs: 1_000 });
+    await assert.rejects(
+      provider.generate({ system: "s", user: "u" }, {}),
+      (err: unknown) => err instanceof GeminiProviderError && attempts === 2,
+    );
+  } finally {
+  delete process.env.GEMINI_API_KEY;
+  }
+});
+
+void test("429 and 500 are treated as transient; 400 is not retried", async () => {
+  process.env.GEMINI_API_KEY = "test-key-1234567890";
+  try {
+    let attempts = 0;
+    const { client } = fakeClient(async () => {
+      attempts++;
+      throw new Error("400 INVALID_ARGUMENT");
+    });
+    const provider = new GeminiExplanationProvider({ clientFactory: () => client, maxRetries: 3, timeoutMs: 1_000 });
+    await assert.rejects(provider.generate({ system: "s", user: "u" }, {}), GeminiProviderError);
+    assert.equal(attempts, 1, "400 must not be retried");
+  } finally {
+    delete process.env.GEMINI_API_KEY;
+  }
+});
+
+void test("daily-quota exhaustion (429 PerDay) fails fast without retries", async () => {
+  process.env.GEMINI_API_KEY = "test-key-1234567890";
+  try {
+    let attempts = 0;
+    const { client } = fakeClient(async () => {
+      attempts++;
+      throw new Error(
+        '429 RESOURCE_EXHAUSTED: quota exceeded, quotaId: GenerateRequestsPerDayPerProjectPerModel-FreeTier',
+      );
+    });
+    const provider = new GeminiExplanationProvider({ clientFactory: () => client, maxRetries: 3, timeoutMs: 1_000 });
+    await assert.rejects(provider.generate({ system: "s", user: "u" }, {}), GeminiProviderError);
+    assert.equal(attempts, 1, "per-day quota must not be retried");
+  } finally {
+    delete process.env.GEMINI_API_KEY;
+  }
+});
+
 void test("empty SDK response is rejected, not returned", async () => {
   process.env.GEMINI_API_KEY = "test-key-1234567890";
   try {
@@ -248,6 +322,8 @@ void test("GroundedExplanationEngine returns existing provider_error on Gemini f
       throw new Error("503 service down");
     });
     const provider = new GeminiExplanationProvider({ clientFactory: () => client });
+    // Retry path is covered by provider tests; disable here for speed.
+    (provider as unknown as { maxRetries: number }).maxRetries = 0;
     const engine = new GroundedExplanationEngine(provider);
     const explanation = await engine.explain({ bundle: goodBundle(), question: "q" });
     assert.equal(explanation.refused, "provider_error");
