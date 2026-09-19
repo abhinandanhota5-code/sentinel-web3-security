@@ -59,14 +59,23 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
       calculateTarget();
     };
 
-    // Smooth lerping frame loop for frictionless tabular dot glide
-    const tick = () => {
+    // Lower frame rate (24 FPS) & steady damping so the dot moves at a measured, controlled pace
+    const TARGET_FPS = 24;
+    const frameInterval = 1000 / TARGET_FPS;
+    let lastFrameTime = 0;
+
+    const tick = (currentTime: number) => {
+      rafId = requestAnimationFrame(tick);
+
+      if (currentTime - lastFrameTime < frameInterval) return;
+      lastFrameTime = currentTime;
+
       const diff = targetProgressRef.current - currentProgressRef.current;
       if (Math.abs(diff) > 0.0001) {
-        currentProgressRef.current += diff * 0.12;
+        // Measured damping factor (0.055) so it doesn't rush ahead too fast
+        currentProgressRef.current += diff * 0.055;
         setSmoothProgress(currentProgressRef.current);
       }
-      rafId = requestAnimationFrame(tick);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -282,18 +291,18 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
           
           {/* Subtle Hairline Spine Track Rail */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 rounded-full bg-white/10"
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full bg-white/15"
           />
 
           {/* Subtle Elapsed Track Fill Line (Muted) */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-[2px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/30 transition-all duration-75 ease-out"
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/40 transition-all duration-75 ease-out"
             style={{
               height: `${Math.max(2, Math.min(96, smoothProgress * 100))}%`
             }}
           />
 
-          {/* Dull Tabular Dot (Smoothly moves up and down with user scroll) */}
+          {/* Dull Tabular Dot (Smoothly moves at a lower FPS / measured pace) */}
           <div 
             className="absolute left-4 sm:left-6 md:left-1/2 z-30 pointer-events-none will-change-transform"
             style={{
@@ -301,9 +310,9 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               transform: 'translate(-50%, -50%) translateZ(0)'
             }}
           >
-            {/* Minimalist Dull Tabular Marker: Clean precision disc with subtle border */}
-            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#d6cfc7] border border-stone-500/40 shadow-sm flex items-center justify-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#12141c]" />
+            {/* Sized up: 20px-24px diameter (noticeably larger, tactile, but not too large) */}
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#d6cfc7] border-2 border-stone-400/60 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center">
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0d0f17]" />
             </div>
           </div>
 
