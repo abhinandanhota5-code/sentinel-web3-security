@@ -42,16 +42,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <InvestigationHeader report={report} />
 
       {/* Liquid Glass Sub-Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6">
+      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6 border border-white/15">
         <button
           onClick={() => setCurrentSubTab('findings')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'findings'
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm shadow-teal-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'liquid-pill text-[#7dd3fc] font-bold border-[#7dd3fc]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-teal-400" />
+          <ShieldAlert className="w-3.5 h-3.5 text-[#7dd3fc]" />
           <span>Findings & Evidence ({report.findings.length})</span>
         </button>
 
@@ -59,11 +59,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onClick={() => setCurrentSubTab('history_exposure')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'history_exposure'
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'liquid-pill text-[#fde68a] font-bold border-[#fde68a]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-amber-400" />
+          <Zap className="w-3.5 h-3.5 text-[#fde68a]" />
           <span>History vs Exposure</span>
         </button>
 
@@ -71,11 +71,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onClick={() => setCurrentSubTab('graph')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'graph'
-              ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-sm shadow-indigo-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'liquid-pill text-[#93c5fd] font-bold border-[#93c5fd]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
-          <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+          <GitBranch className="w-3.5 h-3.5 text-[#93c5fd]" />
           <span>Evidence Graph</span>
         </button>
 
@@ -84,11 +84,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
             onClick={() => setCurrentSubTab('protocol')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
               currentSubTab === 'protocol'
-                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/20'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'liquid-pill text-[#fef3c7] font-bold border-[#fef3c7]/50 shadow-sm'
+                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-purple-400" />
+            <Layers className="w-3.5 h-3.5 text-[#fef3c7]" />
             <span>Protocol Health</span>
           </button>
         )}
@@ -97,11 +97,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onClick={() => setCurrentSubTab('coverage')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'coverage'
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'liquid-pill text-[#bae6fd] font-bold border-[#bae6fd]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
-          <FileCheck2 className="w-3.5 h-3.5 text-emerald-400" />
+          <FileCheck2 className="w-3.5 h-3.5 text-[#bae6fd]" />
           <span>Coverage Scope</span>
         </button>
       </div>

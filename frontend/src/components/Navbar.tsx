@@ -50,23 +50,23 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 cursor-pointer group select-none" 
           onClick={() => onSelectView('landing')}
         >
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-stone-200/20 via-emerald-300/15 to-amber-200/20 p-[1px] border border-white/20 shadow-lg shadow-black/40">
-            <div className="w-full h-full bg-[#0b0d14]/80 rounded-[11px] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-emerald-300 group-hover:scale-105 transition-transform" />
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#fdfbf7]/40 via-[#7dd3fc]/30 to-[#cbd5e1]/30 p-[1px] border border-white/30 shadow-lg shadow-black/40">
+            <div className="w-full h-full bg-[#0c1322]/85 rounded-[11px] flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-[#7dd3fc] group-hover:scale-105 transition-transform" />
             </div>
             <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7dd3fc] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#38bdf8]"></span>
             </span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold tracking-wider text-[#fafaf9] font-mono">SENTINEL</span>
-              <span className="px-2 py-0.2 text-[9px] font-mono tracking-wider rounded-full liquid-pill text-stone-300">
+              <span className="text-lg font-bold tracking-wider text-[#fdfbf7] font-mono">SENTINEL</span>
+              <span className="px-2 py-0.2 text-[9px] font-mono tracking-wider rounded-full liquid-pill text-[#bae6fd]">
                 Security Suite
               </span>
             </div>
-            <p className="text-[10px] text-stone-400 hidden sm:block font-mono tracking-tight">From Alert to Evidence</p>
+            <p className="text-[10px] text-slate-400 hidden sm:block font-mono tracking-tight">From Alert to Evidence</p>
           </div>
         </div>
 
@@ -74,19 +74,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         <form onSubmit={handleSearchSubmit} className="flex-1 max-w-sm hidden md:block">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-3.5 w-3.5 text-stone-400" />
+              <Search className="h-3.5 w-3.5 text-slate-400" />
             </div>
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Query address, ENS, or contract..."
-              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-black/25 border border-white/10 rounded-xl text-stone-100 placeholder-stone-500 focus:outline-none focus:border-stone-300/60 focus:ring-1 focus:ring-stone-300/30 transition backdrop-blur-md"
+              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-black/30 border border-slate-400/20 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#7dd3fc]/70 focus:ring-1 focus:ring-[#7dd3fc]/40 transition backdrop-blur-md"
             />
             <button
               type="submit"
               disabled={isInvestigating}
-              className="absolute inset-y-1 right-1 px-2.5 bg-white/10 hover:bg-white/15 border border-white/15 text-stone-200 rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50"
+              className="absolute inset-y-1 right-1 px-2.5 bg-white/10 hover:bg-[#7dd3fc]/20 border border-white/20 text-[#fdfbf7] rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50"
             >
               {isInvestigating ? 'Scanning' : 'Inspect'}
             </button>
@@ -94,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </form>
 
         {/* Navigation Tabs (Liquid Glass Pills) */}
-        <nav className="flex items-center gap-1 bg-black/20 border border-white/5 p-1 rounded-xl">
+        <nav className="flex items-center gap-1 bg-black/25 border border-white/10 p-1 rounded-xl">
           <button
             onClick={() => {
               onSelectView('landing');
@@ -103,9 +103,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 100);
             }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-stone-400 hover:text-stone-200 hover:bg-white/5"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#fed7aa]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#fde68a]" />
             <span className="hidden sm:inline">How It Works</span>
           </button>
 
@@ -113,11 +113,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('dashboard')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
               currentView === 'dashboard'
-                ? 'bg-white/12 text-stone-100 border border-white/20 shadow-sm'
-                : 'text-stone-400 hover:text-stone-200 hover:bg-white/5'
+                ? 'liquid-pill text-[#7dd3fc] font-semibold border-[#7dd3fc]/40 shadow-sm'
+                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
           >
-            <Activity className="w-3.5 h-3.5 text-emerald-300" />
+            <Activity className="w-3.5 h-3.5 text-[#7dd3fc]" />
             <span>Dashboard</span>
           </button>
 
@@ -125,11 +125,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('graph')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
               currentView === 'graph'
-                ? 'bg-white/12 text-stone-100 border border-white/20 shadow-sm'
-                : 'text-stone-400 hover:text-stone-200 hover:bg-white/5'
+                ? 'liquid-pill text-[#fdfbf7] font-semibold border-white/30 shadow-sm'
+                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
           >
-            <GitBranch className="w-3.5 h-3.5 text-purple-300" />
+            <GitBranch className="w-3.5 h-3.5 text-[#93c5fd]" />
             <span className="hidden sm:inline">Evidence Graph</span>
             <span className="sm:hidden">Graph</span>
           </button>
@@ -138,11 +138,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('protocol')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
               currentView === 'protocol'
-                ? 'bg-white/12 text-stone-100 border border-white/20 shadow-sm'
-                : 'text-stone-400 hover:text-stone-200 hover:bg-white/5'
+                ? 'liquid-pill text-[#fef3c7] font-semibold border-[#fde68a]/40 shadow-sm'
+                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-amber-200" />
+            <Layers className="w-3.5 h-3.5 text-[#fef3c7]" />
             <span className="hidden sm:inline">Protocol Health</span>
             <span className="sm:hidden">Protocol</span>
           </button>
@@ -151,11 +151,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('coverage')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
               currentView === 'coverage'
-                ? 'bg-white/12 text-stone-100 border border-white/20 shadow-sm'
-                : 'text-stone-400 hover:text-stone-200 hover:bg-white/5'
+                ? 'liquid-pill text-[#bae6fd] font-semibold border-[#bae6fd]/40 shadow-sm'
+                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
           >
-            <FileCheck2 className="w-3.5 h-3.5 text-teal-300" />
+            <FileCheck2 className="w-3.5 h-3.5 text-[#bae6fd]" />
             <span>Coverage</span>
           </button>
         </nav>
@@ -168,15 +168,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <select
               value={selectedChain}
               onChange={(e) => onSelectChain(e.target.value as NetworkChainId)}
-              className="appearance-none bg-black/25 border border-white/10 rounded-xl py-1.5 pl-3 pr-7 text-xs font-mono text-stone-200 focus:outline-none focus:border-stone-300/50 cursor-pointer backdrop-blur-md"
+              className="appearance-none bg-black/30 border border-slate-400/20 rounded-xl py-1.5 pl-3 pr-7 text-xs font-mono text-slate-200 focus:outline-none focus:border-[#7dd3fc]/50 cursor-pointer backdrop-blur-md"
             >
               {Object.values(SUPPORTED_CHAINS).map((chain) => (
-                <option key={chain.id} value={chain.id} className="bg-[#0e1017] text-stone-200">
+                <option key={chain.id} value={chain.id} className="bg-[#0b101b] text-slate-200">
                   {chain.icon} {chain.name}
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-2.5 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
           </div>
 
           {/* Inspection Presets Menu */}
@@ -184,17 +184,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => setShowPresetsDropdown(!showPresetsDropdown)}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-medium liquid-pill text-stone-200 hover:text-white transition flex items-center gap-1.5 shadow-sm"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-medium liquid-pill text-[#fdfbf7] hover:text-white transition flex items-center gap-1.5 shadow-sm"
               title="Load audit inspection scenarios"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+              <Sparkles className="w-3.5 h-3.5 text-[#fde68a]" />
               <span className="hidden sm:inline font-mono text-[11px]">Scenarios</span>
-              <ChevronDown className="w-3 h-3 text-stone-400" />
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {showPresetsDropdown && (
-              <div className="absolute right-0 mt-2 w-72 liquid-glass rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="text-[10px] font-mono font-semibold text-stone-400 px-2 py-1 uppercase tracking-wider border-b border-white/10">
+              <div className="absolute right-0 mt-2 w-72 liquid-glass rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 border border-white/20">
+                <div className="text-[10px] font-mono font-semibold text-slate-400 px-2 py-1 uppercase tracking-wider border-b border-white/10">
                   Inspection Scenarios
                 </div>
                 <div className="mt-1 space-y-1">
@@ -205,11 +205,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-white/10 transition group"
                   >
-                    <div className="text-xs font-medium text-stone-200 group-hover:text-amber-200 flex items-center justify-between">
+                    <div className="text-xs font-medium text-slate-200 group-hover:text-[#fde68a] flex items-center justify-between">
                       <span>alex-defi.eth</span>
                       <span className="text-[10px] text-rose-300 font-mono font-bold">$3.8k Exposed</span>
                     </div>
-                    <div className="text-[10px] text-stone-400 font-mono">Unlimited USDC approval spender</div>
+                    <div className="text-[10px] text-slate-400 font-mono">Unlimited USDC approval spender</div>
                   </button>
 
                   <button
@@ -219,11 +219,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-white/10 transition group"
                   >
-                    <div className="text-xs font-medium text-stone-200 group-hover:text-emerald-300 flex items-center justify-between">
+                    <div className="text-xs font-medium text-slate-200 group-hover:text-[#7dd3fc] flex items-center justify-between">
                       <span>Multipli Prime Yield</span>
-                      <span className="text-[10px] text-emerald-300 font-mono font-bold">Grade A</span>
+                      <span className="text-[10px] text-[#7dd3fc] font-mono font-bold">Grade A</span>
                     </div>
-                    <div className="text-[10px] text-stone-400 font-mono">48h Timelock, 3/5 Multi-sig</div>
+                    <div className="text-[10px] text-slate-400 font-mono">48h Timelock, 3/5 Multi-sig</div>
                   </button>
 
                   <button
@@ -233,11 +233,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-white/10 transition group"
                   >
-                    <div className="text-xs font-medium text-stone-200 group-hover:text-rose-300 flex items-center justify-between">
+                    <div className="text-xs font-medium text-slate-200 group-hover:text-rose-300 flex items-center justify-between">
                       <span>ShadySwap Router</span>
                       <span className="text-[10px] text-rose-300 font-mono font-bold">Critical</span>
                     </div>
-                    <div className="text-[10px] text-stone-400 font-mono">Zero-timelock emergencyDrain</div>
+                    <div className="text-[10px] text-slate-400 font-mono">Zero-timelock emergencyDrain</div>
                   </button>
 
                   <button
@@ -247,11 +247,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-white/10 transition group"
                   >
-                    <div className="text-xs font-medium text-stone-200 group-hover:text-teal-300 flex items-center justify-between">
+                    <div className="text-xs font-medium text-slate-200 group-hover:text-[#bae6fd] flex items-center justify-between">
                       <span>treasury-cold.eth</span>
-                      <span className="text-[10px] text-teal-300 font-mono font-bold">Clean</span>
+                      <span className="text-[10px] text-[#bae6fd] font-mono font-bold">Clean</span>
                     </div>
-                    <div className="text-[10px] text-stone-400 font-mono">No active findings detected</div>
+                    <div className="text-[10px] text-slate-400 font-mono">No active findings detected</div>
                   </button>
                 </div>
               </div>

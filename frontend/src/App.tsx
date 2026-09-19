@@ -46,12 +46,13 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07080d] text-stone-100 flex flex-col selection:bg-[#a7f3d0] selection:text-black relative overflow-x-hidden cyber-grid">
+    <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col selection:bg-[#7dd3fc] selection:text-[#070b14] relative overflow-x-hidden cyber-grid">
       
-      {/* Persistent Ambient Pastel & Nude Liquid Mesh behind all views */}
-      <div className="fixed top-[-10%] left-[15%] w-[45rem] h-[45rem] bg-[#a7f3d0]/6 rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="fixed top-[35%] right-[5%] w-[40rem] h-[40rem] bg-[#fed7aa]/7 rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="fixed bottom-[-10%] left-[20%] w-[48rem] h-[48rem] bg-[#d8b4fe]/6 rounded-full blur-[170px] pointer-events-none -z-10" />
+      {/* Persistent Ambient Soft Blue, Cream, and Soft Gray Liquid Mesh behind all views */}
+      <div className="fixed top-[-10%] left-[15%] w-[48rem] h-[48rem] bg-[#7dd3fc]/10 rounded-full blur-[160px] pointer-events-none -z-10 animate-pulse" />
+      <div className="fixed top-[32%] right-[5%] w-[42rem] h-[42rem] bg-[#fdfbf7]/8 rounded-full blur-[150px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[-10%] left-[22%] w-[50rem] h-[50rem] bg-[#93c5fd]/8 rounded-full blur-[170px] pointer-events-none -z-10" />
+      <div className="fixed top-[60%] left-[2%] w-[32rem] h-[32rem] bg-[#cbd5e1]/6 rounded-full blur-[140px] pointer-events-none -z-10" />
 
       {/* Liquid Floating Navigation */}
       <Navbar
@@ -72,14 +73,14 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         {isLoading && (
-          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-150">
-            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center shadow-2xl border border-white/20">
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xl flex items-center justify-center animate-in fade-in duration-150">
+            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center shadow-2xl border border-white/25">
               <div className="relative w-14 h-14 mx-auto mb-4">
-                <div className="w-14 h-14 rounded-full border-2 border-white/10 border-t-[#a7f3d0] animate-spin" />
-                <ShieldCheck className="w-5 h-5 text-[#a7f3d0] absolute inset-0 m-auto" />
+                <div className="w-14 h-14 rounded-full border-2 border-white/10 border-t-[#7dd3fc] animate-spin" />
+                <ShieldCheck className="w-5 h-5 text-[#7dd3fc] absolute inset-0 m-auto" />
               </div>
-              <h3 className="text-base font-bold text-stone-100 mb-1 font-mono">Reconstructing State...</h3>
-              <p className="text-xs text-stone-400 font-mono">
+              <h3 className="text-base font-bold text-[#fdfbf7] mb-1 font-mono">Reconstructing State...</h3>
+              <p className="text-xs text-slate-300 font-mono">
                 Querying EVM storage slots, allowance mappings, and delegate proxies.
               </p>
             </div>
@@ -128,21 +129,21 @@ export function App() {
       </main>
 
       {/* Floating Liquid Footer */}
-      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-6 text-xs text-stone-400 mt-auto">
+      <footer className="border-t border-white/10 bg-slate-950/50 backdrop-blur-2xl py-6 text-xs text-slate-400 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#a7f3d0]" />
-            <span className="font-bold text-stone-200 font-mono tracking-wider">SENTINEL</span>
-            <span className="text-stone-600">—</span>
-            <span className="text-stone-400">Evidence-first investigation layer for Web3</span>
+            <ShieldCheck className="w-4 h-4 text-[#7dd3fc]" />
+            <span className="font-bold text-[#fdfbf7] font-mono tracking-wider">SENTINEL</span>
+            <span className="text-slate-600">—</span>
+            <span className="text-slate-300">Evidence-first investigation layer for Web3</span>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] font-mono text-stone-400">
-            <span className="text-stone-400">Autonomous Protocol Security</span>
+          <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400">
+            <span className="text-slate-400">Autonomous Protocol Security</span>
             <span>•</span>
-            <span className="text-[#a7f3d0]">From Alert to Evidence</span>
+            <span className="text-[#7dd3fc]">From Alert to Evidence</span>
             <span>•</span>
-            <button onClick={() => setCurrentView('coverage')} className="hover:text-stone-200 underline">
+            <button onClick={() => setCurrentView('coverage')} className="hover:text-[#fdfbf7] transition underline">
               Coverage & Scope
             </button>
           </div>

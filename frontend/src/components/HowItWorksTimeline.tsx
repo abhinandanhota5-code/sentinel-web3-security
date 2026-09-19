@@ -106,8 +106,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   const squareFeatures = [
     {
       id: "facts",
-      icon: <CheckCircle2 className="w-5 h-5 text-[#a7f3d0]" />,
-      accent: "#a7f3d0",
+      icon: <CheckCircle2 className="w-5 h-5 text-[#7dd3fc]" />,
+      accent: "#7dd3fc",
       tag: "On-Chain Truth",
       title: "Observed Facts",
       description: "Direct EVM storage proofs proving mathematical facts with zero third-party heuristics.",
@@ -115,8 +115,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "blast",
-      icon: <Flame className="w-5 h-5 text-[#fca5a5]" />,
-      accent: "#fca5a5",
+      icon: <Flame className="w-5 h-5 text-[#fde68a]" />,
+      accent: "#fde68a",
       tag: "Real Exposure",
       title: "Dollar Blast Radius",
       description: "Calculates the exact liquid dollar balance currently drainable through active rights.",
@@ -124,8 +124,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "revoke",
-      icon: <Lock className="w-5 h-5 text-[#fed7aa]" />,
-      accent: "#fed7aa",
+      icon: <Lock className="w-5 h-5 text-[#fdfbf7]" />,
+      accent: "#fdfbf7",
       tag: "1-Click Fix",
       title: "Zero-Gas Calldata",
       description: "Generates deterministic zero-allowance transaction calldata to seal access instantly.",
@@ -133,8 +133,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "bounds",
-      icon: <Eye className="w-5 h-5 text-[#d8b4fe]" />,
-      accent: "#d8b4fe",
+      icon: <Eye className="w-5 h-5 text-[#cbd5e1]" />,
+      accent: "#cbd5e1",
       tag: "Epistemic Honesty",
       title: "Zero Fake Badges",
       description: "Sentinel never issues generic green 'SAFE' badges for contracts code alone cannot prove.",
@@ -142,8 +142,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "decoder",
-      icon: <Terminal className="w-5 h-5 text-[#a7f3d0]" />,
-      accent: "#a7f3d0",
+      icon: <Terminal className="w-5 h-5 text-[#bae6fd]" />,
+      accent: "#bae6fd",
       tag: "State Inspector",
       title: "Slot Decompiler",
       description: "Inspects raw storage mappings like mapping(owner => spender) down to bytecode truth.",
@@ -151,8 +151,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "governance",
-      icon: <Key className="w-5 h-5 text-[#fed7aa]" />,
-      accent: "#fed7aa",
+      icon: <Key className="w-5 h-5 text-[#fef3c7]" />,
+      accent: "#fef3c7",
       tag: "Quorum Telemetry",
       title: "Multisig & Timelock",
       description: "Verifies 48-hour emergency timelocks, multisig thresholds, and upgrade admin identities.",
@@ -161,10 +161,10 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   ];
 
   return (
-    <section className="relative w-full py-20 bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 border-t border-white/5">
+    <section className="relative w-full py-20 bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 border-t border-white/10">
       
       {/* Ambient background glow mesh */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[45rem] h-[25rem] bg-gradient-to-r from-[#a7f3d0]/5 via-[#fed7aa]/5 to-[#d8b4fe]/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[48rem] h-[28rem] bg-gradient-to-r from-[#7dd3fc]/10 via-[#fdfbf7]/8 to-[#cbd5e1]/10 rounded-full blur-[150px] pointer-events-none" />
 
       {/* ==========================================================================
           SECTION 1: DEVJAMS-STYLE SQUARE ICONS (MANUAL SLIDER)
@@ -172,13 +172,13 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
       <div className="max-w-7xl mx-auto mb-20 px-2 sm:px-4">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#a7f3d0] mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#7dd3fc] mb-2">
               Verification Modules
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight font-mono">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight font-mono">
               CORE CAPABILITIES
             </h2>
-            <p className="text-xs text-stone-400 max-w-lg mt-1 font-sans">
+            <p className="text-xs text-slate-300 max-w-lg mt-1 font-sans">
               Sentinel's verifiable diagnostic suite. Slide through features at your own pace.
             </p>
           </div>
@@ -188,7 +188,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
             <button
               onClick={() => handleManualSlide('left')}
               disabled={!canScrollLeft}
-              className="w-9 h-9 rounded-xl liquid-glass border border-white/10 flex items-center justify-center text-stone-300 hover:text-white hover:border-[#a7f3d0]/40 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
+              className="w-9 h-9 rounded-xl liquid-glass border border-white/20 flex items-center justify-center text-slate-200 hover:text-white hover:border-[#7dd3fc]/50 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
               title="Slide Left"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -196,7 +196,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
             <button
               onClick={() => handleManualSlide('right')}
               disabled={!canScrollRight}
-              className="w-9 h-9 rounded-xl liquid-glass border border-white/10 flex items-center justify-center text-stone-300 hover:text-white hover:border-[#a7f3d0]/40 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
+              className="w-9 h-9 rounded-xl liquid-glass border border-white/20 flex items-center justify-center text-slate-200 hover:text-white hover:border-[#7dd3fc]/50 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
               title="Slide Right"
             >
               <ChevronRight className="w-4 h-4" />
@@ -214,7 +214,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
           {squareFeatures.map((feat) => (
             <div
               key={feat.id}
-              className="w-56 h-56 sm:w-60 sm:h-60 shrink-0 rounded-3xl liquid-glass p-5 flex flex-col justify-between snap-start border border-[#e6ded6]/15 hover:border-[#a7f3d0]/40 liquid-card-hover group"
+              className="w-56 h-56 sm:w-60 sm:h-60 shrink-0 rounded-3xl liquid-glass p-5 flex flex-col justify-between snap-start border border-white/15 hover:border-[#7dd3fc]/50 liquid-card-hover group"
             >
               {/* Card Top: Icon & Tag */}
               <div className="flex items-start justify-between gap-2">
@@ -224,24 +224,24 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 >
                   {feat.icon}
                 </div>
-                <span className="text-[9px] font-mono text-stone-400 bg-black/30 px-2 py-0.5 rounded-full border border-white/5 truncate max-w-[125px]">
+                <span className="text-[9px] font-mono text-slate-300 bg-black/30 px-2 py-0.5 rounded-full border border-white/10 truncate max-w-[125px]">
                   {feat.tag}
                 </span>
               </div>
 
               {/* Card Middle: Title & Layman Explanation */}
               <div className="my-auto py-1.5">
-                <h3 className="text-sm font-bold font-mono text-stone-100 group-hover:text-[#a7f3d0] transition">
+                <h3 className="text-sm font-bold font-mono text-[#fdfbf7] group-hover:text-[#7dd3fc] transition">
                   {feat.title}
                 </h3>
-                <p className="text-[11px] text-stone-300 leading-relaxed line-clamp-3 mt-1.5 font-sans">
+                <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-3 mt-1.5 font-sans">
                   {feat.description}
                 </p>
               </div>
 
               {/* Card Bottom: Metric Tag */}
-              <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono">
-                <span className="text-stone-400">Standard</span>
+              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
+                <span className="text-slate-400">Standard</span>
                 <span 
                   className="font-bold px-2 py-0.5 rounded-md"
                   style={{ color: feat.accent, backgroundColor: `${feat.accent}15` }}
@@ -261,13 +261,13 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
         
         {/* Section Header */}
         <div className="text-center mb-16 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#fed7aa] mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#fde68a] mb-3">
             Architecture In Plain English
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-100 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#fdfbf7] tracking-tight">
             How Sentinel Works
           </h2>
-          <p className="text-sm text-stone-300 max-w-2xl mx-auto mt-3 leading-relaxed">
+          <p className="text-sm text-slate-300 max-w-2xl mx-auto mt-3 leading-relaxed">
             No confusing computer science jargon or fake safety badges. Here is exactly what happens behind the scenes in 3 simple chronological steps.
           </p>
         </div>
@@ -283,7 +283,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
           {/* Subtle Elapsed Track Fill Line (Muted, tracks dot 1:1 with zero lag) */}
           <div 
             ref={fillRef}
-            className="absolute left-4 sm:left-6 md:left-1/2 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/45"
+            className="absolute left-4 sm:left-6 md:left-1/2 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-[#7dd3fc]/50 shadow-[0_0_8px_rgba(125,211,252,0.3)]"
             style={{
               top: '16px',
               height: '0px'
@@ -300,8 +300,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
             }}
           >
             {/* 20px-24px diameter: Centered on dot position, tactile, tabular */}
-            <div className="w-5 h-5 sm:w-6 sm:h-6 -translate-y-1/2 rounded-full bg-[#d6cfc7] border-2 border-stone-400/60 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center">
-              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0d0f17]" />
+            <div className="w-5 h-5 sm:w-6 sm:h-6 -translate-y-1/2 rounded-full bg-[#fdfbf7] border-2 border-slate-300 shadow-[0_2px_10px_rgba(0,0,0,0.55),inset_0_1px_1.5px_rgba(255,255,255,0.8)] flex items-center justify-center">
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#38bdf8]" />
             </div>
           </div>
 
@@ -316,54 +316,54 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               
               {/* LEFT: Visual Snapshot Card (DevJams historical image aesthetic) */}
               <div className="w-full md:w-[46%] group">
-                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#a7f3d0]/30">
+                <div className="liquid-glass-blue rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#a7f3d0] animate-pulse" />
-                      <span className="font-bold text-stone-200">SCANNER DETECTED // ON-CHAIN TRIGGER</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#7dd3fc] animate-pulse" />
+                      <span className="font-bold text-[#fdfbf7]">SCANNER DETECTED // ON-CHAIN TRIGGER</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[9px] bg-[#a7f3d0]/15 text-[#a7f3d0] border border-[#a7f3d0]/30">
+                    <span className="px-2 py-0.5 rounded text-[9px] bg-[#7dd3fc]/15 text-[#7dd3fc] border border-[#7dd3fc]/30">
                       Block #19,402,118
                     </span>
                   </div>
 
                   {/* Visual Simulation Graphic */}
                   <div className="space-y-2.5 font-mono text-xs">
-                    <div className="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1.5">
+                    <div className="p-3 bg-black/40 rounded-2xl border border-white/10 space-y-1.5">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-stone-400">Target Wallet:</span>
-                        <span className="text-stone-200 font-bold">alex-defi.eth</span>
+                        <span className="text-slate-400">Target Wallet:</span>
+                        <span className="text-[#fdfbf7] font-bold">alex-defi.eth</span>
                       </div>
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-stone-400">Transaction:</span>
-                        <span className="text-[#d8b4fe]">0x4f82...3e9a</span>
+                        <span className="text-slate-400">Transaction:</span>
+                        <span className="text-[#bae6fd]">0x4f82...3e9a</span>
                       </div>
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-stone-400">Granted Right:</span>
-                        <span className="text-[#fca5a5] font-bold bg-[#fca5a5]/10 px-2 py-0.5 rounded">
+                        <span className="text-slate-400">Granted Right:</span>
+                        <span className="text-rose-300 font-bold bg-rose-500/10 px-2 py-0.5 rounded">
                           USDC (UNLIMITED ALLOWANCE)
                         </span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-rose-950/20 rounded-2xl border border-[#fca5a5]/30 flex items-start gap-2.5">
-                      <ShieldAlert className="w-4 h-4 text-[#fca5a5] shrink-0 mt-0.5" />
-                      <div className="text-[11px] text-stone-300">
-                        <span className="font-bold text-[#fca5a5] block mb-0.5">Vulnerable Permission Found:</span>
-                        Contract <span className="text-stone-100 underline">0x68b...Fc45</span> has full authority to withdraw tokens without further permission.
+                    <div className="p-3 bg-rose-950/25 rounded-2xl border border-rose-400/30 flex items-start gap-2.5">
+                      <ShieldAlert className="w-4 h-4 text-rose-300 shrink-0 mt-0.5" />
+                      <div className="text-[11px] text-slate-300">
+                        <span className="font-bold text-rose-300 block mb-0.5">Vulnerable Permission Found:</span>
+                        Contract <span className="text-[#fdfbf7] underline">0x68b...Fc45</span> has full authority to withdraw tokens without further permission.
                       </div>
                     </div>
                   </div>
 
                   {/* Interactive Button */}
                   <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-stone-400">Simulated Investigation</span>
+                    <span className="text-[10px] font-mono text-slate-400">Simulated Investigation</span>
                     {onSelectPreset && (
                       <button
                         onClick={() => onSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
-                        className="text-[11px] font-mono text-[#a7f3d0] hover:underline flex items-center gap-1 font-semibold"
+                        className="text-[11px] font-mono text-[#7dd3fc] hover:underline flex items-center gap-1 font-semibold"
                       >
                         <span>Test This Scenario</span>
                         <ExternalLink className="w-3 h-3" />
@@ -375,29 +375,29 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
               {/* RIGHT: Layman's Explanation */}
               <div className="w-full md:w-[46%] text-left">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#a7f3d0] uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#7dd3fc] uppercase tracking-wider mb-2">
                   Timeline 01 • The Trigger
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight mb-2">
                   You Connect or Swap — But What Did You Actually Sign?
                 </h3>
                 
                 {/* Layman Analogy Callout */}
-                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#a7f3d0] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
-                  <strong className="text-stone-100 block mb-1">💡 The Everyday Analogy:</strong>
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#7dd3fc] mb-4 text-xs text-slate-300 leading-relaxed font-sans">
+                  <strong className="text-[#fdfbf7] block mb-1">💡 The Everyday Analogy:</strong>
                   "Think of it like valet parking your car: you intended to hand the valet a single key to park it today, but the paperwork secretly gave them a master key to your entire garage forever."
                 </div>
 
-                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed space-y-2">
                   <span>When you interact with a crypto website, you frequently click "Approve". Most apps quietly ask for <strong>"Unlimited Allowance"</strong> so you never have to click approve again.</span>
                   <span className="block mt-2">
                     Sentinel immediately scans the blockchain’s official storage slots to uncover every active master key connected to your wallet — before anyone abuses it.
                   </span>
                 </p>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">✓ No black-box scores</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-stone-300">✓ Direct RPC storage proof</span>
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#7dd3fc]">✓ No black-box scores</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-slate-300">✓ Direct RPC storage proof</span>
                 </div>
               </div>
 
@@ -412,15 +412,15 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               
               {/* RIGHT: Visual Snapshot Card (Interactive Tripartite decomposition) */}
               <div className="w-full md:w-[46%] group">
-                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#fed7aa]/30">
+                <div className="liquid-glass-cream rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#fed7aa]" />
-                      <span className="font-bold text-stone-200">TRIPARTITE REASONING MATRIX</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#fde68a]" />
+                      <span className="font-bold text-[#fdfbf7]">TRIPARTITE REASONING MATRIX</span>
                     </div>
-                    <span className="text-stone-400 text-[9px]">Epistemic Clarity</span>
+                    <span className="text-slate-400 text-[9px]">Epistemic Clarity</span>
                   </div>
 
                   {/* Interactive Tripartite Tabs */}
@@ -428,7 +428,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     <button
                       onClick={() => setActiveTabT2('observed')}
                       className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
-                        activeTabT2 === 'observed' ? 'bg-[#a7f3d0]/20 text-[#a7f3d0] border border-[#a7f3d0]/40' : 'text-stone-400 hover:text-white'
+                        activeTabT2 === 'observed' ? 'bg-[#7dd3fc]/20 text-[#7dd3fc] border border-[#7dd3fc]/40' : 'text-slate-400 hover:text-white'
                       }`}
                     >
                       1. Observed
@@ -436,7 +436,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     <button
                       onClick={() => setActiveTabT2('inferred')}
                       className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
-                        activeTabT2 === 'inferred' ? 'bg-[#fed7aa]/20 text-[#fed7aa] border border-[#fed7aa]/40' : 'text-stone-400 hover:text-white'
+                        activeTabT2 === 'inferred' ? 'bg-[#fef3c7]/20 text-[#fde68a] border border-[#fde68a]/40' : 'text-slate-400 hover:text-white'
                       }`}
                     >
                       2. Inferred
@@ -444,7 +444,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     <button
                       onClick={() => setActiveTabT2('unknown')}
                       className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
-                        activeTabT2 === 'unknown' ? 'bg-[#d8b4fe]/20 text-[#d8b4fe] border border-[#d8b4fe]/40' : 'text-stone-400 hover:text-white'
+                        activeTabT2 === 'unknown' ? 'bg-[#cbd5e1]/20 text-[#cbd5e1] border border-slate-400/40' : 'text-slate-400 hover:text-white'
                       }`}
                     >
                       3. Unknown
@@ -452,17 +452,17 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                   </div>
 
                   {/* Content Container */}
-                  <div className="p-4 bg-black/50 rounded-2xl border border-white/5 min-h-[140px] flex flex-col justify-center">
+                  <div className="p-4 bg-black/50 rounded-2xl border border-white/10 min-h-[140px] flex flex-col justify-center">
                     {activeTabT2 === 'observed' && (
                       <div className="space-y-1.5 animate-in fade-in duration-200">
-                        <div className="flex items-center gap-2 text-[#a7f3d0] font-mono font-bold text-xs">
+                        <div className="flex items-center gap-2 text-[#7dd3fc] font-mono font-bold text-xs">
                           <CheckCircle2 className="w-4 h-4" />
                           <span>OBSERVED: Mathematical Facts</span>
                         </div>
-                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                        <p className="text-[11px] font-mono text-slate-300 leading-relaxed">
                           "Storage Slot [0x02] in USDC token contract holds value 0xffffff... for Spender 0x68b...Fc45."
                         </p>
-                        <span className="inline-block text-[9px] font-mono text-[#a7f3d0] bg-[#a7f3d0]/10 px-2 py-0.5 rounded border border-[#a7f3d0]/25">
+                        <span className="inline-block text-[9px] font-mono text-[#7dd3fc] bg-[#7dd3fc]/10 px-2 py-0.5 rounded border border-[#7dd3fc]/25">
                           Verified by EVM Merkle Patricia Proof
                         </span>
                       </div>
@@ -470,14 +470,14 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
                     {activeTabT2 === 'inferred' && (
                       <div className="space-y-1.5 animate-in fade-in duration-200">
-                        <div className="flex items-center gap-2 text-[#fed7aa] font-mono font-bold text-xs">
+                        <div className="flex items-center gap-2 text-[#fde68a] font-mono font-bold text-xs">
                           <TrendingUp className="w-4 h-4" />
                           <span>INFERRED: Deductions & Attack Vectors</span>
                         </div>
-                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                        <p className="text-[11px] font-mono text-slate-300 leading-relaxed">
                           "If that unverified spender contract is compromised, the attacker can drain up to your entire 3,840 USDC balance."
                         </p>
-                        <span className="inline-block text-[9px] font-mono text-[#fed7aa] bg-[#fed7aa]/10 px-2 py-0.5 rounded border border-[#fed7aa]/25">
+                        <span className="inline-block text-[9px] font-mono text-[#fde68a] bg-[#fde68a]/10 px-2 py-0.5 rounded border border-[#fde68a]/25">
                           Logical deduction from bytecode authority
                         </span>
                       </div>
@@ -485,21 +485,21 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
                     {activeTabT2 === 'unknown' && (
                       <div className="space-y-1.5 animate-in fade-in duration-200">
-                        <div className="flex items-center gap-2 text-[#d8b4fe] font-mono font-bold text-xs">
+                        <div className="flex items-center gap-2 text-[#cbd5e1] font-mono font-bold text-xs">
                           <HelpCircle className="w-4 h-4" />
                           <span>UNKNOWN: Our Honest Limits</span>
                         </div>
-                        <p className="text-[11px] font-mono text-stone-300 leading-relaxed">
+                        <p className="text-[11px] font-mono text-slate-300 leading-relaxed">
                           "We cannot prove off-chain identity. Whether the counterparty is evil or well-intentioned cannot be proven by code alone."
                         </p>
-                        <span className="inline-block text-[9px] font-mono text-[#d8b4fe] bg-[#d8b4fe]/10 px-2 py-0.5 rounded border border-[#d8b4fe]/25">
+                        <span className="inline-block text-[9px] font-mono text-[#cbd5e1] bg-[#cbd5e1]/10 px-2 py-0.5 rounded border border-[#cbd5e1]/25">
                           Never a fake green 'SAFE' badge
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-stone-400">
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
                     <span>Click tabs above to preview how Sentinel separates evidence</span>
                   </div>
                 </div>
@@ -507,30 +507,30 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
               {/* LEFT: Layman's Explanation */}
               <div className="w-full md:w-[46%] text-left">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#fed7aa] uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#fde68a] uppercase tracking-wider mb-2">
                   Timeline 02 • Evidence Separation
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight mb-2">
                   We Never Guess. We Split Reality Into 3 Honest Truths.
                 </h3>
                 
                 {/* Layman Analogy Callout */}
-                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#fed7aa] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
-                  <strong className="text-stone-100 block mb-1">⚖️ The Courtroom Analogy:</strong>
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#fde68a] mb-4 text-xs text-slate-300 leading-relaxed font-sans">
+                  <strong className="text-[#fdfbf7] block mb-1">⚖️ The Courtroom Analogy:</strong>
                   "A real courtroom strictly separates security camera footage (undeniable facts), detective hypotheses (deductions), and things no one witnessed (unknowns). Sentinel does the exact same thing for Web3."
                 </div>
 
-                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed space-y-2">
                   <span>Most security scanners spit out an opaque number like "Risk: 85%". That causes panic and tells you nothing useful.</span>
                   <span className="block mt-2">
                     Sentinel strictly separates <strong>Observed Facts</strong> (verified on-chain with math), <strong>Inferred Risks</strong> (what the code allows), and <strong>Unknowns</strong> (what no algorithm can verify).
                   </span>
                 </p>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">🟢 Facts Proved</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#fed7aa]">🟠 Deductions</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#d8b4fe]">🟣 Honest Limits</span>
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#7dd3fc]">🔵 Facts Proved</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#fde68a]">🟡 Deductions</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#cbd5e1]">⚪ Honest Limits</span>
                 </div>
               </div>
 
@@ -545,46 +545,46 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               
               {/* LEFT: Visual Snapshot Card (Blast radius dollar meter & revoke button) */}
               <div className="w-full md:w-[46%] group">
-                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#fca5a5]/30">
+                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-white/20">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
                     <div className="flex items-center gap-2">
-                      <Flame className="w-3.5 h-3.5 text-[#fca5a5]" />
-                      <span className="font-bold text-stone-200">VERIFIABLE BLAST RADIUS METER</span>
+                      <Flame className="w-3.5 h-3.5 text-[#fde68a]" />
+                      <span className="font-bold text-[#fdfbf7]">VERIFIABLE BLAST RADIUS METER</span>
                     </div>
-                    <span className="text-[#fca5a5] font-bold text-[9px] bg-[#fca5a5]/10 px-2 py-0.5 rounded border border-[#fca5a5]/30">
+                    <span className="text-[#fde68a] font-bold text-[9px] bg-[#fde68a]/10 px-2 py-0.5 rounded border border-[#fde68a]/30">
                       Calculated Down to the Penny
                     </span>
                   </div>
 
                   {/* Big Dollar Blast Radius Display */}
-                  <div className="p-4 bg-gradient-to-b from-rose-950/30 to-black/50 rounded-2xl border border-[#fca5a5]/30 text-center mb-3">
-                    <div className="text-[10px] font-mono text-stone-400 uppercase tracking-wider">
+                  <div className="p-4 bg-gradient-to-b from-black/60 to-black/30 rounded-2xl border border-white/10 text-center mb-3">
+                    <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                       Liquid Cash Drainable Right Now:
                     </div>
-                    <div className="text-3xl sm:text-4xl font-black font-mono text-[#fca5a5] my-1">
+                    <div className="text-3xl sm:text-4xl font-black font-mono text-[#fde68a] my-1">
                       {simulatedRevoked ? '$0.00' : '$3,840.00'}
                     </div>
-                    <div className="text-[11px] font-mono text-stone-300">
+                    <div className="text-[11px] font-mono text-slate-300">
                       {simulatedRevoked ? '✅ Permission Revoked • Vault 100% Sealed' : '3,840 USDC in alex-defi.eth'}
                     </div>
                   </div>
 
                   {/* 1-Click Revoke Simulation Box */}
-                  <div className="p-3.5 bg-black/40 rounded-2xl border border-white/5 space-y-2">
-                    <div className="flex items-center justify-between text-[10px] font-mono text-stone-400">
+                  <div className="p-3.5 bg-black/40 rounded-2xl border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
                       <span>Generated Zero-Allowance Calldata:</span>
                       <button
                         onClick={handleCopyCode}
-                        className="text-[#a7f3d0] hover:underline flex items-center gap-1"
+                        className="text-[#7dd3fc] hover:underline flex items-center gap-1"
                       >
                         {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedCode ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
 
-                    <div className="p-2 bg-black/70 rounded-xl font-mono text-[10px] text-[#a7f3d0] break-all border border-white/5">
+                    <div className="p-2 bg-black/70 rounded-xl font-mono text-[10px] text-[#7dd3fc] break-all border border-white/10">
                       0x095ea7b3...0000000000000000000000000000000000000000
                     </div>
 
@@ -592,8 +592,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                       onClick={() => setSimulatedRevoked(!simulatedRevoked)}
                       className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold font-mono transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
                         simulatedRevoked
-                          ? 'bg-[#a7f3d0] text-black hover:bg-[#a7f3d0]/90'
-                          : 'bg-gradient-to-r from-[#fca5a5] to-[#fed7aa] text-black hover:opacity-90'
+                          ? 'bg-[#7dd3fc] text-[#070b14] hover:bg-[#7dd3fc]/90'
+                          : 'bg-gradient-to-r from-[#fdfbf7] via-[#bae6fd] to-[#7dd3fc] text-[#070b14] hover:opacity-95 border border-white/40'
                       }`}
                     >
                       <span>{simulatedRevoked ? 'Vault Sealed (Click to Reset)' : 'Simulate Revoke Tx (Zero Gas)'}</span>
@@ -601,7 +601,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     </button>
                   </div>
 
-                  <div className="mt-3 pt-2 text-[10px] font-mono text-center text-stone-400">
+                  <div className="mt-3 pt-2 text-[10px] font-mono text-center text-slate-400">
                     Try clicking the button above to simulate how Sentinel neutralizes threats instantly.
                   </div>
                 </div>
@@ -609,30 +609,30 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
               {/* RIGHT: Layman's Explanation */}
               <div className="w-full md:w-[46%] text-left">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#fca5a5] uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#cbd5e1] uppercase tracking-wider mb-2">
                   Timeline 03 • Action & Fix
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight mb-2">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight mb-2">
                   Exact Cash in Danger + A 1-Click Button to Lock the Door.
                 </h3>
                 
                 {/* Layman Analogy Callout */}
-                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#fca5a5] mb-4 text-xs text-stone-300 leading-relaxed font-sans">
-                  <strong className="text-stone-100 block mb-1">🚒 The Fire Extinguisher Analogy:</strong>
+                <div className="p-3.5 rounded-2xl liquid-glass-subtle border-l-3 border-l-[#cbd5e1] mb-4 text-xs text-slate-300 leading-relaxed font-sans">
+                  <strong className="text-[#fdfbf7] block mb-1">🚒 The Fire Extinguisher Analogy:</strong>
                   "If your house is in danger, you don't want someone to tell you 'Threat Level 7'. You want to know exactly what is at risk, and you want someone to hand you the fire extinguisher immediately."
                 </div>
 
-                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed space-y-2">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed space-y-2">
                   <span>Sentinel calculates your exact <strong>Liquid Blast Radius</strong> down to the penny (e.g. <strong>$3,840.00</strong>) — not an abstract rating.</span>
                   <span className="block mt-2">
                     Then, Sentinel generates the exact zero-allowance transaction calldata required to revoke that permission forever. You click one button, and the dangerous access is sealed shut before any hacker can exploit it.
                   </span>
                 </p>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-stone-400">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#fca5a5] font-bold">Exact Dollar Exposure</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[#a7f3d0]">1-Click Revoke</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-stone-300">Zero Guesswork</span>
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#fde68a] font-bold">Exact Dollar Exposure</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#7dd3fc]">1-Click Revoke</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-[#cbd5e1]">Zero Guesswork</span>
                 </div>
               </div>
 
