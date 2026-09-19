@@ -1,0 +1,15 @@
+{
+  "name": "sentinel-web3-security",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sentinel — Web3 Security & Protocol Health",
+  "scripts": {
+    "build": "npx sass --no-source-map deck/sass/theme.scss deck/theme.css --load-path=deck/sass",
+    "export-ppt": "node export-ppt.js"
+  },
+  "devDependencies": {
+    "pptxgenjs": "^4.0.1",
+    "reveal.js": "5.1.0",
+    "sass": "^1.77.0"
+  }
+}

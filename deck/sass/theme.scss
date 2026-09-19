@@ -1,0 +1,314 @@
+/**
+ * ChainLens deck theme.
+ * Built on reveal.js's shipped theme template mixins; adds a dark navy
+ * "security ops" palette, compact type scale, and deck-specific helpers
+ * (cards, columns, tags, evidence lines) that the slide markup relies on.
+ */
+
+// reveal.js shared theme mixins + settings (shipped in the npm package)
+@import "../../node_modules/reveal.js/css/theme/template/mixins";
+@import "../../node_modules/reveal.js/css/theme/template/settings";
+
+// ---------- palette ----------
+$backgroundColor: #0d1321;
+$mainColor: #dde4f5;
+$headingColor: #f2f5fc;
+$headingTextShadow: none;
+$headingTextTransform: none;
+$headingFontWeight: 600;
+$mainFont: "Inter", "Segoe UI", Helvetica, sans-serif;
+$headingFont: "Inter", "Segoe UI", Helvetica, sans-serif;
+$linkColor: #5eead4;
+$linkColorHover: lighten($linkColor, 15%);
+$selectionBackgroundColor: rgba(94, 234, 212, 0.25);
+
+$mainFontSize: 26px;
+$heading1Size: 2.1em;
+$heading2Size: 1.35em;
+$heading3Size: 1.05em;
+$heading4Size: 0.85em;
+
+// ---------- reveal theme template ----------
+@import "../../node_modules/reveal.js/css/theme/template/theme";
+
+// ---------- deck helpers ----------
+$accent: #5eead4; // teal  — OBSERVED / evidence
+$warn: #fbbf24; // amber — INFERRED / caution
+$danger: #f87171; // red   — threat emphasis
+$unknown: #94a3b8; // slate — UNKNOWN / muted
+$violet: #a78bfa; // violet — ChainLens emphasis
+
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  letter-spacing: 0.01em;
+}
+
+.reveal .slides section,
+.reveal .slides section section {
+  box-sizing: border-box;
+}
+
+/* ---- layout helpers ---- */
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.cols-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+.cols-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.col {
+  min-width: 0;
+}
+
+/* ---- cards ---- */
+.card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-align: left;
+
+  h3,
+  h4 {
+    margin: 0 0 8px 0;
+    color: $headingColor;
+  }
+  p,
+  li {
+    font-size: 0.72em;
+    color: $mainColor;
+  }
+  p + p {
+    margin-top: 6px;
+  }
+  ul {
+    margin: 4px 0 0 0;
+  }
+}
+.card.accent {
+  border-color: rgba(94, 234, 212, 0.45);
+}
+.card.warn {
+  border-color: rgba(251, 191, 36, 0.45);
+}
+.card.violet {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+.card.dim {
+  opacity: 0.85;
+}
+
+/* ---- kbd-like tags ---- */
+.tag {
+  display: inline-block;
+  padding: 1px 10px;
+  margin: 0 2px;
+  border-radius: 999px;
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: $mainColor;
+}
+.tag.observed {
+  background: rgba(94, 234, 212, 0.14);
+  border-color: rgba(94, 234, 212, 0.5);
+  color: $accent;
+}
+.tag.inferred {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.5);
+  color: $warn;
+}
+.tag.unknown {
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: $unknown;
+}
+.tag.violet {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.55);
+  color: $violet;
+}
+.tag.danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.5);
+  color: $danger;
+}
+
+/* ---- evidence lines ---- */
+.ev {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.62em;
+  line-height: 1.5;
+  text-align: left;
+  margin: 0;
+}
+.ev .k {
+  display: inline-block;
+  min-width: 9.5ch;
+  font-weight: 700;
+}
+.ev .k.observed {
+  color: $accent;
+}
+.ev .k.inferred {
+  color: $warn;
+}
+.ev .k.unknown {
+  color: $unknown;
+}
+.ev .k.dim {
+  color: $unknown;
+}
+
+/* ---- comparison table ---- */
+table.cmp {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.58em;
+  line-height: 1.35;
+
+  /* dense variant for content-heavy slides */
+  &.dense {
+    font-size: 0.5em;
+    line-height: 1.3;
+
+    th,
+    td {
+      padding: 3px 8px;
+    }
+  }
+
+  th,
+  td {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  thead th {
+    background: rgba(255, 255, 255, 0.07);
+    color: $headingColor;
+    font-weight: 600;
+  }
+  tbody th {
+    background: rgba(255, 255, 255, 0.035);
+    color: $headingColor;
+    font-weight: 600;
+    white-space: normal;
+  }
+  td {
+    color: $mainColor;
+  }
+  td.cl {
+    background: rgba(167, 139, 250, 0.08);
+  }
+  .yes {
+    color: $accent;
+    font-weight: 600;
+  }
+  .part {
+    color: $warn;
+  }
+  .no {
+    color: $unknown;
+  }
+}
+.cmp-note {
+  font-size: 0.6em;
+  color: $unknown;
+  margin-top: 10px;
+  text-align: left;
+}
+
+/* ---- flow / pipeline diagrams ---- */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.66em;
+}
+.flow .node {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 6px 16px;
+  width: fit-content;
+}
+.flow .node.hl {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(167, 139, 250, 0.1);
+}
+.flow .arrow {
+  color: $unknown;
+  font-size: 0.9em;
+  line-height: 1.1;
+}
+
+/* ---- generic lists ---- */
+.reveal ul.tight > li {
+  margin: 4px 0;
+}
+.reveal ul.tight {
+  font-size: 0.72em;
+}
+.reveal .small {
+  font-size: 0.62em;
+  color: $unknown;
+}
+.reveal .muted {
+  color: $unknown;
+}
+.reveal .hl-teal {
+  color: $accent;
+}
+.reveal .hl-amber {
+  color: $warn;
+}
+.reveal .hl-violet {
+  color: $violet;
+}
+.reveal .hl-red {
+  color: $danger;
+}
+.reveal kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 0.8em;
+}
+
+/* title slide */
+.title-slide .eyebrow {
+  font-size: 0.7em;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: $accent;
+  margin-bottom: 24px;
+}
+.title-slide h1 {
+  font-size: 2.6em;
+  margin-bottom: 12px;
+}
+.title-slide .sub {
+  font-size: 0.85em;
+  color: $mainColor;
+  margin-bottom: 30px;
+}
