@@ -30,63 +30,49 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   const [copiedCode, setCopiedCode] = useState(false);
   const [simulatedRevoked, setSimulatedRevoked] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const targetProgressRef = useRef(0.04);
-  const currentProgressRef = useRef(0.04);
-  const [smoothProgress, setSmoothProgress] = useState(0.04);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let rafId: number;
+    let animationFrameId: number | null = null;
 
-    const calculateTarget = () => {
+    const updatePosition = () => {
       if (!timelineRef.current) return;
       const rect = timelineRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Start smoothly when top of timeline reaches 72% of screen height
-      const startTrigger = windowHeight * 0.72;
-      // Complete when bottom reaches 38% of screen height
-      const endTrigger = windowHeight * 0.38;
-      
-      const totalDistance = rect.height - (startTrigger - endTrigger);
-      const currentScrolled = startTrigger - rect.top;
-      
-      const rawProgress = totalDistance > 0 ? currentScrolled / totalDistance : 0;
-      const clamped = Math.max(0.02, Math.min(0.98, rawProgress));
-      targetProgressRef.current = clamped;
-    };
+      // Screen anchor: exactly at center of viewport (50% of screen height)
+      // When scrolling, the dot stays locked at the viewport center (part of the screen)
+      const screenAnchor = windowHeight * 0.5;
 
-    const handleScroll = () => {
-      calculateTarget();
-    };
+      // 1:1 distance from top of timeline to screen center
+      const targetY = screenAnchor - rect.top;
 
-    // Lower frame rate (24 FPS) & steady damping so the dot moves at a measured, controlled pace
-    const TARGET_FPS = 24;
-    const frameInterval = 1000 / TARGET_FPS;
-    let lastFrameTime = 0;
+      const minY = 16;
+      const maxY = Math.max(minY, rect.height - 16);
+      const clampedY = Math.max(minY, Math.min(maxY, targetY));
 
-    const tick = (currentTime: number) => {
-      rafId = requestAnimationFrame(tick);
-
-      if (currentTime - lastFrameTime < frameInterval) return;
-      lastFrameTime = currentTime;
-
-      const diff = targetProgressRef.current - currentProgressRef.current;
-      if (Math.abs(diff) > 0.0001) {
-        // Measured damping factor (0.055) so it doesn't rush ahead too fast
-        currentProgressRef.current += diff * 0.055;
-        setSmoothProgress(currentProgressRef.current);
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(-50%, ${clampedY}px, 0)`;
+      }
+      if (fillRef.current) {
+        fillRef.current.style.height = `${clampedY - minY}px`;
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-    calculateTarget();
-    rafId = requestAnimationFrame(tick);
+    const onScrollOrResize = () => {
+      // Direct synchronous update for zero lag, with RAF fallback
+      updatePosition();
+    };
+
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+    updatePosition();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      cancelAnimationFrame(rafId);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
     };
   }, []);
 
@@ -291,27 +277,30 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
           
           {/* Subtle Hairline Spine Track Rail */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full bg-white/15"
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full bg-white/15 pointer-events-none"
           />
 
-          {/* Subtle Elapsed Track Fill Line (Muted) */}
+          {/* Subtle Elapsed Track Fill Line (Muted, tracks dot 1:1 with zero lag) */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/40 transition-all duration-75 ease-out"
+            ref={fillRef}
+            className="absolute left-4 sm:left-6 md:left-1/2 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/45"
             style={{
-              height: `${Math.max(2, Math.min(96, smoothProgress * 100))}%`
+              top: '16px',
+              height: '0px'
             }}
           />
 
-          {/* Dull Tabular Dot (Smoothly moves at a lower FPS / measured pace) */}
+          {/* Dull Tabular Dot (Anchored to screen center as user moves it, 1:1 ultra-smooth) */}
           <div 
+            ref={dotRef}
             className="absolute left-4 sm:left-6 md:left-1/2 z-30 pointer-events-none will-change-transform"
             style={{
-              top: `${Math.max(2.5, Math.min(97.5, smoothProgress * 100))}%`,
-              transform: 'translate(-50%, -50%) translateZ(0)'
+              top: 0,
+              transform: 'translate3d(-50%, 16px, 0)'
             }}
           >
-            {/* Sized up: 20px-24px diameter (noticeably larger, tactile, but not too large) */}
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#d6cfc7] border-2 border-stone-400/60 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center">
+            {/* 20px-24px diameter: Centered on dot position, tactile, tabular */}
+            <div className="w-5 h-5 sm:w-6 sm:h-6 -translate-y-1/2 rounded-full bg-[#d6cfc7] border-2 border-stone-400/60 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center">
               <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0d0f17]" />
             </div>
           </div>
