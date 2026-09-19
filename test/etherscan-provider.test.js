@@ -28,9 +28,28 @@ test('Etherscan adapter normalizes historical and verified-contract data', async
 });
 
 test('Etherscan adapter failures are explicit and unsupported direct reads do not fabricate state', async () => {
-  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: async () => ({ ok: true, json: async () => ({ status: '0', message: 'NOTOK', result: 'Max rate limit reached' }) }), mode: 'FIXTURE' });
+  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: async () => ({ ok: true, json: async () => ({ status: '0', message: 'NOTOK', result: 'Max rate limit reached' }) }), mode: 'FIXTURE', maxRetries: 0 });
   await assert.rejects(() => provider.getTransactions(ADDRESSES.wallet), (error) => error instanceof EtherscanApiError && /rate limit/i.test(error.message));
   await assert.rejects(() => provider.getTokenApprovals(ADDRESSES.wallet), /RPC adapter/);
+});
+
+test('Etherscan serializes requests and retries rate limits without concurrent bursts', async () => {
+  let active = 0;
+  let maximumActive = 0;
+  let calls = 0;
+  const fetchImpl = async () => {
+    active += 1;
+    maximumActive = Math.max(maximumActive, active);
+    calls += 1;
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    active -= 1;
+    if (calls === 1) return { ok: true, json: async () => ({ status: '0', message: 'NOTOK', result: 'Max calls per sec rate limit reached' }) };
+    return { ok: true, json: async () => ({ status: '1', message: 'OK', result: [] }) };
+  };
+  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl, mode: 'FIXTURE', minRequestIntervalMs: 0, retryBaseDelayMs: 1, maxRetries: 2 });
+  await Promise.all([provider.request('txlist'), provider.request('tokentx')]);
+  assert.equal(maximumActive, 1);
+  assert.equal(calls, 3);
 });
 
 test('indexed Etherscan data becomes the existing EvidenceBundle', async () => {
@@ -66,10 +85,30 @@ test('provider factory uses demo mode when real credentials are absent', () => {
 test('RPC adapter reads code and EIP-1967 state through JSON-RPC', async () => {
   const rpcFetch = async (_url, options) => {
     const request = JSON.parse(options.body);
-    const results = { eth_getCode: '0x6000', eth_getStorageAt: `0x${'0'.repeat(24)}${ADDRESSES.implementation.slice(2)}` };
+    const results = { eth_getCode: '0x6000', eth_blockNumber: '0x2710', eth_getStorageAt: `0x${'0'.repeat(24)}${ADDRESSES.implementation.slice(2)}` };
     return { ok: true, json: async () => ({ jsonrpc: '2.0', id: 1, result: results[request.method] }) };
   };
   const provider = new RpcBlockchainProvider({ rpcUrl: 'https://rpc.fixture', fetchImpl: rpcFetch, mode: 'FIXTURE' });
   assert.equal(await provider.getAddressType(ADDRESSES.protocol), 'SMART_CONTRACT');
   assert.equal((await provider.getProxyImplementation(ADDRESSES.protocol)).implementationAddress, ADDRESSES.implementation);
+});
+
+test('RPC approval lookup uses bounded ranges and exact allowance calldata', async () => {
+  const requests = [];
+  const rpcFetch = async (_url, options) => {
+    const request = JSON.parse(options.body);
+    requests.push(request);
+    if (request.method === 'eth_blockNumber') return { ok: true, json: async () => ({ result: '0x2' }) };
+    if (request.method === 'eth_getLogs') return { ok: true, json: async () => ({ result: [{ address: ADDRESSES.token, transactionHash: '0xapproval', blockNumber: '0x2', topics: ['0xapproval', `0x${ADDRESSES.wallet.slice(2).padStart(64, '0')}`, `0x${ADDRESSES.spender.slice(2).padStart(64, '0')}`], data: '0x01' }] }) };
+    if (request.method === 'eth_call') return { ok: true, json: async () => ({ result: '0x01' }) };
+    throw new Error(`Unexpected method ${request.method}`);
+  };
+  const provider = new RpcBlockchainProvider({ rpcUrl: 'https://rpc.fixture', fetchImpl: rpcFetch, mode: 'FIXTURE', logBlockRange: 1 });
+  const approvals = await provider.getTokenApprovals(ADDRESSES.wallet);
+  const logRequest = requests.find((request) => request.method === 'eth_getLogs');
+  const allowanceRequest = requests.find((request) => request.method === 'eth_call');
+  assert.equal(approvals[0].active, true);
+  assert.match(logRequest.params[0].fromBlock, /^0x/);
+  assert.match(logRequest.params[0].toBlock, /^0x/);
+  assert.equal(allowanceRequest.params[0].data, `0xdd62ed3e${ADDRESSES.wallet.slice(2).padStart(64, '0')}${ADDRESSES.spender.slice(2).padStart(64, '0')}`);
 });
