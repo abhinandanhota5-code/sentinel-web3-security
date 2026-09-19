@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Bash(git -C /Users/abhinandan/multipli-hackathon status)"
+    ]
+  }
+}

@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChainLens — From alert to evidence</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230d1321'/%3E%3Ccircle cx='8' cy='8' r='4' fill='none' stroke='%235eead4' stroke-width='1.5'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%235eead4'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css" />
+  <link rel="stylesheet" href="deck/theme.css" />
+  <link rel="stylesheet" href="node_modules/reveal.js/plugin/highlight/monokai.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ======================= 1 · TITLE ======================= -->
+      <section class="title-slide">
+        <p class="eyebrow">ChainLens</p>
+        <h1>From alert to evidence.</h1>
+        <p class="sub">
+          An <span class="hl-teal">evidence-first investigation layer</span> for Web3 security —
+          conceptually positioned <em>after</em> detection, before the user decides.
+        </p>
+        <p class="small">Concept deck · Sep 2026 · Competitive research: Hypernative &amp; Forta (official docs, see appendix)</p>
+        <aside class="notes">
+          Framing: ChainLens is NOT a competing detection or protection product.
+          Hypernative and Forta are studied as reference points for what the industry already solves well.
+          Our thesis: the under-served layer is investigation — turning a warning into a verifiable explanation.
+          All competitor claims are sourced from their current official documentation (appendix).
+        </aside>
+      </section>
+
+      <!-- ======================= 2 · THESIS / THREE LAYERS ======================= -->
+      <section>
+        <h2>The thesis — three layers, one gap</h2>
+        <div class="cols-3">
+          <div class="card dim">
+            <h3><span class="tag danger">DETECTION</span></h3>
+            <p><em>“Something suspicious was detected.”</em></p>
+            <p class="muted">Monitoring, anomaly &amp; threat detection, risk intelligence — well served today (Forta, Hypernative, others).</p>
+          </div>
+          <div class="card dim">
+            <h3><span class="tag danger">PROTECTION</span></h3>
+            <p><em>“Stop this transaction.”</em></p>
+            <p class="muted">Simulation, policy enforcement, blocking, automated response — also well served today.</p>
+          </div>
+          <div class="card violet">
+            <h3><span class="tag violet">INVESTIGATION</span></h3>
+            <p><em>“Show me exactly why this matters.”</em></p>
+            <p>Evidence reconstruction · context · current exposure · observed vs inferred · human-readable explanation.</p>
+          </div>
+        </div>
+        <div class="card violet" style="margin-top:14px;">
+          <p style="font-size:0.72em; line-height:1.65; margin:0;">
+            Web3 security already has powerful detection and protection. The opportunity we are exploring is the layer
+            that turns a warning into an <span class="hl-teal">investigation</span>:
+            <strong>WHAT</strong> happened · <strong>WHY</strong> does it matter · <strong>WHAT</strong> can still be affected ·
+            <strong>WHAT</strong> evidence proves it · <strong>WHAT</strong> is observation vs inference ·
+            <strong>WHAT</strong> remains unknown.
+          </p>
+        </div>
+        <p class="small" style="text-align:center; margin-top:12px;">ChainLens: from alert to evidence.</p>
+        <aside class="notes">
+          Do NOT claim detection or protection are missing from the market — both are strong.
+          Existing tools optimize for speed and precision (Hypernative: sub-second simulation, vendor-reported &lt;0.001% FP;
+          Forta: community detection bots on every block). By design they compress evidence into compact verdicts.
+          The compression is the trade-off — and the opportunity: decompress the verdict into verifiable facts.
+          Every following slide maps to one of the six questions.
+        </aside>
+      </section>
+
+      <!-- ======================= 3 · WHERE CHAINLENS SITS ======================= -->
+      <section>
+        <h2>Where ChainLens sits</h2>
+        <div class="cols-2">
+          <div class="flow">
+            <div class="node">Blockchain activity</div>
+            <div class="arrow">↓</div>
+            <div class="node">Detection systems</div>
+            <div class="arrow">↓</div>
+            <div class="node">Potential threat / anomaly</div>
+            <div class="arrow">↓</div>
+            <div class="node hl"><strong>CHAINLENS</strong></div>
+            <div class="arrow">↓</div>
+            <div class="node">Evidence reconstruction</div>
+            <div class="arrow">↓</div>
+            <div class="node">Context + relationships</div>
+          </div>
+          <div class="flow">
+            <div class="node">Current exposure</div>
+            <div class="arrow">↓</div>
+            <div class="node">Observed / Inferred / Unknown</div>
+            <div class="arrow">↓</div>
+            <div class="node">Human-readable explanation</div>
+            <div class="arrow">↓</div>
+            <div class="node hl">User decision</div>
+            <div class="arrow">&nbsp;</div>
+            <p class="small" style="text-align:left;">An investigation layer that consumes alerts from any
+            source and returns verifiable reasoning.</p>
+          </div>
+        </div>
+        <p class="small" style="margin-top:10px;">The key question: <em>“Why did the system warn me — and can I verify the reason myself?”</em>
+        Detection output is a compressed verdict; the user still needs the facts, the confidence class, and the current exposure.</p>
+        <aside class="notes">
+          Detection stays where it is — Forta bots, Hypernative engines, wallet built-ins. ChainLens consumes their
+          output (or raw activity) and reconstructs the evidence behind the warning.
+          What users receive today: a verdict (HIGH RISK / severity / score), a category, a recommendation.
+          What they still need: the concrete facts behind the verdict, which facts are measured vs modeled, what is
+          exposed right now, and a way to verify independently. These are trade-offs inherent to fast, accurate
+          detection at scale — not failures of existing products. Investigation is a different product emphasis.
+        </aside>
+      </section>
+
+      <!-- ======================= 4 · EVIDENCE TRAIL + CONFIDENCE ======================= -->
+      <section>
+        <h2>Core: evidence trail with confidence classes</h2>
+        <p class="small">Every finding → detection reason → blockchain observations → tx/block → contract state → related addresses → derived inference → current exposure.</p>
+        <div class="cols-2">
+          <div class="card accent">
+            <h4>“Potentially dangerous token approval”</h4>
+            <pre class="ev"><span class="k observed">OBSERVED</span> Wallet granted spender X unlimited USDC allowance.
+<span class="k observed">OBSERVED</span> Allowance is still active.
+<span class="k observed">OBSERVED</span> Wallet currently holds $2,840 USDC.
+<span class="k observed">OBSERVED</span> Spender X is an upgradeable contract.
+<span class="k observed">OBSERVED</span> Address Y controls an upgrade/admin role.
+<span class="k inferred">INFERRED</span> The approved contract may potentially affect
+          the wallet's current USDC balance.
+<span class="k unknown">UNKNOWN</span>  Blockchain evidence does not establish whether
+          address Y intends to misuse that capability.</pre>
+            <p class="small" style="margin:8px 0 0 0;">Per-claim provenance: data coverage · source · timestamp · chain · block. No arbitrary risk score.</p>
+          </div>
+          <div class="card">
+            <h4>Why the classes matter</h4>
+            <ul class="tight">
+              <li><span class="tag observed">OBSERVED</span> directly verifiable on-chain fact — anyone can re-check it at the cited block/tx</li>
+              <li><span class="tag inferred">INFERRED</span> derived from observed facts — stated as possibility, never verdict</li>
+              <li><span class="tag unknown">UNKNOWN</span> cannot currently be established — including intent; never silently filled</li>
+            </ul>
+            <p class="muted" style="margin-top:10px; font-size:0.7em;">Scores compress and hide; classes expose. This targets explainability gaps and the difficulty of independently verifying why an alert fired — without claiming any competitor lacks this.</p>
+          </div>
+        </div>
+        <aside class="notes">
+          Five observations, one inference, one unknown — deliberately concrete. Each observed line carries provenance
+          metadata (chain, block, tx hash, source, timestamp). Intent can never be observed on-chain; the product says so
+          explicitly rather than implying guilt by association.
+          A "risk score 87" cannot be argued with; "this is observed, that is inferred, this is unknown" can be.
+        </aside>
+      </section>
+
+      <!-- ======================= 5 · HISTORY VS EXPOSURE + COVERAGE ======================= -->
+      <section>
+        <h2>History vs exposure — and what we actually checked</h2>
+        <div class="cols-2">
+          <div>
+            <div class="cols-2" style="gap:14px;">
+              <div class="card">
+                <h4><span class="tag">HISTORY</span></h4>
+                <p style="font-size:0.7em;"><em>“What has this address done?”</em><br>
+                Past txs, associations, reputation, prior incidents — point-in-time intelligence.</p>
+              </div>
+              <div class="card violet">
+                <h4><span class="tag violet">EXPOSURE</span></h4>
+                <p style="font-size:0.7em;"><em>“What can it affect RIGHT NOW?”</em><br>
+                Active allowances, live permissions, current admin/upgrade roles — present-day blast radius.</p>
+              </div>
+            </div>
+            <div class="card warn" style="margin-top:12px;">
+              <p style="font-size:0.7em; margin:0;">Suspicious history ⛔ ≠ current danger verdict. Clean history ⛔ can still coexist with dangerous active approvals. Two separate axes — every ChainLens statement is labeled which one it is.</p>
+            </div>
+          </div>
+          <div class="card">
+            <h4>Detection coverage — shown, not hidden</h4>
+            <div class="cols-3" style="gap:12px;">
+              <p style="font-size:0.62em; line-height:1.8;"><strong>Networks</strong><br>Ethereum <span class="hl-teal">✓</span><br>Base <span class="hl-teal">✓</span><br>Arbitrum <span class="hl-teal">✓</span></p>
+              <p style="font-size:0.62em; line-height:1.8;"><strong>Analysis</strong><br>Approvals <span class="hl-teal">✓</span><br>Permissions <span class="hl-teal">✓</span><br>Proxy detection <span class="hl-teal">✓</span><br>Fund flows <span class="hl-teal">✓</span></p>
+              <p style="font-size:0.62em;"><strong>Limitations</strong><br>Some historical contract metadata unavailable <span class="hl-amber">⚠</span></p>
+            </div>
+            <p class="small" style="margin-top:8px;">Avoids the dangerous pattern “nothing found = safe” → instead:
+            <em>“No matching indicators were detected within the analyzed coverage.”</em></p>
+          </div>
+        </div>
+        <aside class="notes">
+          History vs exposure is a major product concept, not a UI detail. Screening products reasonably emphasize
+          historical reputation (Hypernative Screening &amp; Intelligence continuously re-evaluates previously approved
+          addresses as new intelligence emerges). ChainLens adds the complementary axis: live exposure computed from
+          current contract state. Neither axis alone answers "what can hurt me now?"
+          On coverage: every scanner has limits — chains, historical data, known-pattern rules. Declaring coverage turns
+          "all clear" into a scoped statement. This is true for every detection product including ours; the difference is
+          making the boundary visible.
+        </aside>
+      </section>
+
+      <!-- ======================= 6 · ALERTS + GRAPH ======================= -->
+      <section>
+        <h2>Investigable alerts, backed by an evidence graph</h2>
+        <div class="cols-2">
+          <div class="card violet">
+            <h4>Investigable alert</h4>
+            <p style="font-size:0.78em;"><strong>⚠ ACTIVE USDC APPROVAL</strong><br>
+            <span class="hl-amber">$2,840 currently exposed</span></p>
+            <p style="font-size:0.66em; line-height:1.6;"><strong>Why?</strong><br>
+            1. Unlimited allowance &nbsp;2. Approval remains active<br>
+            3. Spender is upgradeable &nbsp;4. Admin role: <code>0xABC…</code><br>
+            5. Related activity detected</p>
+            <p style="text-align:center;"><kbd>[Inspect Evidence]</kbd></p>
+            <p class="small" style="margin-top:6px;">Not <span class="tag danger">⚠ HIGH RISK</span> …and now what?
+            The alert names the exposure, the reason chain, and links each item to raw evidence.</p>
+          </div>
+          <div class="card">
+            <h4>Evidence graph — not decorative</h4>
+            <pre class="ev" style="line-height:1.55;"><span class="k dim">USER WALLET</span>
+   ├── approved → TOKEN
+   │                 ↓
+   │           SPENDER CONTRACT
+   │                 ↓
+   │              ADMIN
+   │                 ↓
+   │          IMPLEMENTATION
+   └── interacted with → OTHER ADDRESS</pre>
+            <ul class="tight" style="font-size:0.66em; margin-top:8px;">
+              <li>Every edge carries supporting evidence (tx hash, state read, block)</li>
+              <li>Answers: “How are these entities connected?”</li>
+              <li>Direct vs multi-hop; anchored to current exposure</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small" style="margin-top:10px;">Clicking “Inspect Evidence” reveals the actual blockchain facts — hashes, blocks, state — not a vendor's summary. Fewer, decomposable alerts instead of more alerts.</p>
+        <aside class="notes">
+          The alert names the exposure (USD at stake), the reason chain (numbered, each independently checkable), and an
+          entry point into raw evidence. A non-expert stops at the summary; an expert drills to the transaction hash.
+          Same content, two altitudes — our answer to information overload.
+          On the graph: graph analysis exists in the industry (Hypernative advertises graph analysis among its engines;
+          Forta Risk maps dependencies several hops away). We don't claim novelty of graphs — the emphasis differs:
+          ChainLens's graph is an investigation surface where each edge is clickable to its evidence, oriented around the
+          user's wallet and what it enables right now.
+        </aside>
+      </section>
+
+      <!-- ======================= 7 · PRE-SIGNING + AI ROLE ======================= -->
+      <section>
+        <h2>Pre-signing explanation — AI as narrator, not witness</h2>
+        <div class="cols-2">
+          <div class="card violet" style="font-size:0.78em; line-height:1.55;">
+            <p style="margin:0 0 6px 0;"><strong>⚠ REVIEW BEFORE SIGNING</strong></p>
+            <p style="margin:0;">Granting: <strong>USDC</strong> → spender <code>0x123…</code> ·
+            Permission: <strong class="hl-amber">UNLIMITED</strong><br>
+            Current balance: <strong>$2,840</strong><br>
+            Contract: Upgradeable <span class="hl-teal">✓</span> · Admin: <code>0xABC…</code></p>
+            <p style="margin:6px 0 0 0;"><strong>Why this matters:</strong> the permission remains active until revoked.</p>
+            <p style="margin:8px 0 0 0; text-align:center;"><kbd>[VIEW EVIDENCE]</kbd>&nbsp;&nbsp;<kbd>[CANCEL]</kbd>&nbsp;&nbsp;<kbd>[CONTINUE]</kbd></p>
+            <p class="small" style="margin-top:8px;">Explain, then let the user decide — not block by default.</p>
+          </div>
+          <div class="card">
+            <h4>AI architecture</h4>
+            <div class="flow" style="font-size:0.85em;">
+              <div class="node">Blockchain data</div>
+              <div class="arrow">↓</div>
+              <div class="node">Deterministic analysis</div>
+              <div class="arrow">↓</div>
+              <div class="node">Evidence</div>
+              <div class="arrow">↓</div>
+              <div class="node hl">LLM explanation</div>
+              <div class="arrow">↓</div>
+              <div class="node">Human</div>
+            </div>
+            <p class="small" style="margin-top:8px; margin-bottom:0;">AI is <strong>not</strong> the primary detector;
+            the LLM never invents blockchain evidence. Good output: <span class="hl-teal">“The wallet currently has an
+            unlimited USDC allowance granted to contract X. The allowance was created at transaction Y and remains
+            active.”</span></p>
+          </div>
+        </div>
+        <aside class="notes">
+          Hypernative's Wallet Protection already returns "human-readable balance changes, approval grants, and risk
+          warnings" to wallets (their docs) — the raw ingredients exist in the market. ChainLens's proposed emphasis:
+          the dialog is evidence-linked end-to-end and ends in an informed user decision rather than a vendor verdict.
+          Don't claim wallets lack pre-signing explanation — claim deeper investigation behind the explanation.
+          On AI: deterministic layer (allowance reads, proxy/admin extraction, flow tracing) is reproducible; the LLM only
+          renders the evidence bundle in natural language, each sentence grounded in an evidence id. If it can't ground a
+          sentence, the sentence isn't shown. AI is the narrator, not the witness.
+        </aside>
+      </section>
+
+      <!-- ======================= 8 · COMPETITIVE LANDSCAPE ======================= -->
+      <section>
+        <h2>Competitive landscape — primary product emphasis</h2>
+        <div class="cols-2" style="gap:16px; margin-bottom:10px;">
+          <div class="card" style="padding:8px 12px;">
+            <p style="font-size:0.62em; line-height:1.5; margin:0;"><strong>Forta</strong> <span class="muted">— documented:</span> detection bots on every block → IPFS alert registry (App/API); community bot ecosystem; Firewall = pre-inclusion screening for integrated rollups (RaaS) &amp; protocols (attestations); Risk = dependency mapping “several hops away, quantified in USD.” <span class="hl-amber">Inferred trade-offs:</span> alert content is bot-developer-defined; bot logic may be private/obfuscated; infrastructure-side emphasis — event detection, not end-user investigation. <span class="muted">(docs.forta.network; forta.org)</span></p>
+          </div>
+          <div class="card" style="padding:8px 12px;">
+            <p style="font-size:0.62em; line-height:1.5; margin:0;"><strong>Hypernative</strong> <span class="muted">— documented:</span> monitoring + automated response, 75+ chains / 300+ risk types; Transaction Guard pre-signing simulation + policy engine; Wallet Protection API (human-readable balance changes, approval grants, warnings); Screening &amp; Intelligence with multi-hop tracing, audit trails. <span class="hl-amber">Inferred trade-offs:</span> enterprise/API shape → end-user evidence depth is integrator-mediated; verdict-shaped output (scores, APPROVE/DENY); proprietary detection logic; reputation/history-driven screening. <span class="muted">(hypernative.io product pages)</span></p>
+          </div>
+        </div>
+        <table class="cmp dense">
+          <thead>
+            <tr>
+              <th style="width:17%;">Dimension</th>
+              <th style="width:19%;">Block explorer</th>
+              <th style="width:20%;">Forta</th>
+              <th style="width:22%;">Hypernative</th>
+              <th style="width:22%;">ChainLens <span class="tag violet">proposed</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Transaction visibility</th>
+              <td>Full raw record, per-tx, user-driven</td>
+              <td>Block-level scanning feeding alerts</td>
+              <td>Mempool + block ingestion (75+ chains)</td>
+              <td class="cl">Reads public data; investigation-oriented views</td>
+            </tr>
+            <tr>
+              <th>Real-time detection</th>
+              <td><span class="no">—</span> (record, not detection)</td>
+              <td><span class="yes">✓</span> community bots on every block</td>
+              <td><span class="yes">✓</span> 300+ risk types, mempool-level</td>
+              <td class="cl">Consumes alerts; not a detector</td>
+            </tr>
+            <tr>
+              <th>Threat intelligence</th>
+              <td>None inherent</td>
+              <td><span class="yes">✓</span> bot ecosystem + risk feeds</td>
+              <td><span class="yes">✓</span> ML reputation, 40+ flag categories</td>
+              <td class="cl">Cites intel as provenance, re-verifies on-chain</td>
+            </tr>
+            <tr>
+              <th>Pre-signing protection</th>
+              <td><span class="no">—</span></td>
+              <td><span class="yes">✓</span> Firewall pre-inclusion (integrated rollups/protocols)</td>
+              <td><span class="yes">✓</span> Transaction Guard policy enforcement</td>
+              <td class="cl">Pre-signing <em>explanation</em>; decision stays with user</td>
+            </tr>
+            <tr>
+              <th>Approval analysis</th>
+              <td>Raw allowance state, manual</td>
+              <td>Via detection bots (bot-dependent)</td>
+              <td><span class="yes">✓</span> approval grants in simulation + monitoring</td>
+              <td class="cl">Core focus: active allowances + what they enable</td>
+            </tr>
+            <tr>
+              <th>Contract permissions</th>
+              <td>Readable, not interpreted</td>
+              <td>Via bots</td>
+              <td>Monitored as risk types</td>
+              <td class="cl">Core focus: admin/upgrade roles mapped to exposure</td>
+            </tr>
+            <tr>
+              <th>Current exposure</th>
+              <td><span class="no">—</span></td>
+              <td>Forta Risk: USD-quantified dependency mapping</td>
+              <td>Multi-hop exposure tracing (reputation-driven)</td>
+              <td class="cl">Core focus: live blast radius per wallet</td>
+            </tr>
+            <tr>
+              <th>Evidence provenance</th>
+              <td><span class="yes">✓</span> raw tx data (uninterpreted)</td>
+              <td>Alerts on IPFS + proof-of-scan; bot logic may be private</td>
+              <td>Audit-trail docs for screening decisions</td>
+              <td class="cl">Every claim links to chain/block/tx evidence</td>
+            </tr>
+            <tr>
+              <th>Observed vs inferred</th>
+              <td>Observed only (no inference)</td>
+              <td>Per-label confidence in findings</td>
+              <td>Encoded in ML risk scores</td>
+              <td class="cl">Explicit OBSERVED / INFERRED / UNKNOWN classes</td>
+            </tr>
+            <tr>
+              <th>Investigation workflow</th>
+              <td>Manual exploration</td>
+              <td>Alert subscriptions (App / API / Defender)</td>
+              <td>Alerting + response playbooks (enterprise console)</td>
+              <td class="cl">Alert → evidence trail → decision, end-to-end</td>
+            </tr>
+            <tr>
+              <th>Human-readable explanation</th>
+              <td>Raw data, expert-oriented</td>
+              <td>Bot-authored alert text</td>
+              <td>Human-readable simulation summaries</td>
+              <td class="cl">LLM narration grounded in evidence ids</td>
+            </tr>
+            <tr>
+              <th>Coverage transparency</th>
+              <td>N/A</td>
+              <td>Bot/chain registry is public</td>
+              <td>Chain/risk-type scope documented</td>
+              <td class="cl">Per-analysis coverage + limitations shown to user</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="cmp-note" style="margin-top:6px;">Factual comparison of <em>primary product emphasis</em> — no scores, no winner.
+        “✓” = documented capability; “—” = outside product scope. Competitor cells cite official docs (appendix);
+        ChainLens column is our proposed concept. Forta Risk partially overlaps “current exposure” — acknowledged;
+        ChainLens's emphasis is wallet-centric, end-user investigation with explicit confidence classes.</p>
+        <aside class="notes">
+          Rules for presenting: no scores, no winner, no superiority claims. If challenged on any cell, go to the appendix.
+          Forta capabilities: docs "How Forta works" (bots/scan nodes/IPFS/public registry), "External bots" (developer-defined
+          Finding structure incl. per-label confidence), "What is Forta Firewall?" (pre-inclusion, RaaS integrations,
+          delay-not-censor), forta.org (Risk USD mapping). Hypernative capabilities: the four product pages (Onchain Monitoring,
+          Transaction Guard, Wallet Protection, Screening &amp; Intelligence); all metrics vendor-reported (99%, &lt;0.001%, 96%,
+          sub-100ms). Right-side trade-offs are labeled architectural inference — consequences of product shape, not claims of
+          inability. Two header claims to defend: (a) explorers show records but do not interpret; (b) both vendors concentrate
+          on detection/protection emphasis while ChainLens's stated emphasis is investigation.
+        </aside>
+      </section>
+
+      <!-- ======================= 9 · CLOSING ======================= -->
+      <section class="title-slide">
+        <p class="eyebrow">ChainLens</p>
+        <h1>From alert<br>to evidence.</h1>
+        <p class="sub">Detection says <em>“something is wrong.”</em><br>
+        Protection says <em>“stop.”</em><br>
+        Investigation says <em>“here is exactly why — verify it yourself.”</em></p>
+        <p class="small">Complementary layer · Evidence-first · Observed / Inferred / Unknown</p>
+        <aside class="notes">
+          Close on the six thesis questions: WHAT happened / WHY does it matter / WHAT can still be affected /
+          WHAT evidence proves it / WHAT is observation vs inference / WHAT remains unknown.
+          Invite the audience to challenge any competitive claim via the appendix sources.
+        </aside>
+      </section>
+
+      <!-- ======================= 10 · APPENDIX ======================= -->
+      <section>
+        <h2>Appendix — Competitive research &amp; references</h2>
+        <div class="cols-2">
+          <div class="card">
+            <h4>Hypernative — official sources <span class="small">(accessed Sep 2026)</span></h4>
+            <ul class="tight" style="font-size:0.62em; line-height:1.6;">
+              <li>hypernative.io/product/onchain-monitoring-automated-response — 75+ chains, 300+ risk types, AI models/graph analysis/simulations, automated response, Agent Builder, severity-scored multi-channel alerting; vendor-reported: 99% of hacks detected before first tx, &lt;0.001% FP rate</li>
+              <li>hypernative.io/product/transaction-guard — pre-signing simulation, intent verification, independent-of-wallet-UI verification, policy engine (approve/deny/review), behavioral anomaly detection, sub-second latency</li>
+              <li>hypernative.io/product/wallet-protection — API-embedded simulation with “human-readable balance changes, approval grants, and risk warnings,” dApp/URL/NFT/token screening, portfolio monitoring; vendor-reported: 96% scam detection</li>
+              <li>hypernative.io/product/screening-intelligence — address reputation, multi-hop exposure tracking, cross-chain tracing, continuous re-evaluation, configurable compliance policies, audit-trail evidence; vendor-reported: sub-100ms address screening</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Forta — official sources <span class="small">(accessed Sep 2026)</span></h4>
+            <ul class="tight" style="font-size:0.62em; line-height:1.6;">
+              <li>docs.forta.network/en/latest/how-forta-works/ — detection bots + scan nodes run against each block; alerts stored on IPFS; public registry; consumption via Forta App / Defender Sentinels / public GraphQL API; bots may be private/obfuscated; redundancy, staking, proof-of-scan</li>
+              <li>docs.forta.network/en/latest/external-bots/ — Finding structure defined by bot developer: name, description, alertId, type, severity, labels with per-label confidence, source tx hashes</li>
+              <li>docs.forta.network/en/latest/forta-firewall-overview/ — pre-inclusion screening for integrated rollups via RaaS providers (Conduit, Gelato, Quicknode, Alchemy, Zeeve); on-chain attestation pattern for protocols; flagged txs delayed (censorship-resistance), not permanently blocked; simulation + AI threat models</li>
+              <li>forta.org — “Forta Risk: every dependency, direct or several hops away, mapped, quantified in USD and monitored block by block”; Risk Graph MCP</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card dim" style="margin-top:12px;">
+          <p class="small" style="margin:0;"><strong>Method note:</strong> capability claims on competitor slides are
+          <span class="tag observed">documented capability</span> from the sources above;
+          trade-off observations are labeled <span class="tag inferred">architectural inference</span>;
+          product concepts are labeled <span class="tag violet">our proposed idea</span>.
+          No “X cannot do Y” claims are made; vendor metrics are labeled vendor-reported.
+          Sources re-verified against live official pages on Sep 19, 2026.</p>
+        </div>
+        <aside class="notes">
+          If any competitive statement is challenged, point here. Every trade-off bullet on the landscape slide traces
+          to these URLs; architectural inferences are derived from documented product shapes, not invented limitations.
+          Metrics are the vendors' own published numbers.
+        </aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="node_modules/reveal.js/dist/reveal.js"></script>
+  <script src="node_modules/reveal.js/plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      transition: 'fade',
+      width: 1280,
+      height: 760,
+      margin: 0.06,
+      plugins: [RevealNotes]
+    });
+  </script>
+</body>
+</html>

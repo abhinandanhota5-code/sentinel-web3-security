@@ -1,0 +1,656 @@
+/**
+ * ChainLens deck theme.
+ * Built on reveal.js's shipped theme template mixins; adds a dark navy
+ * "security ops" palette, compact type scale, and deck-specific helpers
+ * (cards, columns, tags, evidence lines) that the slide markup relies on.
+ */
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+:root {
+  --r-background-color: #0d1321;
+  --r-main-font: Inter, Segoe UI, Helvetica, sans-serif;
+  --r-main-font-size: 26px;
+  --r-main-color: #dde4f5;
+  --r-block-margin: 20px;
+  --r-heading-margin: 0 0 20px 0;
+  --r-heading-font: Inter, Segoe UI, Helvetica, sans-serif;
+  --r-heading-color: #f2f5fc;
+  --r-heading-line-height: 1.2;
+  --r-heading-letter-spacing: normal;
+  --r-heading-text-transform: none;
+  --r-heading-text-shadow: none;
+  --r-heading-font-weight: 600;
+  --r-heading1-text-shadow: none;
+  --r-heading1-size: 2.1em;
+  --r-heading2-size: 1.35em;
+  --r-heading3-size: 1.05em;
+  --r-heading4-size: 0.85em;
+  --r-code-font: monospace;
+  --r-link-color: #5eead4;
+  --r-link-color-dark: rgb(11.3800904977%, 87.2473604827%, 75.3253609136%);
+  --r-link-color-hover: rgb(63.4012066365%, 95.2262443439%, 90.2251669899%);
+  --r-selection-background-color: rgba(94, 234, 212, 0.25);
+  --r-selection-color: #fff;
+  --r-overlay-element-bg-color: 240, 240, 240;
+  --r-overlay-element-fg-color: 0, 0, 0;
+}
+
+.reveal-viewport {
+  background: #0d1321;
+  background-color: var(--r-background-color);
+}
+
+.reveal {
+  font-family: var(--r-main-font);
+  font-size: var(--r-main-font-size);
+  font-weight: normal;
+  color: var(--r-main-color);
+}
+
+.reveal ::selection {
+  color: var(--r-selection-color);
+  background: var(--r-selection-background-color);
+  text-shadow: none;
+}
+
+.reveal ::-moz-selection {
+  color: var(--r-selection-color);
+  background: var(--r-selection-background-color);
+  text-shadow: none;
+}
+
+.reveal .slides section,
+.reveal .slides section > section {
+  line-height: 1.3;
+  font-weight: inherit;
+}
+
+/*********************************************
+ * HEADERS
+ *********************************************/
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  margin: var(--r-heading-margin);
+  color: var(--r-heading-color);
+  font-family: var(--r-heading-font);
+  font-weight: var(--r-heading-font-weight);
+  line-height: var(--r-heading-line-height);
+  letter-spacing: var(--r-heading-letter-spacing);
+  text-transform: var(--r-heading-text-transform);
+  text-shadow: var(--r-heading-text-shadow);
+  word-wrap: break-word;
+}
+
+.reveal h1 {
+  font-size: var(--r-heading1-size);
+}
+
+.reveal h2 {
+  font-size: var(--r-heading2-size);
+}
+
+.reveal h3 {
+  font-size: var(--r-heading3-size);
+}
+
+.reveal h4 {
+  font-size: var(--r-heading4-size);
+}
+
+.reveal h1 {
+  text-shadow: var(--r-heading1-text-shadow);
+}
+
+/*********************************************
+ * OTHER
+ *********************************************/
+.reveal p {
+  margin: var(--r-block-margin) 0;
+  line-height: 1.3;
+}
+
+/* Remove trailing margins after titles */
+.reveal h1:last-child,
+.reveal h2:last-child,
+.reveal h3:last-child,
+.reveal h4:last-child,
+.reveal h5:last-child,
+.reveal h6:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure certain elements are never larger than the slide itself */
+.reveal img,
+.reveal video,
+.reveal iframe {
+  max-width: 95%;
+  max-height: 95%;
+}
+
+.reveal strong,
+.reveal b {
+  font-weight: bold;
+}
+
+.reveal em {
+  font-style: italic;
+}
+
+.reveal ol,
+.reveal dl,
+.reveal ul {
+  display: inline-block;
+  text-align: left;
+  margin: 0 0 0 1em;
+}
+
+.reveal ol {
+  list-style-type: decimal;
+}
+
+.reveal ul {
+  list-style-type: disc;
+}
+
+.reveal ul ul {
+  list-style-type: square;
+}
+
+.reveal ul ul ul {
+  list-style-type: circle;
+}
+
+.reveal ul ul,
+.reveal ul ol,
+.reveal ol ol,
+.reveal ol ul {
+  display: block;
+  margin-left: 40px;
+}
+
+.reveal dt {
+  font-weight: bold;
+}
+
+.reveal dd {
+  margin-left: 40px;
+}
+
+.reveal blockquote {
+  display: block;
+  position: relative;
+  width: 70%;
+  margin: var(--r-block-margin) auto;
+  padding: 5px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+.reveal blockquote p:first-child,
+.reveal blockquote p:last-child {
+  display: inline-block;
+}
+
+.reveal q {
+  font-style: italic;
+}
+
+.reveal pre {
+  display: block;
+  position: relative;
+  width: 90%;
+  margin: var(--r-block-margin) auto;
+  text-align: left;
+  font-size: 0.55em;
+  font-family: var(--r-code-font);
+  line-height: 1.2em;
+  word-wrap: break-word;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.reveal code {
+  font-family: var(--r-code-font);
+  text-transform: none;
+  tab-size: 2;
+}
+
+.reveal pre code {
+  display: block;
+  padding: 5px;
+  overflow: auto;
+  max-height: 400px;
+  word-wrap: normal;
+}
+
+.reveal .code-wrapper {
+  white-space: normal;
+}
+
+.reveal .code-wrapper code {
+  white-space: pre;
+}
+
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.reveal table th {
+  font-weight: bold;
+}
+
+.reveal table th,
+.reveal table td {
+  text-align: left;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border-bottom: 1px solid;
+}
+
+.reveal table th[align=center],
+.reveal table td[align=center] {
+  text-align: center;
+}
+
+.reveal table th[align=right],
+.reveal table td[align=right] {
+  text-align: right;
+}
+
+.reveal table tbody tr:last-child th,
+.reveal table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.reveal sup {
+  vertical-align: super;
+  font-size: smaller;
+}
+
+.reveal sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+
+.reveal small {
+  display: inline-block;
+  font-size: 0.6em;
+  line-height: 1.2em;
+  vertical-align: top;
+}
+
+.reveal small * {
+  vertical-align: top;
+}
+
+.reveal img {
+  margin: var(--r-block-margin) 0;
+}
+
+/*********************************************
+ * LINKS
+ *********************************************/
+.reveal a {
+  color: var(--r-link-color);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.reveal a:hover {
+  color: var(--r-link-color-hover);
+  text-shadow: none;
+  border: none;
+}
+
+.reveal .roll span:after {
+  color: #fff;
+  background: var(--r-link-color-dark);
+}
+
+/*********************************************
+ * Frame helper
+ *********************************************/
+.reveal .r-frame {
+  border: 4px solid var(--r-main-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.reveal a .r-frame {
+  transition: all 0.15s linear;
+}
+
+.reveal a:hover .r-frame {
+  border-color: var(--r-link-color);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
+}
+
+/*********************************************
+ * NAVIGATION CONTROLS
+ *********************************************/
+.reveal .controls {
+  color: var(--r-link-color);
+}
+
+/*********************************************
+ * PROGRESS BAR
+ *********************************************/
+.reveal .progress {
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--r-link-color);
+}
+
+/*********************************************
+ * PRINT BACKGROUND
+ *********************************************/
+@media print {
+  .backgrounds {
+    background-color: var(--r-background-color);
+  }
+}
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  letter-spacing: 0.01em;
+}
+
+.reveal .slides section,
+.reveal .slides section section {
+  box-sizing: border-box;
+}
+
+/* ---- layout helpers ---- */
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.cols-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.cols-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.col {
+  min-width: 0;
+}
+
+/* ---- cards ---- */
+.card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-align: left;
+}
+.card h3,
+.card h4 {
+  margin: 0 0 8px 0;
+  color: #f2f5fc;
+}
+.card p,
+.card li {
+  font-size: 0.72em;
+  color: #dde4f5;
+}
+.card p + p {
+  margin-top: 6px;
+}
+.card ul {
+  margin: 4px 0 0 0;
+}
+
+.card.accent {
+  border-color: rgba(94, 234, 212, 0.45);
+}
+
+.card.warn {
+  border-color: rgba(251, 191, 36, 0.45);
+}
+
+.card.violet {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.card.dim {
+  opacity: 0.85;
+}
+
+/* ---- kbd-like tags ---- */
+.tag {
+  display: inline-block;
+  padding: 1px 10px;
+  margin: 0 2px;
+  border-radius: 999px;
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #dde4f5;
+}
+
+.tag.observed {
+  background: rgba(94, 234, 212, 0.14);
+  border-color: rgba(94, 234, 212, 0.5);
+  color: #5eead4;
+}
+
+.tag.inferred {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fbbf24;
+}
+
+.tag.unknown {
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #94a3b8;
+}
+
+.tag.violet {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.55);
+  color: #a78bfa;
+}
+
+.tag.danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #f87171;
+}
+
+/* ---- evidence lines ---- */
+.ev {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.62em;
+  line-height: 1.5;
+  text-align: left;
+  margin: 0;
+}
+
+.ev .k {
+  display: inline-block;
+  min-width: 9.5ch;
+  font-weight: 700;
+}
+
+.ev .k.observed {
+  color: #5eead4;
+}
+
+.ev .k.inferred {
+  color: #fbbf24;
+}
+
+.ev .k.unknown {
+  color: #94a3b8;
+}
+
+.ev .k.dim {
+  color: #94a3b8;
+}
+
+/* ---- comparison table ---- */
+table.cmp {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.58em;
+  line-height: 1.35;
+  /* dense variant for content-heavy slides */
+}
+table.cmp.dense {
+  font-size: 0.5em;
+  line-height: 1.3;
+}
+table.cmp.dense th,
+table.cmp.dense td {
+  padding: 3px 8px;
+}
+table.cmp th,
+table.cmp td {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table.cmp thead th {
+  background: rgba(255, 255, 255, 0.07);
+  color: #f2f5fc;
+  font-weight: 600;
+}
+table.cmp tbody th {
+  background: rgba(255, 255, 255, 0.035);
+  color: #f2f5fc;
+  font-weight: 600;
+  white-space: normal;
+}
+table.cmp td {
+  color: #dde4f5;
+}
+table.cmp td.cl {
+  background: rgba(167, 139, 250, 0.08);
+}
+table.cmp .yes {
+  color: #5eead4;
+  font-weight: 600;
+}
+table.cmp .part {
+  color: #fbbf24;
+}
+table.cmp .no {
+  color: #94a3b8;
+}
+
+.cmp-note {
+  font-size: 0.6em;
+  color: #94a3b8;
+  margin-top: 10px;
+  text-align: left;
+}
+
+/* ---- flow / pipeline diagrams ---- */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.66em;
+}
+
+.flow .node {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 6px 16px;
+  width: fit-content;
+}
+
+.flow .node.hl {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(167, 139, 250, 0.1);
+}
+
+.flow .arrow {
+  color: #94a3b8;
+  font-size: 0.9em;
+  line-height: 1.1;
+}
+
+/* ---- generic lists ---- */
+.reveal ul.tight > li {
+  margin: 4px 0;
+}
+
+.reveal ul.tight {
+  font-size: 0.72em;
+}
+
+.reveal .small {
+  font-size: 0.62em;
+  color: #94a3b8;
+}
+
+.reveal .muted {
+  color: #94a3b8;
+}
+
+.reveal .hl-teal {
+  color: #5eead4;
+}
+
+.reveal .hl-amber {
+  color: #fbbf24;
+}
+
+.reveal .hl-violet {
+  color: #a78bfa;
+}
+
+.reveal .hl-red {
+  color: #f87171;
+}
+
+.reveal kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 0.8em;
+}
+
+/* title slide */
+.title-slide .eyebrow {
+  font-size: 0.7em;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #5eead4;
+  margin-bottom: 24px;
+}
+
+.title-slide h1 {
+  font-size: 2.6em;
+  margin-bottom: 12px;
+}
+
+.title-slide .sub {
+  font-size: 0.85em;
+  color: #dde4f5;
+  margin-bottom: 30px;
+}
