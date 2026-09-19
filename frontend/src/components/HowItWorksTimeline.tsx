@@ -16,7 +16,9 @@ import {
   Eye, 
   Key, 
   ExternalLink,
-  Sparkles
+  Sparkles,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface HowItWorksTimelineProps {
@@ -85,28 +87,82 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Top Rolling Track (Leftwards)
-  const rollLeftItems = [
-    { icon: <CheckCircle2 className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "OBSERVED ON-CHAIN FACTS", tag: "100% Cryptographic Truth" },
-    { icon: <Flame className="w-3.5 h-3.5 text-[#fca5a5]" />, text: "EXACT $ BLAST RADIUS", tag: "Liquid Dollars at Risk" },
-    { icon: <Lock className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "1-CLICK ZERO-GAS REVOKE", tag: "Simulated Calldata" },
-    { icon: <Eye className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "NO FAKE 'SAFE' BADGES", tag: "Epistemic Transparency" },
-    { icon: <Terminal className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "RPC STORAGE SLOT DECODING", tag: "mapping(owner => spender)" },
-    { icon: <ShieldAlert className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "ZERO GUESSWORK ALERTS", tag: "Deterministic Analysis" },
-    { icon: <Layers className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "48h TIMELOCK VERIFICATION", tag: "Governance Audit" },
-    { icon: <Key className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "MULTISIG QUORUM TELEMETRY", tag: "3/5 Safe Signers" },
-  ];
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Bottom Rolling Track (Rightwards)
-  const rollRightItems = [
-    { icon: <Sparkles className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "FROM ALERT TO EVIDENCE", tag: "The Sentinel Standard" },
-    { icon: <Coins className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "MULTI-CHAIN INDEXING", tag: "Ethereum • Multipli • Base" },
-    { icon: <HelpCircle className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "HONEST UNKNOWN LIMITS", tag: "Absence ≠ Absence of Risk" },
-    { icon: <Search className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "UNLIMITED APPROVAL AUDITOR", tag: "MAX_UINT256 Interceptor" },
-    { icon: <TrendingUp className="w-3.5 h-3.5 text-[#fed7aa]" />, text: "INFERRED ATTACK PATHWAYS", tag: "Spender Bytecode Check" },
-    { icon: <Lock className="w-3.5 h-3.5 text-[#fca5a5]" />, text: "DOLLAR VALUE EXPOSURE METER", tag: "$3,840.00 At Risk" },
-    { icon: <Terminal className="w-3.5 h-3.5 text-[#d8b4fe]" />, text: "RAW EVM PROOF RECONSTRUCTION", tag: "Zero Alarm Fatigue" },
-    { icon: <CheckCircle2 className="w-3.5 h-3.5 text-[#a7f3d0]" />, text: "CONTINUOUS PROTOCOL HEALTH", tag: "Autonomous Telemetry" },
+  const checkScrollability = () => {
+    if (!sliderRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  const handleManualSlide = (direction: 'left' | 'right') => {
+    if (!sliderRef.current) return;
+    const scrollAmount = 280;
+    sliderRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  // Curated core capabilities presented as square cards (DevJams icon box style)
+  const squareFeatures = [
+    {
+      id: "facts",
+      icon: <CheckCircle2 className="w-5 h-5 text-[#a7f3d0]" />,
+      accent: "#a7f3d0",
+      tag: "On-Chain Truth",
+      title: "Observed Facts",
+      description: "Direct EVM storage proofs proving mathematical facts with zero third-party heuristics.",
+      metric: "Merkle Proofs"
+    },
+    {
+      id: "blast",
+      icon: <Flame className="w-5 h-5 text-[#fca5a5]" />,
+      accent: "#fca5a5",
+      tag: "Real Exposure",
+      title: "Dollar Blast Radius",
+      description: "Calculates the exact liquid dollar balance currently drainable through active rights.",
+      metric: "Live $ Exposure"
+    },
+    {
+      id: "revoke",
+      icon: <Lock className="w-5 h-5 text-[#fed7aa]" />,
+      accent: "#fed7aa",
+      tag: "1-Click Fix",
+      title: "Zero-Gas Calldata",
+      description: "Generates deterministic zero-allowance transaction calldata to seal access instantly.",
+      metric: "Instant Fix"
+    },
+    {
+      id: "bounds",
+      icon: <Eye className="w-5 h-5 text-[#d8b4fe]" />,
+      accent: "#d8b4fe",
+      tag: "Epistemic Honesty",
+      title: "Zero Fake Badges",
+      description: "Sentinel never issues generic green 'SAFE' badges for contracts code alone cannot prove.",
+      metric: "Honest Limits"
+    },
+    {
+      id: "decoder",
+      icon: <Terminal className="w-5 h-5 text-[#a7f3d0]" />,
+      accent: "#a7f3d0",
+      tag: "State Inspector",
+      title: "Slot Decompiler",
+      description: "Inspects raw storage mappings like mapping(owner => spender) down to bytecode truth.",
+      metric: "Storage Mapping"
+    },
+    {
+      id: "governance",
+      icon: <Key className="w-5 h-5 text-[#fed7aa]" />,
+      accent: "#fed7aa",
+      tag: "Quorum Telemetry",
+      title: "Multisig & Timelock",
+      description: "Verifies 48-hour emergency timelocks, multisig thresholds, and upgrade admin identities.",
+      metric: "Safe Quorum"
+    }
   ];
 
   return (
@@ -116,66 +172,90 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[45rem] h-[25rem] bg-gradient-to-r from-[#a7f3d0]/5 via-[#fed7aa]/5 to-[#d8b4fe]/5 rounded-full blur-[140px] pointer-events-none" />
 
       {/* ==========================================================================
-          SECTION 1: DEVJAMS-STYLE ROLLING ANIMATIONS (LEFT & RIGHT)
+          SECTION 1: DEVJAMS-STYLE SQUARE ICONS (MANUAL SLIDER)
           ========================================================================== */}
-      <div className="max-w-7xl mx-auto mb-20">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#a7f3d0] mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a7f3d0] animate-ping" />
-            Continuous On-Chain Tickers
+      <div className="max-w-7xl mx-auto mb-20 px-2 sm:px-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#a7f3d0] mb-2">
+              Verification Modules
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight font-mono">
+              CORE CAPABILITIES
+            </h2>
+            <p className="text-xs text-stone-400 max-w-lg mt-1 font-sans">
+              Sentinel's verifiable diagnostic suite. Slide through features at your own pace.
+            </p>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-100 tracking-tight font-mono">
-            LIVE VERIFICATION STREAM
-          </h2>
-          <p className="text-xs text-stone-400 max-w-lg mx-auto mt-1 font-sans">
-            Every vector audited by Sentinel in real-time. Hover on any item to pause and inspect.
-          </p>
+
+          {/* Manual Slide Controls */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => handleManualSlide('left')}
+              disabled={!canScrollLeft}
+              className="w-9 h-9 rounded-xl liquid-glass border border-white/10 flex items-center justify-center text-stone-300 hover:text-white hover:border-[#a7f3d0]/40 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
+              title="Slide Left"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => handleManualSlide('right')}
+              disabled={!canScrollRight}
+              className="w-9 h-9 rounded-xl liquid-glass border border-white/10 flex items-center justify-center text-stone-300 hover:text-white hover:border-[#a7f3d0]/40 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-md cursor-pointer"
+              title="Slide Right"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Ticker 1: Rolling to the LEFT */}
-        <div className="relative w-full overflow-hidden py-2 border-y border-white/5 bg-black/20 backdrop-blur-md mb-3 group">
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#07080d] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#07080d] to-transparent z-10 pointer-events-none" />
-          
-          <div className="animate-roll-left gap-3">
-            {[...rollLeftItems, ...rollLeftItems].map((item, idx) => (
-              <div
-                key={idx}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl liquid-glass-subtle border border-[#e6ded6]/15 hover:border-[#a7f3d0]/40 transition shadow-sm cursor-default shrink-0"
-              >
-                {item.icon}
-                <span className="text-xs font-mono font-bold text-stone-200 whitespace-nowrap">
-                  {item.text}
-                </span>
-                <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/5 whitespace-nowrap">
-                  {item.tag}
+        {/* Manual Horizontal Slider Track (Square Cards, No Auto-Movement) */}
+        <div
+          ref={sliderRef}
+          onScroll={checkScrollability}
+          className="w-full overflow-x-auto scroll-smooth flex gap-4 pb-4 pt-1 snap-x snap-mandatory select-none"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {squareFeatures.map((feat) => (
+            <div
+              key={feat.id}
+              className="w-56 h-56 sm:w-60 sm:h-60 shrink-0 rounded-3xl liquid-glass p-5 flex flex-col justify-between snap-start border border-[#e6ded6]/15 hover:border-[#a7f3d0]/40 liquid-card-hover group"
+            >
+              {/* Card Top: Icon & Tag */}
+              <div className="flex items-start justify-between gap-2">
+                <div 
+                  className="w-11 h-11 rounded-2xl liquid-pill flex items-center justify-center group-hover:scale-105 transition-transform"
+                  style={{ borderColor: `${feat.accent}40` }}
+                >
+                  {feat.icon}
+                </div>
+                <span className="text-[9px] font-mono text-stone-400 bg-black/30 px-2 py-0.5 rounded-full border border-white/5 truncate max-w-[125px]">
+                  {feat.tag}
                 </span>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Ticker 2: Rolling to the RIGHT */}
-        <div className="relative w-full overflow-hidden py-2 border-b border-white/5 bg-black/20 backdrop-blur-md group">
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#07080d] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#07080d] to-transparent z-10 pointer-events-none" />
-          
-          <div className="animate-roll-right gap-3">
-            {[...rollRightItems, ...rollRightItems].map((item, idx) => (
-              <div
-                key={idx}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl liquid-glass-subtle border border-[#e6ded6]/15 hover:border-[#fed7aa]/40 transition shadow-sm cursor-default shrink-0"
-              >
-                {item.icon}
-                <span className="text-xs font-mono font-bold text-stone-200 whitespace-nowrap">
-                  {item.text}
-                </span>
-                <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/5 whitespace-nowrap">
-                  {item.tag}
+              {/* Card Middle: Title & Layman Explanation */}
+              <div className="my-auto py-1.5">
+                <h3 className="text-sm font-bold font-mono text-stone-100 group-hover:text-[#a7f3d0] transition">
+                  {feat.title}
+                </h3>
+                <p className="text-[11px] text-stone-300 leading-relaxed line-clamp-3 mt-1.5 font-sans">
+                  {feat.description}
+                </p>
+              </div>
+
+              {/* Card Bottom: Metric Tag */}
+              <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono">
+                <span className="text-stone-400">Standard</span>
+                <span 
+                  className="font-bold px-2 py-0.5 rounded-md"
+                  style={{ color: feat.accent, backgroundColor: `${feat.accent}15` }}
+                >
+                  {feat.metric}
                 </span>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
