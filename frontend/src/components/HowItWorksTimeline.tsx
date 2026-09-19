@@ -28,52 +28,56 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   const [copiedCode, setCopiedCode] = useState(false);
   const [simulatedRevoked, setSimulatedRevoked] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0.04);
+  const targetProgressRef = useRef(0.04);
+  const currentProgressRef = useRef(0.04);
+  const [smoothProgress, setSmoothProgress] = useState(0.04);
 
   useEffect(() => {
-    let animationFrameId: number;
+    let rafId: number;
 
-    const handleScroll = () => {
+    const calculateTarget = () => {
       if (!timelineRef.current) return;
       const rect = timelineRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Start rolling when top of timeline reaches 70% of screen height
-      const startTrigger = windowHeight * 0.70;
-      // Finish when bottom reaches 40% of screen height
-      const endTrigger = windowHeight * 0.40;
+      // Start smoothly when top of timeline reaches 72% of screen height
+      const startTrigger = windowHeight * 0.72;
+      // Complete when bottom reaches 38% of screen height
+      const endTrigger = windowHeight * 0.38;
       
       const totalDistance = rect.height - (startTrigger - endTrigger);
       const currentScrolled = startTrigger - rect.top;
       
       const rawProgress = totalDistance > 0 ? currentScrolled / totalDistance : 0;
       const clamped = Math.max(0.02, Math.min(0.98, rawProgress));
-      
-      setScrollProgress(clamped);
+      targetProgressRef.current = clamped;
     };
 
-    const onScroll = () => {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(handleScroll);
+    const handleScroll = () => {
+      calculateTarget();
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    handleScroll();
+    // Smooth lerping frame loop for frictionless tabular dot glide
+    const tick = () => {
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.0001) {
+        currentProgressRef.current += diff * 0.12;
+        setSmoothProgress(currentProgressRef.current);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    calculateTarget();
+    rafId = requestAnimationFrame(tick);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      cancelAnimationFrame(rafId);
     };
   }, []);
-
-  const isStep1Active = scrollProgress >= 0.05;
-  const isStep1Focus = scrollProgress < 0.38;
-  const isStep2Active = scrollProgress >= 0.40;
-  const isStep2Focus = scrollProgress >= 0.38 && scrollProgress < 0.72;
-  const isStep3Active = scrollProgress >= 0.72;
-  const isStep3Focus = scrollProgress >= 0.72;
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText("approve(0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45, 0)");
@@ -196,55 +200,30 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
         {/* The Timeline Container with Center Spine & Dynamic Rolling Dot */}
         <div ref={timelineRef} className="relative w-full flex flex-col items-center mt-6 sm:mt-10">
           
-          {/* Static Vertical Spine Track Rail */}
+          {/* Subtle Hairline Spine Track Rail */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-1.5 sm:w-2 md:w-2.5 -translate-x-1/2 rounded-full opacity-30"
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 rounded-full bg-white/10"
+          />
+
+          {/* Subtle Elapsed Track Fill Line (Muted) */}
+          <div 
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-[2px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-stone-400/30 transition-all duration-75 ease-out"
             style={{
-              background: 'linear-gradient(180deg, #a7f3d0 0%, #fed7aa 50%, #d8b4fe 100%)'
+              height: `${Math.max(2, Math.min(96, smoothProgress * 100))}%`
             }}
           />
 
-          {/* Dynamic Trailing Illuminated Fill Line behind the white dot */}
+          {/* Dull Tabular Dot (Smoothly moves up and down with user scroll) */}
           <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-1.5 sm:w-2 md:w-2.5 -translate-x-1/2 rounded-full pointer-events-none z-20 shadow-[0_0_18px_rgba(255,255,255,0.85)] transition-all duration-75 ease-out"
+            className="absolute left-4 sm:left-6 md:left-1/2 z-30 pointer-events-none will-change-transform"
             style={{
-              height: `${Math.max(2, Math.min(96, scrollProgress * 100))}%`,
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, #a7f3d0 35%, #fed7aa 70%, #ffffff 100%)'
-            }}
-          />
-
-          {/* Dynamic Rolling Glowing White Dot (rolls top-to-bottom tracking user scroll) */}
-          <div 
-            className="absolute left-4 sm:left-6 md:left-1/2 z-40 pointer-events-none transition-all duration-75 ease-out"
-            style={{
-              top: `${Math.max(3, Math.min(97, scrollProgress * 100))}%`,
-              transform: 'translate(-50%, -50%)'
+              top: `${Math.max(2.5, Math.min(97.5, smoothProgress * 100))}%`,
+              transform: 'translate(-50%, -50%) translateZ(0)'
             }}
           >
-            {/* Outer radar ripple pulse */}
-            <div className="absolute -inset-3 rounded-full bg-white/40 animate-ping pointer-events-none" />
-            
-            {/* Ambient diffusion glow */}
-            <div className="absolute -inset-4 rounded-full bg-white/30 blur-md pointer-events-none" />
-
-            {/* Radiant White Orb Core with Specular Outer Ring */}
-            <div className="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white shadow-[0_0_26px_8px_rgba(255,255,255,0.98),0_0_45px_16px_rgba(167,243,208,0.7)] border-2 border-stone-100 flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#07080d] shadow-inner" />
-            </div>
-
-            {/* Floating Live Stage HUD Badge (Desktop) */}
-            <div className="absolute left-10 top-1/2 -translate-y-1/2 whitespace-nowrap hidden lg:flex items-center gap-2 px-3 py-1 rounded-full liquid-glass border border-white/40 text-[10px] font-mono font-bold shadow-2xl backdrop-blur-xl">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white">
-                {scrollProgress < 0.35 
-                  ? 'STAGE 01 // DETECT TRIGGER' 
-                  : scrollProgress < 0.72 
-                  ? 'STAGE 02 // SEPARATE PROOFS' 
-                  : 'STAGE 03 // 1-CLICK RESOLUTION'}
-              </span>
-              <span className="text-stone-300 text-[9px] bg-white/10 px-1.5 py-0.5 rounded font-mono">
-                {Math.round(scrollProgress * 100)}%
-              </span>
+            {/* Minimalist Dull Tabular Marker: Clean precision disc with subtle border */}
+            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#d6cfc7] border border-stone-500/40 shadow-sm flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#12141c]" />
             </div>
           </div>
 
@@ -255,29 +234,11 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 TIMELINE 1: THE INCOMING WARNING
                 (Left Visual Mockup / Right Plain-English Explanation)
                 ================================================================ */}
-            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-8 sm:pl-10 md:pl-0 relative">
               
-              {/* Center Spine Node Indicator */}
-              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
-                <div className="relative flex items-center justify-center">
-                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 transition-all duration-300 flex items-center justify-center ${
-                    isStep1Active 
-                      ? 'border-[#a7f3d0] shadow-[0_0_20px_rgba(167,243,208,0.9)] scale-110' 
-                      : 'border-[#a7f3d0]/40 opacity-70'
-                  }`}>
-                    <span className={`text-[10px] font-mono font-extrabold ${isStep1Active ? 'text-[#a7f3d0]' : 'text-stone-400'}`}>01</span>
-                  </div>
-                  {isStep1Active && <div className="absolute inset-0 rounded-full bg-[#a7f3d0]/30 animate-ping" />}
-                </div>
-              </div>
-
               {/* LEFT: Visual Snapshot Card (DevJams historical image aesthetic) */}
               <div className="w-full md:w-[46%] group">
-                <div className={`liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover transition-all duration-300 ${
-                  isStep1Focus 
-                    ? 'border-2 border-[#a7f3d0]/70 shadow-[0_0_35px_rgba(167,243,208,0.25)] ring-1 ring-[#a7f3d0]/40' 
-                    : 'border border-[#a7f3d0]/30'
-                }`}>
+                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#a7f3d0]/30">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
@@ -369,29 +330,11 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 TIMELINE 2: SEPARATING PROOF FROM GUESSWORK
                 (Left Plain-English Explanation / Right Visual Mockup)
                 ================================================================ */}
-            <div className="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+            <div className="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 pl-8 sm:pl-10 md:pl-0 relative">
               
-              {/* Center Spine Node Indicator */}
-              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
-                <div className="relative flex items-center justify-center">
-                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 transition-all duration-300 flex items-center justify-center ${
-                    isStep2Active 
-                      ? 'border-[#fed7aa] shadow-[0_0_20px_rgba(254,215,170,0.9)] scale-110' 
-                      : 'border-[#fed7aa]/40 opacity-70'
-                  }`}>
-                    <span className={`text-[10px] font-mono font-extrabold ${isStep2Active ? 'text-[#fed7aa]' : 'text-stone-400'}`}>02</span>
-                  </div>
-                  {isStep2Active && <div className="absolute inset-0 rounded-full bg-[#fed7aa]/30 animate-ping" />}
-                </div>
-              </div>
-
               {/* RIGHT: Visual Snapshot Card (Interactive Tripartite decomposition) */}
               <div className="w-full md:w-[46%] group">
-                <div className={`liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover transition-all duration-300 ${
-                  isStep2Focus 
-                    ? 'border-2 border-[#fed7aa]/70 shadow-[0_0_35px_rgba(254,215,170,0.25)] ring-1 ring-[#fed7aa]/40' 
-                    : 'border border-[#fed7aa]/30'
-                }`}>
+                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#fed7aa]/30">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
@@ -520,29 +463,11 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 TIMELINE 3: EXACT DOLLARS IN DANGER & 1-CLICK RESOLUTION
                 (Left Visual Mockup / Right Plain-English Explanation)
                 ================================================================ */}
-            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-12 sm:pl-16 md:pl-0 relative">
+            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pl-8 sm:pl-10 md:pl-0 relative">
               
-              {/* Center Spine Node Indicator */}
-              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-10 md:top-1/2 -translate-y-1/2 z-30 pointer-events-none">
-                <div className="relative flex items-center justify-center">
-                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#07080d] border-2 transition-all duration-300 flex items-center justify-center ${
-                    isStep3Active 
-                      ? 'border-[#fca5a5] shadow-[0_0_20px_rgba(252,165,165,0.9)] scale-110' 
-                      : 'border-[#fca5a5]/40 opacity-70'
-                  }`}>
-                    <span className={`text-[10px] font-mono font-extrabold ${isStep3Active ? 'text-[#fca5a5]' : 'text-stone-400'}`}>03</span>
-                  </div>
-                  {isStep3Active && <div className="absolute inset-0 rounded-full bg-[#fca5a5]/30 animate-ping" />}
-                </div>
-              </div>
-
               {/* LEFT: Visual Snapshot Card (Blast radius dollar meter & revoke button) */}
               <div className="w-full md:w-[46%] group">
-                <div className={`liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover transition-all duration-300 ${
-                  isStep3Focus 
-                    ? 'border-2 border-[#fca5a5]/70 shadow-[0_0_35px_rgba(252,165,165,0.25)] ring-1 ring-[#fca5a5]/40' 
-                    : 'border border-[#fca5a5]/30'
-                }`}>
+                <div className="liquid-glass rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#fca5a5]/30">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
