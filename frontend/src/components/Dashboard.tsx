@@ -18,14 +18,14 @@ import { EvidenceDetailPanel } from './EvidenceDetailPanel';
 
 interface DashboardProps {
   report: InvestigationReport;
-  activeSubView?: 'overview' | 'history_exposure' | 'findings' | 'graph' | 'protocol' | 'coverage';
+  activeSubView?: 'findings' | 'history_exposure' | 'graph' | 'protocol' | 'coverage';
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ 
   report, 
-  activeSubView = 'overview' 
+  activeSubView = 'findings' 
 }) => {
-  const [currentSubTab, setCurrentSubTab] = useState<'overview' | 'history_exposure' | 'findings' | 'graph' | 'protocol' | 'coverage'>(activeSubView);
+  const [currentSubTab, setCurrentSubTab] = useState<'findings' | 'history_exposure' | 'graph' | 'protocol' | 'coverage'>(activeSubView);
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
 
   const handleSelectExposure = (exposure: CurrentExposureItem) => {
@@ -36,31 +36,31 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       
-      {/* Top Header Card */}
+      {/* Liquid Glass Header Cockpit */}
       <InvestigationHeader report={report} />
 
-      {/* Sub-Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-1 border-b border-slate-800 pb-3 mb-8">
+      {/* Liquid Glass Sub-Navigation Tabs */}
+      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6">
         <button
-          onClick={() => setCurrentSubTab('overview')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
-            currentSubTab === 'overview'
-              ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+          onClick={() => setCurrentSubTab('findings')}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
+            currentSubTab === 'findings'
+              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm shadow-teal-500/20'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Activity className="w-3.5 h-3.5 text-teal-400" />
-          <span>Full Overview</span>
+          <ShieldAlert className="w-3.5 h-3.5 text-teal-400" />
+          <span>Findings & Evidence ({report.findings.length})</span>
         </button>
 
         <button
           onClick={() => setCurrentSubTab('history_exposure')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'history_exposure'
-              ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/20'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
           <Zap className="w-3.5 h-3.5 text-amber-400" />
@@ -68,23 +68,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </button>
 
         <button
-          onClick={() => setCurrentSubTab('findings')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
-            currentSubTab === 'findings'
-              ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-          }`}
-        >
-          <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
-          <span>Findings ({report.findings.length})</span>
-        </button>
-
-        <button
           onClick={() => setCurrentSubTab('graph')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'graph'
-              ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+              ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-sm shadow-indigo-500/20'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
           <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
@@ -94,10 +82,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {report.protocolHealth && (
           <button
             onClick={() => setCurrentSubTab('protocol')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
               currentSubTab === 'protocol'
-                ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/20'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Layers className="w-3.5 h-3.5 text-purple-400" />
@@ -107,10 +95,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         <button
           onClick={() => setCurrentSubTab('coverage')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition flex items-center gap-1.5 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
             currentSubTab === 'coverage'
-              ? 'bg-indigo-600/30 text-teal-300 border border-teal-500/40 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/20'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
           <FileCheck2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -118,35 +106,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </button>
       </div>
 
-      {/* Main Tab Content Display */}
-      {currentSubTab === 'overview' && (
-        <div className="space-y-12">
-          <HistoryVsExposure
-            currentExposures={report.currentExposures}
-            historicalActivities={report.historicalActivities}
-            onSelectExposure={handleSelectExposure}
-          />
-
-          <FindingsList
-            findings={report.findings}
-            onSelectFinding={(f) => setSelectedFinding(f)}
-            selectedFindingId={selectedFinding?.id}
-          />
-
-          <EvidenceGraph
-            nodes={report.evidenceGraph.nodes}
-            edges={report.evidenceGraph.edges}
-          />
-
-          {report.protocolHealth && (
-            <ProtocolHealthView
-              health={report.protocolHealth}
-              coverage={report.coverage}
-            />
-          )}
-
-          <CoverageView coverage={report.coverage} />
-        </div>
+      {/* Tab Panels */}
+      {currentSubTab === 'findings' && (
+        <FindingsList
+          findings={report.findings}
+          onSelectFinding={(f) => setSelectedFinding(f)}
+          selectedFindingId={selectedFinding?.id}
+        />
       )}
 
       {currentSubTab === 'history_exposure' && (
@@ -154,14 +120,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           currentExposures={report.currentExposures}
           historicalActivities={report.historicalActivities}
           onSelectExposure={handleSelectExposure}
-        />
-      )}
-
-      {currentSubTab === 'findings' && (
-        <FindingsList
-          findings={report.findings}
-          onSelectFinding={(f) => setSelectedFinding(f)}
-          selectedFindingId={selectedFinding?.id}
         />
       )}
 
@@ -183,7 +141,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <CoverageView coverage={report.coverage} />
       )}
 
-      {/* Expandable Evidence Detail Inspector */}
+      {/* Expandable Evidence Detail Inspector Drawer */}
       {selectedFinding && (
         <EvidenceDetailPanel
           finding={selectedFinding}

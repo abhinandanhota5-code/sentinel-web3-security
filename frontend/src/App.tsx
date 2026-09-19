@@ -32,7 +32,6 @@ export function App() {
   const handleQuickPreset = async (addressKey: string) => {
     setIsLoading(true);
     try {
-      // Determine chain based on preset
       let chain: NetworkChainId = 'ethereum';
       if (addressKey.includes('44d9a518')) chain = 'multipli';
       if (addressKey.includes('deadbeef')) chain = 'base';
@@ -47,9 +46,9 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040714] text-slate-100 flex flex-col selection:bg-teal-500 selection:text-black">
+    <div className="min-h-screen bg-[#030614] text-slate-100 flex flex-col selection:bg-teal-400 selection:text-black">
       
-      {/* Top Navigation */}
+      {/* Liquid Floating Navigation */}
       <Navbar
         currentView={currentView}
         onSelectView={(v) => setCurrentView(v)}
@@ -68,15 +67,15 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         {isLoading && (
-          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-sm text-center shadow-2xl">
-              <div className="relative w-16 h-16 mx-auto mb-4">
-                <div className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-teal-400 animate-spin" />
-                <ShieldCheck className="w-6 h-6 text-teal-400 absolute inset-0 m-auto" />
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-150">
+            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center shadow-2xl border border-white/20">
+              <div className="relative w-14 h-14 mx-auto mb-4">
+                <div className="w-14 h-14 rounded-full border-3 border-white/10 border-t-teal-400 animate-spin" />
+                <ShieldCheck className="w-5 h-5 text-teal-300 absolute inset-0 m-auto" />
               </div>
-              <h3 className="text-base font-bold text-white mb-1">Reconstructing State...</h3>
+              <h3 className="text-base font-bold text-white mb-1 font-mono">Reconstructing State...</h3>
               <p className="text-xs text-slate-400 font-mono">
-                Querying EVM storage slots, ERC-20 allowances, and proxy implementation pointers.
+                Querying EVM storage slots, allowance mappings, and delegate proxies.
               </p>
             </div>
           </div>
@@ -94,12 +93,12 @@ export function App() {
         {currentView === 'dashboard' && (
           <Dashboard
             report={report}
-            activeSubView="overview"
+            activeSubView="findings"
           />
         )}
 
         {currentView === 'graph' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <EvidenceGraph
               nodes={report.evidenceGraph.nodes}
               edges={report.evidenceGraph.edges}
@@ -108,7 +107,7 @@ export function App() {
         )}
 
         {currentView === 'protocol' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <ProtocolHealthView
               health={report.protocolHealth || PRESET_MULTIPLI_PROTOCOL.protocolHealth}
               coverage={report.coverage}
@@ -117,28 +116,29 @@ export function App() {
         )}
 
         {currentView === 'coverage' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <CoverageView coverage={report.coverage} />
           </div>
         )}
       </main>
 
-      {/* Global Footer */}
-      <footer className="border-t border-slate-900 bg-[#02050e] py-8 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Floating Liquid Footer */}
+      <footer className="border-t border-white/5 bg-black/40 py-6 text-xs text-slate-400 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-teal-400" />
-            <span className="font-bold text-slate-300 font-mono">SENTINEL</span>
-            <span>— Evidence-first investigation layer for Web3</span>
+            <span className="font-bold text-slate-200 font-mono tracking-wider">SENTINEL</span>
+            <span className="text-slate-500">—</span>
+            <span className="text-slate-400">Evidence-first investigation layer for Web3</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] font-mono">
-            <span className="text-slate-400">Multipli Hackathon 2026</span>
+          <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400">
+            <span>Multipli Hackathon 2026</span>
             <span>•</span>
-            <span className="text-teal-400">From Alert to Evidence</span>
+            <span className="text-teal-300">From Alert to Evidence</span>
             <span>•</span>
             <button onClick={() => setCurrentView('coverage')} className="hover:text-slate-200 underline">
-              Coverage & Bounds
+              Coverage & Scope
             </button>
           </div>
         </div>
