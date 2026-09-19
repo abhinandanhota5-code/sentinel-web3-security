@@ -34,63 +34,87 @@
 }
 
 /* ==========================================================================
-   TRANSLUCENT LIQUID GLASS SYSTEM (High Transparency + Pastel / Nude Accents)
+   LUMINOUS LIQUID GLASS SYSTEM (Tactile Depth + Pastel / Nude Accents)
    ========================================================================== */
 
-/* Ultra-transparent liquid glass with luminous specular edge */
+/* Distinct luminous liquid glass with bright specular refraction & frosted depth */
 .liquid-glass {
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(235, 225, 215, 0.02) 40%, 
-    rgba(10, 12, 18, 0.35) 100%
+    rgba(255, 255, 255, 0.16) 0%, 
+    rgba(250, 240, 230, 0.05) 28%, 
+    rgba(14, 18, 28, 0.52) 100%
   );
-  backdrop-filter: blur(36px) saturate(200%);
-  -webkit-backdrop-filter: blur(36px) saturate(200%);
-  border: 1px solid rgba(245, 235, 225, 0.08);
-  border-top: 1px solid rgba(255, 255, 255, 0.28);
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.52);
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow: 
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.2),
-    0 24px 60px -15px rgba(0, 0, 0, 0.65),
-    0 0 40px -10px rgba(220, 210, 200, 0.03);
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.35),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.04),
+    0 24px 60px -15px rgba(0, 0, 0, 0.7),
+    0 0 40px -5px rgba(230, 215, 200, 0.08);
+  position: relative;
 }
 
-/* Highly transparent secondary glass */
+/* Glass specular sheen on top edge */
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Semi-translucent secondary glass */
 .liquid-glass-subtle {
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(245, 235, 225, 0.07);
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(250, 240, 230, 0.03) 35%,
+    rgba(12, 16, 24, 0.42) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow: 
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-    0 10px 30px -10px rgba(0, 0, 0, 0.45);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.28),
+    0 12px 32px -8px rgba(0, 0, 0, 0.5);
+  position: relative;
 }
 
 /* Translucent pill with pastel/nude specular refraction */
 .liquid-pill {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(245, 235, 225, 0.02) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(245, 235, 225, 0.12);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(245, 235, 225, 0.04) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+    0 6px 18px -4px rgba(0, 0, 0, 0.4);
 }
 
-/* Card hover with delicate pastel glow */
+/* Card hover with delicate pastel glow and enhanced specular reflex */
 .liquid-card-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .liquid-card-hover:hover {
-  transform: translateY(-2px);
-  border-color: rgba(220, 205, 190, 0.35);
-  border-top-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.75);
   box-shadow: 
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.25),
-    0 25px 60px -12px rgba(0, 0, 0, 0.7),
-    0 0 30px -5px rgba(230, 215, 200, 0.08);
+    inset 0 1.5px 3px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 25px 0 rgba(167, 243, 208, 0.06),
+    0 30px 70px -15px rgba(0, 0, 0, 0.8),
+    0 0 45px -5px rgba(230, 215, 200, 0.15);
 }
 
 /* Subtle warm organic ambient mesh */

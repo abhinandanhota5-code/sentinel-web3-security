@@ -46,8 +46,13 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07080d] text-stone-100 flex flex-col selection:bg-[#a7f3d0] selection:text-black">
+    <div className="min-h-screen bg-[#07080d] text-stone-100 flex flex-col selection:bg-[#a7f3d0] selection:text-black relative overflow-x-hidden cyber-grid">
       
+      {/* Persistent Ambient Pastel & Nude Liquid Mesh behind all views */}
+      <div className="fixed top-[-10%] left-[15%] w-[45rem] h-[45rem] bg-[#a7f3d0]/6 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="fixed top-[35%] right-[5%] w-[40rem] h-[40rem] bg-[#fed7aa]/7 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[-10%] left-[20%] w-[48rem] h-[48rem] bg-[#d8b4fe]/6 rounded-full blur-[170px] pointer-events-none -z-10" />
+
       {/* Liquid Floating Navigation */}
       <Navbar
         currentView={currentView}
