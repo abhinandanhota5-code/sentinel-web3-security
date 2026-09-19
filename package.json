@@ -5,7 +5,8 @@
   "description": "Sentinel — Web3 Security & Protocol Health",
   "scripts": {
     "build": "npx sass --no-source-map deck/sass/theme.scss deck/theme.css --load-path=deck/sass",
-    "export-ppt": "node export-ppt.js"
+    "export-ppt": "node export-ppt.js",
+    "test": "node --test"
   },
   "devDependencies": {
     "pptxgenjs": "^4.0.1",
