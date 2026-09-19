@@ -31,11 +31,11 @@ function normalizeTransaction(transaction, kind, extra = {}) {
 }
 
 class EtherscanBlockchainProvider extends BlockchainProvider {
-  constructor({ apiKey = process.env.ETHERSCAN_API_KEY, chainId = 1, baseUrl = DEFAULT_BASE_URL, fetchImpl = globalThis.fetch, pageSize = 100, maxPages = 10 } = {}) {
+  constructor({ apiKey = process.env.ETHERSCAN_API_KEY, chainId = 1, baseUrl = DEFAULT_BASE_URL, fetchImpl = globalThis.fetch, pageSize = 100, maxPages = 10, mode = 'REAL' } = {}) {
     super();
     if (!apiKey) throw new Error('ETHERSCAN_API_KEY is required for the Etherscan provider');
     if (typeof fetchImpl !== 'function') throw new Error('A fetch implementation is required');
-    this.mode = 'REAL';
+    this.mode = mode;
     this.apiKey = apiKey;
     this.chainId = String(chainId);
     this.baseUrl = baseUrl;

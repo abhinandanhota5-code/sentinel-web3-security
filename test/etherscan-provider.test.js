@@ -17,7 +17,7 @@ function etherscanFetch(url) {
 }
 
 test('Etherscan adapter normalizes historical and verified-contract data', async () => {
-  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: etherscanFetch, pageSize: 100 });
+  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: etherscanFetch, pageSize: 100, mode: 'FIXTURE' });
   const transactions = await provider.getTransactions(ADDRESSES.wallet);
   assert.deepEqual(transactions.map((item) => item.kind), ['CONTRACT_INTERACTION', 'CONTRACT_INTERACTION', 'TOKEN_TRANSFER']);
   assert.equal(transactions[1].internal, true);
@@ -28,17 +28,17 @@ test('Etherscan adapter normalizes historical and verified-contract data', async
 });
 
 test('Etherscan adapter failures are explicit and unsupported direct reads do not fabricate state', async () => {
-  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: async () => ({ ok: true, json: async () => ({ status: '0', message: 'NOTOK', result: 'Max rate limit reached' }) }) });
+  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: async () => ({ ok: true, json: async () => ({ status: '0', message: 'NOTOK', result: 'Max rate limit reached' }) }), mode: 'FIXTURE' });
   await assert.rejects(() => provider.getTransactions(ADDRESSES.wallet), (error) => error instanceof EtherscanApiError && /rate limit/i.test(error.message));
   await assert.rejects(() => provider.getTokenApprovals(ADDRESSES.wallet), /RPC adapter/);
 });
 
 test('indexed Etherscan data becomes the existing EvidenceBundle', async () => {
-  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: etherscanFetch });
+  const provider = new EtherscanBlockchainProvider({ apiKey: 'fixture-key', fetchImpl: etherscanFetch, mode: 'FIXTURE' });
   const bundle = await analyzeAddressSecurity({ provider, address: ADDRESSES.wallet, chain: 'ethereum' });
   const transfer = bundle.evidence.find((item) => item.findingType === 'TOKEN_TRANSFER');
   assert.equal(bundle.schemaVersion, '1.0');
-  assert.equal(bundle.dataMode, 'REAL');
+  assert.equal(bundle.dataMode, 'FIXTURE');
   assert.equal(transfer.knowledgeType, 'OBSERVED');
   assert.equal(transfer.transactionHash, '0xtoken');
   assert.equal(transfer.token, ADDRESSES.token);
@@ -69,7 +69,7 @@ test('RPC adapter reads code and EIP-1967 state through JSON-RPC', async () => {
     const results = { eth_getCode: '0x6000', eth_getStorageAt: `0x${'0'.repeat(24)}${ADDRESSES.implementation.slice(2)}` };
     return { ok: true, json: async () => ({ jsonrpc: '2.0', id: 1, result: results[request.method] }) };
   };
-  const provider = new RpcBlockchainProvider({ rpcUrl: 'https://rpc.fixture', fetchImpl: rpcFetch });
+  const provider = new RpcBlockchainProvider({ rpcUrl: 'https://rpc.fixture', fetchImpl: rpcFetch, mode: 'FIXTURE' });
   assert.equal(await provider.getAddressType(ADDRESSES.protocol), 'SMART_CONTRACT');
   assert.equal((await provider.getProxyImplementation(ADDRESSES.protocol)).implementationAddress, ADDRESSES.implementation);
 });

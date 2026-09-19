@@ -31,11 +31,11 @@ function decodeString(value) {
 }
 
 class RpcBlockchainProvider extends BlockchainProvider {
-  constructor({ rpcUrl, fetchImpl = globalThis.fetch } = {}) {
+  constructor({ rpcUrl, fetchImpl = globalThis.fetch, mode = 'REAL' } = {}) {
     super();
     if (!rpcUrl) throw new Error('ETHEREUM_RPC_URL is required for the RPC provider');
     if (typeof fetchImpl !== 'function') throw new Error('A fetch implementation is required');
-    this.mode = 'REAL';
+    this.mode = mode;
     this.rpcUrl = rpcUrl;
     this.fetchImpl = fetchImpl;
   }
@@ -119,7 +119,7 @@ class CompositeBlockchainProvider extends BlockchainProvider {
   constructor({ indexer, rpc } = {}) {
     super();
     if (!indexer && !rpc) throw new Error('An indexer or RPC provider is required');
-    this.mode = indexer?.mode === 'REAL' || rpc?.mode === 'REAL' ? 'REAL' : 'UNSPECIFIED';
+    this.mode = indexer?.mode && rpc?.mode && indexer.mode === rpc.mode ? indexer.mode : 'MIXED';
     this.indexer = indexer;
     this.rpcProvider = rpc;
   }
