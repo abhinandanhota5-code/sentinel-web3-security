@@ -10,21 +10,26 @@ import {
   ShieldAlert, 
   Layers, 
   ArrowRight,
-  Database
+  Database,
+  ExternalLink,
+  Search,
+  Server
 } from 'lucide-react';
 import type { Finding } from '../types/sentinel';
 
 interface EvidenceDetailPanelProps {
   finding: Finding | null;
   onClose: () => void;
+  blockExplorerUrl?: string;
 }
 
 export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
   finding,
   onClose,
+  blockExplorerUrl = 'https://etherscan.io',
 }) => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'tripartite' | 'raw_proof' | 'remediation'>('tripartite');
+  const [activeTab, setActiveTab] = useState<'why_saying_this' | 'tripartite' | 'raw_proof' | 'remediation'>('why_saying_this');
 
   if (!finding) return null;
 
@@ -33,6 +38,8 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
     setCopiedField(fieldKey);
     setTimeout(() => setCopiedField(null), 2000);
   };
+
+  const providerOrSource = finding.evidence.providerOrSource || 'security-engine:evm-storage';
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/75 backdrop-blur-md flex justify-end animate-in fade-in duration-200">
@@ -51,26 +58,41 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 EVIDENCE INSPECTOR // {finding.findingType}
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-[#fdfbf7] leading-tight">
+            <h3 className="text-lg sm:text-xl font-bold text-[#fdfbf7] leading-tight font-mono">
               {finding.title}
             </h3>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition"
+            className="p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-white/10 bg-black/20 px-6">
+        <div className="flex border-b border-white/10 bg-black/20 px-6 overflow-x-auto">
           <button
-            onClick={() => setActiveTab('tripartite')}
-            className={`py-3 px-4 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-2 ${
-              activeTab === 'tripartite'
+            type="button"
+            onClick={() => setActiveTab('why_saying_this')}
+            className={`py-3 px-3.5 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === 'why_saying_this'
                 ? 'border-[#2dd4bf] text-[#2dd4bf] bg-[#2dd4bf]/10'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span>Why are you saying this?</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('tripartite')}
+            className={`py-3 px-3.5 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === 'tripartite'
+                ? 'border-[#bae6fd] text-[#bae6fd] bg-[#bae6fd]/10'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -79,22 +101,24 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab('raw_proof')}
-            className={`py-3 px-4 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-2 ${
+            className={`py-3 px-3.5 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'raw_proof'
-                ? 'border-[#bae6fd] text-[#bae6fd] bg-[#bae6fd]/10'
+                ? 'border-[#fde68a] text-[#fde68a] bg-[#fde68a]/10'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <Terminal className="w-3.5 h-3.5" />
-            <span>Raw RPC Proofs & Slots</span>
+            <span>Raw Proofs & Slots</span>
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab('remediation')}
-            className={`py-3 px-4 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-2 ${
+            className={`py-3 px-3.5 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'remediation'
-                ? 'border-[#fde68a] text-[#fde68a] bg-[#fde68a]/10'
+                ? 'border-rose-400 text-rose-300 bg-rose-500/10'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -106,6 +130,164 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           
+          {/* TAB 0: WHY ARE YOU SAYING THIS? (SECTION 6 REQUIREMENT) */}
+          {activeTab === 'why_saying_this' && (
+            <div className="space-y-4">
+              
+              <div className="liquid-glass-teal rounded-2xl p-5 border-l-4 border-l-[#2dd4bf]">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-bold text-[#fdfbf7] font-mono flex items-center gap-2">
+                    <Search className="w-4 h-4 text-[#2dd4bf]" />
+                    <span>Deterministic Evidence Proof (Section 6)</span>
+                  </h4>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#2dd4bf]/20 text-[#2dd4bf] border border-[#2dd4bf]/40">
+                    {finding.confidence}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-200 font-mono leading-relaxed mb-4">
+                  {finding.summary}
+                </p>
+
+                {/* Structured Evidence Items */}
+                <div className="space-y-2.5 text-xs font-mono">
+                  
+                  {/* Transaction Hash */}
+                  {finding.evidence.transactionHash && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Transaction Hash:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[#bae6fd]">
+                          {finding.evidence.transactionHash.slice(0, 10)}...{finding.evidence.transactionHash.slice(-8)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(finding.evidence.transactionHash!, 'tx-hash')}
+                          className="p-1 hover:text-white"
+                        >
+                          {copiedField === 'tx-hash' ? <Check className="w-3 h-3 text-[#2dd4bf]" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                        <a
+                          href={`${blockExplorerUrl}/tx/${finding.evidence.transactionHash}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="p-1 hover:text-[#bae6fd]"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Block Number */}
+                  {finding.evidence.blockNumber && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Block Number:</span>
+                      <span className="text-[#fdfbf7] font-bold">
+                        #{finding.evidence.blockNumber.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Contract Address */}
+                  {finding.evidence.contractAddress && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Contract Address:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[#93c5fd]">
+                          {finding.evidence.contractAddress.slice(0, 8)}...{finding.evidence.contractAddress.slice(-6)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(finding.evidence.contractAddress!, 'contract-addr')}
+                          className="p-1 hover:text-white"
+                        >
+                          {copiedField === 'contract-addr' ? <Check className="w-3 h-3 text-[#2dd4bf]" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                        <a
+                          href={`${blockExplorerUrl}/address/${finding.evidence.contractAddress}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="p-1 hover:text-[#bae6fd]"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Token Address */}
+                  {(finding.token?.address || finding.evidence.token?.address) && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Token Address:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[#fde68a]">
+                          {finding.token?.symbol || 'Token'} ({(finding.token?.address || finding.evidence.token!.address).slice(0, 6)}...{(finding.token?.address || finding.evidence.token!.address).slice(-4)})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(finding.token?.address || finding.evidence.token!.address, 'token-addr')}
+                          className="p-1 hover:text-white"
+                        >
+                          {copiedField === 'token-addr' ? <Check className="w-3 h-3 text-[#2dd4bf]" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Allowance */}
+                  {(finding.allowance || finding.evidence.allowanceAmount || finding.evidence.formattedAllowance) && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Allowance Amount:</span>
+                      <span className="text-rose-300 font-bold">
+                        {finding.evidence.formattedAllowance || finding.allowance || 'Unlimited'}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Owner / Admin */}
+                  {finding.evidence.spender?.address && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">Spender / Admin Key:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[#fca5a5]">
+                          {finding.evidence.spender.address.slice(0, 8)}...{finding.evidence.spender.address.slice(-6)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(finding.evidence.spender!.address, 'spender-addr')}
+                          className="p-1 hover:text-white"
+                        >
+                          {copiedField === 'spender-addr' ? <Check className="w-3 h-3 text-[#2dd4bf]" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Implementation */}
+                  {finding.evidence.stateSlot && (
+                    <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                      <span className="text-slate-400">EVM Storage Slot:</span>
+                      <span className="text-[#2dd4bf] truncate max-w-[200px]">
+                        {finding.evidence.stateSlot}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Provider / Source */}
+                  <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 flex items-center justify-between">
+                    <span className="text-slate-400">Provider / Source:</span>
+                    <span className="text-[#fdfbf7] font-semibold flex items-center gap-1.5">
+                      <Server className="w-3.5 h-3.5 text-[#2dd4bf]" />
+                      <span>{providerOrSource}</span>
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          )}
+
           {/* TAB 1: TRIPARTITE REASONING */}
           {activeTab === 'tripartite' && (
             <div className="space-y-4">
@@ -130,40 +312,6 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     </li>
                   ))}
                 </ul>
-
-                {/* Evidence Details */}
-                <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono">
-                  {finding.evidence.transactionHash && (
-                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between">
-                      <span className="text-slate-300">Tx Hash:</span>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[#bae6fd] truncate max-w-[120px]">
-                          {finding.evidence.transactionHash.slice(0, 8)}...
-                        </span>
-                        <button
-                          onClick={() => handleCopy(finding.evidence.transactionHash!, 'tx')}
-                          className="text-slate-300 hover:text-white"
-                        >
-                          {copiedField === 'tx' ? <Check className="w-3 h-3 text-[#7dd3fc]" /> : <Copy className="w-3 h-3" />}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {finding.evidence.blockNumber && (
-                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between">
-                      <span className="text-slate-300">Block:</span>
-                      <span className="text-slate-200">#{finding.evidence.blockNumber}</span>
-                    </div>
-                  )}
-
-                  {finding.evidence.formattedAllowance && (
-                    <div className="bg-white/[0.06] backdrop-blur-md p-2 rounded-lg border border-white/10 flex items-center justify-between sm:col-span-2">
-                      <span className="text-slate-300">Active Allowance:</span>
-                      <span className="text-[#fde68a] font-bold">{finding.evidence.formattedAllowance}</span>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Section 2: INFERRED */}
@@ -222,7 +370,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     <Database className="w-3.5 h-3.5" />
                     Method: {finding.evidence.verificationMethod}
                   </span>
-                  <span className="text-[#7dd3fc] text-[10px]">EVM State Grounded</span>
+                  <span className="text-[#2dd4bf] text-[10px]">EVM State Grounded</span>
                 </div>
 
                 {finding.evidence.contractAddress && (
@@ -231,10 +379,11 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-slate-200 break-all flex items-center justify-between border border-white/10">
                       <span>{finding.evidence.contractAddress}</span>
                       <button 
+                        type="button"
                         onClick={() => handleCopy(finding.evidence.contractAddress!, 'contract')}
                         className="text-slate-300 hover:text-white"
                       >
-                        {copiedField === 'contract' ? <Check className="w-3.5 h-3.5 text-[#7dd3fc]" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedField === 'contract' ? <Check className="w-3.5 h-3.5 text-[#2dd4bf]" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
                     </div>
                   </div>
@@ -243,7 +392,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 {finding.evidence.stateSlot && (
                   <div className="mb-3">
                     <label className="text-[10px] font-mono text-slate-300 block mb-1">EVM Storage Slot / Mapping</label>
-                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/10">
+                    <div className="bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl font-mono text-xs text-[#2dd4bf] break-all border border-white/10">
                       {finding.evidence.stateSlot}
                     </div>
                   </div>
@@ -273,10 +422,11 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] font-mono text-slate-300">Structured Backend JSON Payload</span>
                   <button
+                    type="button"
                     onClick={() => handleCopy(JSON.stringify(finding, null, 2), 'json')}
-                    className="text-xs font-mono text-[#7dd3fc] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-mono text-[#2dd4bf] hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    {copiedField === 'json' ? <Check className="w-3 h-3 text-[#7dd3fc]" /> : <Copy className="w-3 h-3" />}
+                    {copiedField === 'json' ? <Check className="w-3 h-3 text-[#2dd4bf]" /> : <Copy className="w-3 h-3" />}
                     <span>Copy JSON</span>
                   </button>
                 </div>
@@ -316,6 +466,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     <div className="bg-white/[0.06] backdrop-blur-md p-3 rounded-xl font-mono text-xs text-[#2dd4bf] break-all border border-white/10 flex items-start justify-between gap-2">
                       <span>{finding.remediation.suggestedCalldata}</span>
                       <button
+                        type="button"
                         onClick={() => handleCopy(finding.remediation!.suggestedCalldata!, 'calldata')}
                         className="p-1 text-slate-300 hover:text-white shrink-0 cursor-pointer"
                       >
@@ -324,17 +475,6 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     </div>
                   </div>
                 )}
-
-                <div className="mt-5 flex items-center gap-3">
-                  <button
-                    onClick={() => alert(`Simulating on-chain transaction to revoke allowance... Target: ${finding.evidence.contractAddress}`)}
-                    className="px-4 py-2 bg-gradient-to-r from-[#fdfbf7] via-[#5eead4] to-[#2dd4bf] hover:opacity-95 text-[#042f2e] font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2 border border-[#2dd4bf]/40 cursor-pointer"
-                  >
-                    <span>Simulate Revoke Tx</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#042f2e]" />
-                  </button>
-                  <span className="text-[10px] text-slate-400 font-mono">Zero gas estimation check</span>
-                </div>
               </div>
             </div>
           )}

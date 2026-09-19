@@ -104,7 +104,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 type="text"
                 value={addressInput}
                 onChange={(e) => setAddressInput(e.target.value)}
-                placeholder="Paste EVM address, ENS, or protocol contract..."
+                placeholder="Paste EVM address, transaction hash, or protocol contract..."
                 className="w-full h-11 bg-white/[0.06] border border-white/20 rounded-xl px-4 text-xs sm:text-sm font-mono text-[#fdfbf7] placeholder-slate-400 focus:outline-none focus:border-[#2dd4bf]/80 focus:ring-1 focus:ring-[#2dd4bf]/30 transition backdrop-blur-md"
               />
             </div>
@@ -138,35 +138,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             <button
               type="button"
-              onClick={() => handleSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
-              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-rose-300 hover:border-rose-400/40 transition flex items-center gap-1.5"
+              onClick={() => handleSelectPreset('0xd8da6bf26964af9d7eed9e03e53415d37aa96045', 'ethereum')}
+              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#bae6fd] hover:border-[#bae6fd]/50 transition flex items-center gap-1.5 cursor-pointer"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-300"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#bae6fd]"></span>
+              vitalik.eth (0xd8dA6BF...)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelectPreset('0x8f3c7e42d91b8a53e62f0a1c794bb3d1a89c2e47f05b816a39d2c4179e51a8c2', 'ethereum')}
+              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-rose-300 hover:border-rose-400/50 transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+              Reviewer Test Tx (Suspicious Interaction)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
+              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#fde68a] hover:border-[#fde68a]/50 transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#fde68a]"></span>
               alex-defi.eth (Unlimited Approval)
             </button>
 
             <button
               type="button"
-              onClick={() => handleSelectPreset('0x44d9a51837f81b1e13d508f850b3e1c0154942e5', 'multipli')}
-              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#2dd4bf] hover:border-[#2dd4bf]/50 transition flex items-center gap-1.5"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2dd4bf]"></span>
-              Multipli Prime Yield Engine
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSelectPreset('0xdeadbeef0000000000000000000000000000beef', 'base')}
-              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#fde68a] hover:border-[#fde68a]/50 transition flex items-center gap-1.5"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#fde68a]"></span>
-              ShadySwap (0s Timelock Backdoor)
-            </button>
-
-            <button
-              type="button"
               onClick={() => handleSelectPreset('0x1010101010101010101010101010101010101010', 'ethereum')}
-              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#fdfbf7] hover:border-white/40 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] font-mono liquid-pill text-[#fdfbf7] hover:border-white/40 transition flex items-center gap-1.5 cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#fdfbf7]"></span>
               Cold Multisig Safe (Clean)

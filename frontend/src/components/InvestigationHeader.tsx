@@ -8,7 +8,11 @@ import {
   Clock, 
   DollarSign,
   TrendingUp,
-  ShieldAlert
+  ShieldAlert,
+  History,
+  Zap,
+  Layers,
+  FileCode
 } from 'lucide-react';
 import type { InvestigationReport } from '../types/sentinel';
 
@@ -33,18 +37,49 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
     }).format(val);
   };
 
+  const isTx = report.targetType === 'TRANSACTION' || report.targetAddress.length === 66;
+
+  // Derive concise state labels
+  const historicalCount = report.historicalActivities.length;
+  const historicalStatus = historicalCount > 0 
+    ? `${historicalCount} Historical Event${historicalCount > 1 ? 's' : ''}` 
+    : 'No historical anomalies';
+
+  const exposureCount = report.currentExposures.length;
+  const exposureStatus = exposureCount > 0 
+    ? `${exposureCount} Active Exposure${exposureCount > 1 ? 's' : ''}` 
+    : 'No active exposure';
+
+  const vectorCount = report.activeSecurityVectors?.length ?? (report.currentExposures.length + (report.findings.filter(f => f.findingType !== 'NO_ACTIVE_FINDINGS').length > 0 ? 1 : 0));
+  const vectorStatus = vectorCount > 0 
+    ? `${vectorCount} Active Vector${vectorCount > 1 ? 's' : ''}` 
+    : '0 Active Vectors';
+
+  const blastRadiusUsd = report.totalBlastRadiusUsd;
+  const blastRadiusStatus = blastRadiusUsd > 0 
+    ? `${formatUsd(blastRadiusUsd)} Exposed` 
+    : 'No liquid funds exposed';
+
+  const hasAnyThreat = report.findings.some(f => f.severity === 'CRITICAL' || f.severity === 'HIGH' || f.severity === 'MEDIUM') || report.currentExposures.length > 0;
+
   return (
     <div className="liquid-glass rounded-3xl p-5 sm:p-6 mb-6 relative overflow-hidden shadow-2xl border border-white/20">
       
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      {/* SECTION 1: Top of Page Header */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-5 border-b border-white/10">
         
-        {/* Left: Entity Profile */}
+        {/* Left: Investigation Entity / Transaction */}
         <div className="space-y-2.5">
           
           <div className="flex flex-wrap items-center gap-2">
-            {/* Entity Badge */}
+            {/* Investigation Badge */}
+            <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-mono tracking-wider uppercase font-bold bg-[#2dd4bf]/20 border border-[#2dd4bf]/40 text-[#2dd4bf]">
+              Investigation
+            </span>
+
+            {/* Target Type Badge */}
             <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-mono tracking-wider uppercase bg-white/10 border border-white/20 text-[#bae6fd]">
-              {report.entityType.replace('_', ' ')}
+              {isTx ? 'Transaction' : report.entityType.replace('_', ' ')}
             </span>
 
             {/* Network Chain Badge */}
@@ -61,67 +96,115 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
             </span>
           </div>
 
-          {/* Target Address & Names */}
+          {/* Target Address / Tx & Names */}
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#fdfbf7] flex items-center gap-2">
               {report.ensName || report.contractName || `${report.targetAddress.slice(0, 10)}...${report.targetAddress.slice(-8)}`}
             </h2>
 
-            {(report.ensName || report.contractName) && (
+            {(report.ensName || report.contractName || isTx) && (
               <span className="text-xs font-mono text-slate-200 bg-white/[0.08] backdrop-blur-md px-2 py-0.5 rounded-lg border border-white/15">
-                {report.targetAddress.slice(0, 6)}...{report.targetAddress.slice(-4)}
+                {report.targetAddress.slice(0, 8)}...{report.targetAddress.slice(-6)}
               </span>
             )}
 
             {/* Quick Copy */}
             <button
+              type="button"
               onClick={handleCopy}
-              className="p-1.5 text-slate-400 hover:text-[#7dd3fc] hover:bg-white/10 rounded-lg transition"
-              title="Copy EVM Address"
+              className="p-1.5 text-slate-400 hover:text-[#2dd4bf] hover:bg-white/10 rounded-lg transition cursor-pointer"
+              title={isTx ? 'Copy Transaction Hash' : 'Copy EVM Address'}
             >
-              {copied ? <Check className="w-4 h-4 text-[#7dd3fc]" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-[#2dd4bf]" /> : <Copy className="w-4 h-4" />}
             </button>
 
             {/* Explorer link */}
             <a
-              href={`${report.chain.blockExplorer}/address/${report.targetAddress}`}
+              href={`${report.chain.blockExplorer}/${isTx ? 'tx' : 'address'}/${report.targetAddress}`}
               target="_blank"
               rel="noreferrer"
-              className="p-1.5 text-slate-400 hover:text-[#7dd3fc] hover:bg-white/10 rounded-lg transition"
+              className="p-1.5 text-slate-400 hover:text-[#2dd4bf] hover:bg-white/10 rounded-lg transition"
               title="View on Block Explorer"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
 
+          {/* Primary Conclusion (NEVER display SAFE when no finding detected) */}
+          <div className="text-xs font-mono">
+            {!hasAnyThreat ? (
+              <span className="inline-flex items-center gap-1.5 text-[#2dd4bf] font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>No active finding detected</span>
+                <span className="text-slate-400 font-normal text-[11px]">— all queried allowance & proxy vectors cleared</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-rose-300 font-bold">
+                <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+                <span>Active attack / exposure surfaces detected</span>
+                <span className="text-slate-400 font-normal text-[11px]">— examine active vectors & blast radius below</span>
+              </span>
+            )}
+          </div>
+
         </div>
 
-        {/* Right: Blast Radius Liquid Gauge */}
-        <div className="flex flex-wrap items-center gap-4 liquid-glass-subtle rounded-2xl p-4 self-stretch lg:self-auto justify-between lg:justify-end border border-white/15">
+        {/* Right: Concise State Summary Bar (Historical Finding, Current Exposure, Active Vectors, Blast Radius) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto">
           
-          <div className="border-r border-white/10 pr-5">
+          {/* 1. Historical Finding */}
+          <div className="liquid-glass-subtle rounded-2xl p-3 border border-white/15 flex flex-col justify-between min-w-[130px]">
             <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 flex items-center gap-1">
-              <DollarSign className="w-3.5 h-3.5 text-[#fde68a]" />
-              <span>Current Blast Radius</span>
+              <History className="w-3.5 h-3.5 text-[#bae6fd]" />
+              <span>Historical Finding</span>
             </div>
-            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.totalBlastRadiusUsd > 0 ? 'text-rose-300' : 'text-[#2dd4bf]'}`}>
-              {formatUsd(report.totalBlastRadiusUsd)}
+            <div className="text-sm font-mono font-bold text-[#fdfbf7] mt-1 truncate">
+              {historicalStatus}
             </div>
-            <div className="text-[10px] text-slate-400 font-mono">
-              {report.totalBlastRadiusUsd > 0 ? 'Liquid funds exposed' : 'Zero liquid funds exposed'}
+            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+              Settled on-chain
             </div>
           </div>
 
-          <div className="pl-1">
+          {/* 2. Current Exposure */}
+          <div className="liquid-glass-subtle rounded-2xl p-3 border border-white/15 flex flex-col justify-between min-w-[130px]">
+            <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 flex items-center gap-1">
+              <Zap className="w-3.5 h-3.5 text-[#fde68a]" />
+              <span>Current Exposure</span>
+            </div>
+            <div className={`text-sm font-mono font-bold mt-1 truncate ${exposureCount > 0 ? 'text-[#fde68a]' : 'text-slate-200'}`}>
+              {exposureStatus}
+            </div>
+            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+              Live in state
+            </div>
+          </div>
+
+          {/* 3. Active Vectors */}
+          <div className="liquid-glass-subtle rounded-2xl p-3 border border-white/15 flex flex-col justify-between min-w-[130px]">
             <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 flex items-center gap-1">
               <ShieldAlert className="w-3.5 h-3.5 text-rose-300" />
               <span>Active Vectors</span>
             </div>
-            <div className="text-2xl font-mono font-bold text-[#fdfbf7] mt-0.5">
-              {report.currentExposures.length}
+            <div className={`text-sm font-mono font-bold mt-1 truncate ${vectorCount > 0 ? 'text-rose-300' : 'text-slate-200'}`}>
+              {vectorStatus}
             </div>
-            <div className="text-[10px] text-slate-400 font-mono">
-              {report.findings.filter(f => f.severity === 'CRITICAL' || f.severity === 'HIGH').length} critical/high
+            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+              Attack pathways
+            </div>
+          </div>
+
+          {/* 4. Blast Radius */}
+          <div className="liquid-glass-subtle rounded-2xl p-3 border border-white/15 flex flex-col justify-between min-w-[130px]">
+            <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 flex items-center gap-1">
+              <DollarSign className="w-3.5 h-3.5 text-[#2dd4bf]" />
+              <span>Blast Radius</span>
+            </div>
+            <div className={`text-sm font-mono font-bold mt-1 truncate ${blastRadiusUsd > 0 ? 'text-rose-300' : 'text-[#2dd4bf]'}`}>
+              {blastRadiusStatus}
+            </div>
+            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+              Potential exposure
             </div>
           </div>
 
@@ -129,42 +212,28 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
 
       </div>
 
-      {/* Epistemic Status Strip in Soft Blue, Cream, and Soft Gray */}
-      <div className="mt-5 pt-4 border-t border-white/10 grid grid-cols-3 gap-3 text-center sm:text-left">
-        
-        {/* Observed */}
-        <div className="liquid-glass-teal rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-[#2dd4bf]">
-          <CheckCircle2 className="w-4 h-4 text-[#2dd4bf] shrink-0" />
-          <div className="truncate">
-            <div className="text-[9px] font-mono uppercase tracking-wider text-[#2dd4bf]">Observed Facts</div>
-            <div className="text-xs font-bold font-mono text-[#fdfbf7] truncate">
-              {report.summary.observedFactsCount} State Truths
-            </div>
-          </div>
+      {/* Epistemic Verification Strip */}
+      <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-300">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="flex items-center gap-1.5 text-[#2dd4bf]">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Observed Facts: {report.summary.observedFactsCount}</span>
+          </span>
+          <span className="text-slate-600">•</span>
+          <span className="flex items-center gap-1.5 text-[#fde68a]">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Inferred Risks: {report.summary.inferredHypothesesCount}</span>
+          </span>
+          <span className="text-slate-600">•</span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
+            <span>Unknown Bounds: {report.summary.unknownBoundariesCount}</span>
+          </span>
         </div>
 
-        {/* Inferred */}
-        <div className="liquid-glass-subtle rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-[#fde68a]">
-          <TrendingUp className="w-4 h-4 text-[#fde68a] shrink-0" />
-          <div className="truncate">
-            <div className="text-[9px] font-mono uppercase tracking-wider text-[#fde68a]">Inferred Risks</div>
-            <div className="text-xs font-bold font-mono text-[#fdfbf7] truncate">
-              {report.summary.inferredHypothesesCount} Deduced Impacts
-            </div>
-          </div>
+        <div className="text-[11px] text-slate-400">
+          Source: <strong className="text-slate-200">Deterministic Blockchain Storage Engine</strong>
         </div>
-
-        {/* Unknown */}
-        <div className="liquid-glass-subtle rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-[#cbd5e1]">
-          <HelpCircle className="w-4 h-4 text-[#cbd5e1] shrink-0" />
-          <div className="truncate">
-            <div className="text-[9px] font-mono uppercase tracking-wider text-[#cbd5e1]">Unknown Bounds</div>
-            <div className="text-xs font-bold font-mono text-[#fdfbf7] truncate">
-              {report.summary.unknownBoundariesCount} Epistemic Bounds
-            </div>
-          </div>
-        </div>
-
       </div>
 
     </div>

@@ -12,9 +12,17 @@ import type { CoverageReport } from '../types/sentinel';
 
 interface CoverageViewProps {
   coverage: CoverageReport;
+  dataMode?: string;
+  unknowns?: Array<{ field: string; reason: string; detail?: string }>;
+  coverageGaps?: string[];
 }
 
-export const CoverageView: React.FC<CoverageViewProps> = ({ coverage }) => {
+export const CoverageView: React.FC<CoverageViewProps> = ({ 
+  coverage, 
+  dataMode, 
+  unknowns = [], 
+  coverageGaps = [] 
+}) => {
   return (
     <div className="space-y-6 mb-12">
       
@@ -22,8 +30,23 @@ export const CoverageView: React.FC<CoverageViewProps> = ({ coverage }) => {
       <div className="liquid-glass rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-white/20">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#2dd4bf] mb-1 border border-[#2dd4bf]/30 bg-[#064e3b]/20">
-              Coverage Transparency
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#2dd4bf] border border-[#2dd4bf]/30 bg-[#064e3b]/20">
+                Coverage Transparency
+              </span>
+              {dataMode && (
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border ${
+                  dataMode === 'REAL'
+                    ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-300'
+                    : dataMode === 'DEMO'
+                    ? 'bg-amber-500/15 border-amber-400/40 text-amber-300'
+                    : dataMode === 'MIXED'
+                    ? 'bg-sky-500/15 border-sky-400/40 text-sky-300'
+                    : 'bg-purple-500/15 border-purple-400/40 text-purple-300'
+                }`}>
+                  Mode: {dataMode}
+                </span>
+              )}
             </div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#fdfbf7] flex items-center gap-2">
               <FileCheck2 className="w-6 h-6 text-[#2dd4bf]" />
@@ -149,6 +172,37 @@ export const CoverageView: React.FC<CoverageViewProps> = ({ coverage }) => {
         </div>
 
       </div>
+
+      {/* Active Backend Epistemic Coverage Gaps & Unknowns */}
+      {(coverageGaps.length > 0 || unknowns.length > 0) && (
+        <div className="liquid-glass rounded-3xl p-6 shadow-xl border border-amber-400/30">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+            <AlertTriangle className="w-4 h-4 text-amber-400" />
+            <h3 className="text-sm font-bold text-[#fdfbf7]">Active Analysis Coverage Gaps & Epistemic Boundaries</h3>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            {coverageGaps.map((gap, idx) => (
+              <div key={`gap-${idx}`} className="p-3 liquid-glass-subtle rounded-xl border border-amber-400/20 text-slate-200 flex items-start gap-2">
+                <span className="text-amber-400 font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-400/30 shrink-0">
+                  COVERAGE GAP
+                </span>
+                <span className="text-[11px] leading-relaxed">{gap}</span>
+              </div>
+            ))}
+            {unknowns.map((u, idx) => (
+              <div key={`unk-${idx}`} className="p-3 liquid-glass-subtle rounded-xl border border-white/10 text-slate-200 flex items-start gap-2">
+                <span className="text-slate-300 font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-white/10 border border-white/15 shrink-0">
+                  {u.reason}
+                </span>
+                <div className="text-[11px] leading-relaxed">
+                  <span className="font-mono text-[#7dd3fc] font-bold">{u.field}</span>: {u.detail || 'Epistemic boundary; fact cannot be established on-chain.'}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );

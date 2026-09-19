@@ -1,76 +1,218 @@
 import React, { useState } from 'react';
 import { 
-  Activity, 
-  Zap, 
   ShieldAlert, 
+  Zap, 
+  DollarSign, 
+  History, 
+  FileText, 
   GitBranch, 
   Layers, 
-  FileCheck2 
+  Sparkles,
+  Search,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
-import type { InvestigationReport, Finding, CurrentExposureItem } from '../types/sentinel';
+import type { 
+  InvestigationReport, 
+  Finding, 
+  CurrentExposureItem,
+  ActiveSecurityVector 
+} from '../types/sentinel';
 import { InvestigationHeader } from './InvestigationHeader';
-import { HistoryVsExposure } from './HistoryVsExposure';
+import { ActiveVectors } from './ActiveVectors';
+import { CurrentExposureView } from './CurrentExposureView';
+import { BlastRadiusView } from './BlastRadiusView';
+import { HistoryView } from './HistoryView';
 import { FindingsList } from './FindingsList';
+import { EvidenceDetailPanel } from './EvidenceDetailPanel';
 import { EvidenceGraph } from './EvidenceGraph';
+import { GroundedExplanationCard } from './GroundedExplanationCard';
 import { ProtocolHealthView } from './ProtocolHealthView';
 import { CoverageView } from './CoverageView';
-import { EvidenceDetailPanel } from './EvidenceDetailPanel';
+import { InvestigationUnavailableCard } from './InvestigationUnavailableCard';
 
 interface DashboardProps {
   report: InvestigationReport;
-  activeSubView?: 'findings' | 'history_exposure' | 'graph' | 'protocol' | 'coverage';
+  activeSubView?: 'investigation' | 'vectors' | 'exposure' | 'blast_radius' | 'evidence' | 'history' | 'graph' | 'protocol' | 'coverage';
+  onRetry?: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ 
   report, 
-  activeSubView = 'findings' 
+  activeSubView = 'investigation',
+  onRetry,
 }) => {
-  const [currentSubTab, setCurrentSubTab] = useState<'findings' | 'history_exposure' | 'graph' | 'protocol' | 'coverage'>(activeSubView);
+  const [currentTab, setCurrentTab] = useState<string>(activeSubView);
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
 
-  const handleSelectExposure = (exposure: CurrentExposureItem) => {
-    const matchingFinding = report.findings.find(f => f.title.includes(exposure.vulnerableAsset?.symbol || '')) || report.findings[0];
-    if (matchingFinding) {
-      setSelectedFinding(matchingFinding);
+  // If backend returned a structured failure state (SECTION 10)
+  if (report.failureState?.isUnavailable) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <InvestigationUnavailableCard
+          failure={report.failureState}
+          onRetry={onRetry}
+          onViewCoverage={() => setCurrentTab('coverage')}
+        />
+        <CoverageView coverage={report.coverage} />
+      </div>
+    );
+  }
+
+  // Derive active vectors if not directly present
+  const vectors: ActiveSecurityVector[] = report.activeSecurityVectors || (
+    report.currentExposures.map((exp, idx) => ({
+      id: `VEC-${idx + 1}`,
+      title: exp.title,
+      token: exp.vulnerableAsset?.symbol,
+      tokenSymbol: exp.vulnerableAsset?.symbol,
+      spender: exp.counterparty?.address,
+      spenderLabel: exp.counterparty?.label,
+      status: (exp.status || 'OBSERVED') as 'OBSERVED' | 'INFERRED' | 'UNKNOWN',
+      statusReason: exp.description,
+      evidenceRef: exp.directEvidenceProof,
+    }))
+  );
+
+  // Derive blast radius model if not directly present
+  const blastRadiusModel = report.blastRadiusDetails || {
+    flowSteps: [
+      { id: '1', label: report.ensName || report.targetAddress.slice(0, 8), sublabel: 'Queried Subject', type: 'WALLET' as const, address: report.targetAddress },
+      { id: '2', label: report.currentExposures[0]?.vulnerableAsset?.symbol || 'USDC', sublabel: 'Liquid Asset', type: 'TOKEN' as const },
+      { id: '3', label: 'Max Uint256', sublabel: 'Unlimited allowance', type: 'ALLOWANCE' as const },
+      { id: '4', label: report.currentExposures[0]?.counterparty?.label || 'Router X', sublabel: 'Spender Contract', type: 'SPENDER' as const, address: report.currentExposures[0]?.counterparty?.address },
+      { id: '5', label: 'EIP-1967 Proxy', sublabel: 'Upgradeable contract', type: 'UPGRADEABLE_CONTRACT' as const },
+      { id: '6', label: 'Single EOA Admin', sublabel: 'Privileged actor', type: 'ADMIN' as const },
+    ],
+    assetsPotentiallyExposed: report.currentExposures.map(e => ({
+      symbol: e.vulnerableAsset?.symbol || 'ERC-20',
+      balance: e.vulnerableAsset?.amount || 'Live in state',
+      potentialExposureUsd: e.vulnerableAsset?.usdValue,
+      status: 'Potential exposure',
+    })),
+    contractsInvolved: report.currentExposures.map(e => ({
+      address: e.counterparty.address,
+      name: e.counterparty.label,
+      role: e.type,
+    })),
+    permissionsInvolved: report.currentExposures.map(e => ({
+      name: e.title,
+      target: e.counterparty.address,
+      description: e.description,
+    })),
+    privilegedActors: [
+      { address: report.currentExposures[0]?.counterparty?.address || '0xABC...442', role: 'Proxy Admin', keyType: 'Single EOA Key' },
+    ],
+    chains: [report.chain.name],
+    coverageGaps: report.coverageGaps || report.coverage.limitations.slice(0, 2),
+  };
+
+  const handleSelectEvidenceRef = (evidenceRef: string) => {
+    // Find matching finding
+    const match = report.findings.find(f => 
+      f.id === evidenceRef || 
+      f.title.toLowerCase().includes(evidenceRef.toLowerCase()) ||
+      f.evidence.stateSlot?.includes(evidenceRef) ||
+      f.evidence.transactionHash?.includes(evidenceRef)
+    ) || report.findings[0];
+
+    if (match) {
+      setSelectedFinding(match);
+      setCurrentTab('evidence');
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       
-      {/* Liquid Glass Header Cockpit */}
+      {/* SECTION 1: Investigation Summary Header (Top of page) */}
       <InvestigationHeader report={report} />
 
-      {/* Liquid Glass Sub-Navigation Tabs */}
+      {/* Investigation Navigation Controls */}
       <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6 border border-white/15">
         <button
-          onClick={() => setCurrentSubTab('findings')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
-            currentSubTab === 'findings'
-              ? 'liquid-pill text-[#7dd3fc] font-bold border-[#7dd3fc]/50 shadow-sm'
+          type="button"
+          onClick={() => setCurrentTab('investigation')}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'investigation'
+              ? 'liquid-pill text-[#2dd4bf] font-bold border-[#2dd4bf]/50 shadow-sm'
               : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-[#7dd3fc]" />
-          <span>Findings & Evidence ({report.findings.length})</span>
+          <ShieldAlert className="w-3.5 h-3.5 text-[#2dd4bf]" />
+          <span>Complete Investigation Flow</span>
         </button>
 
         <button
-          onClick={() => setCurrentSubTab('history_exposure')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
-            currentSubTab === 'history_exposure'
+          type="button"
+          onClick={() => setCurrentTab('vectors')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'vectors'
+              ? 'liquid-pill text-rose-300 font-bold border-rose-400/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+          }`}
+        >
+          <ShieldAlert className="w-3.5 h-3.5 text-rose-300" />
+          <span>Active Vectors ({vectors.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCurrentTab('exposure')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'exposure'
               ? 'liquid-pill text-[#fde68a] font-bold border-[#fde68a]/50 shadow-sm'
               : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
         >
           <Zap className="w-3.5 h-3.5 text-[#fde68a]" />
-          <span>History vs Exposure</span>
+          <span>Current Exposure</span>
         </button>
 
         <button
-          onClick={() => setCurrentSubTab('graph')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
-            currentSubTab === 'graph'
+          type="button"
+          onClick={() => setCurrentTab('blast_radius')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'blast_radius'
+              ? 'liquid-pill text-[#bae6fd] font-bold border-[#bae6fd]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+          }`}
+        >
+          <DollarSign className="w-3.5 h-3.5 text-[#bae6fd]" />
+          <span>Blast Radius</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCurrentTab('evidence')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'evidence'
+              ? 'liquid-pill text-[#7dd3fc] font-bold border-[#7dd3fc]/50 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5 text-[#7dd3fc]" />
+          <span>Evidence ({report.findings.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCurrentTab('history')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'history'
+              ? 'liquid-pill text-slate-200 font-bold border-white/40 shadow-sm'
+              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+          }`}
+        >
+          <History className="w-3.5 h-3.5 text-slate-300" />
+          <span>History ({report.historicalActivities.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCurrentTab('graph')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            currentTab === 'graph'
               ? 'liquid-pill text-[#93c5fd] font-bold border-[#93c5fd]/50 shadow-sm'
               : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
           }`}
@@ -81,9 +223,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         {report.protocolHealth && (
           <button
-            onClick={() => setCurrentSubTab('protocol')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
-              currentSubTab === 'protocol'
+            type="button"
+            onClick={() => setCurrentTab('protocol')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+              currentTab === 'protocol'
                 ? 'liquid-pill text-[#fef3c7] font-bold border-[#fef3c7]/50 shadow-sm'
                 : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
             }`}
@@ -92,22 +235,101 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <span>Protocol Health</span>
           </button>
         )}
-
-        <button
-          onClick={() => setCurrentSubTab('coverage')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2 ${
-            currentSubTab === 'coverage'
-              ? 'liquid-pill text-[#bae6fd] font-bold border-[#bae6fd]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
-          }`}
-        >
-          <FileCheck2 className="w-3.5 h-3.5 text-[#bae6fd]" />
-          <span>Coverage Scope</span>
-        </button>
       </div>
 
-      {/* Tab Panels */}
-      {currentSubTab === 'findings' && (
+      {/* ========================================================================= */}
+      {/* INVESTIGATION VIEW (Strict Visual Priority: 1. Vectors, 2. Exposure,      */}
+      {/* 3. Blast Radius, 4. Evidence, 5. History, 6. AI Explanation)              */}
+      {/* ========================================================================= */}
+
+      {currentTab === 'investigation' && (
+        <div className="space-y-6">
+          
+          {/* VISUAL PRIORITY 1: ACTIVE SECURITY VECTORS (Section 4) */}
+          <ActiveVectors
+            vectors={vectors}
+            onSelectEvidence={handleSelectEvidenceRef}
+            blockExplorerUrl={report.chain.blockExplorer}
+          />
+
+          {/* VISUAL PRIORITY 2: CURRENT EXPOSURE (Section 3) */}
+          <CurrentExposureView
+            exposureDetails={report.currentExposureDetails}
+            exposuresList={report.currentExposures}
+            blockExplorerUrl={report.chain.blockExplorer}
+            onSelectExposureItem={(item) => {
+              const matching = report.findings.find(f => f.title.includes(item.vulnerableAsset?.symbol || '')) || report.findings[0];
+              if (matching) setSelectedFinding(matching);
+            }}
+          />
+
+          {/* VISUAL PRIORITY 3: BLAST RADIUS (Section 5) */}
+          <BlastRadiusView
+            blastRadius={blastRadiusModel}
+            totalBlastRadiusUsd={report.totalBlastRadiusUsd}
+            blockExplorerUrl={report.chain.blockExplorer}
+          />
+
+          {/* VISUAL PRIORITY 4: EVIDENCE & FINDINGS (Section 6 - Why are you saying this?) */}
+          <div className="mb-6">
+            <FindingsList
+              findings={report.findings}
+              onSelectFinding={(f) => setSelectedFinding(f)}
+              selectedFindingId={selectedFinding?.id}
+            />
+          </div>
+
+          {/* VISUAL PRIORITY 5: HISTORY (Section 2 - What Happened?) */}
+          <HistoryView
+            activities={report.historicalActivities}
+            onSelectEvidence={handleSelectEvidenceRef}
+            blockExplorerUrl={report.chain.blockExplorer}
+          />
+
+          {/* VISUAL PRIORITY 6: AI GROUNDED EXPLANATION (Section 8 - strictly AFTER deterministic evidence) */}
+          {report.explanation && (
+            <div className="mt-8">
+              <div className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#2dd4bf]" />
+                <span>Deterministic Post-Analysis Reasoning (Grounded by Evidence)</span>
+              </div>
+              <GroundedExplanationCard
+                explanation={report.explanation}
+                findings={report.findings}
+                onSelectFinding={(f) => setSelectedFinding(f)}
+              />
+            </div>
+          )}
+
+        </div>
+      )}
+
+      {/* INDIVIDUAL SUBVIEWS */}
+      {currentTab === 'vectors' && (
+        <ActiveVectors
+          vectors={vectors}
+          onSelectEvidence={handleSelectEvidenceRef}
+          blockExplorerUrl={report.chain.blockExplorer}
+        />
+      )}
+
+      {currentTab === 'exposure' && (
+        <CurrentExposureView
+          exposureDetails={report.currentExposureDetails}
+          exposuresList={report.currentExposures}
+          blockExplorerUrl={report.chain.blockExplorer}
+        />
+      )}
+
+      {currentTab === 'blast_radius' && (
+        <BlastRadiusView
+          blastRadius={blastRadiusModel}
+          totalBlastRadiusUsd={report.totalBlastRadiusUsd}
+          blockExplorerUrl={report.chain.blockExplorer}
+        />
+      )}
+
+      {currentTab === 'evidence' && (
         <FindingsList
           findings={report.findings}
           onSelectFinding={(f) => setSelectedFinding(f)}
@@ -115,37 +337,44 @@ export const Dashboard: React.FC<DashboardProps> = ({
         />
       )}
 
-      {currentSubTab === 'history_exposure' && (
-        <HistoryVsExposure
-          currentExposures={report.currentExposures}
-          historicalActivities={report.historicalActivities}
-          onSelectExposure={handleSelectExposure}
+      {currentTab === 'history' && (
+        <HistoryView
+          activities={report.historicalActivities}
+          onSelectEvidence={handleSelectEvidenceRef}
+          blockExplorerUrl={report.chain.blockExplorer}
         />
       )}
 
-      {currentSubTab === 'graph' && (
+      {currentTab === 'graph' && (
         <EvidenceGraph
           nodes={report.evidenceGraph.nodes}
           edges={report.evidenceGraph.edges}
+          blockExplorerUrl={report.chain.blockExplorer}
         />
       )}
 
-      {currentSubTab === 'protocol' && (
+      {currentTab === 'protocol' && report.protocolHealth && (
         <ProtocolHealthView
           health={report.protocolHealth}
           coverage={report.coverage}
         />
       )}
 
-      {currentSubTab === 'coverage' && (
-        <CoverageView coverage={report.coverage} />
+      {currentTab === 'coverage' && (
+        <CoverageView
+          coverage={report.coverage}
+          dataMode={report.dataMode}
+          unknowns={report.unknowns}
+          coverageGaps={report.coverageGaps}
+        />
       )}
 
-      {/* Expandable Evidence Detail Inspector Drawer */}
+      {/* Expandable Evidence Inspector Drawer */}
       {selectedFinding && (
         <EvidenceDetailPanel
           finding={selectedFinding}
           onClose={() => setSelectedFinding(null)}
+          blockExplorerUrl={report.chain.blockExplorer}
         />
       )}
 

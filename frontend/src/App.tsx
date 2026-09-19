@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import type { NetworkChainId, InvestigationReport } from './types/sentinel';
-import { SentinelService, PRESET_COMPROMISED_WALLET, PRESET_MULTIPLI_PROTOCOL } from './services/sentinelApi';
+import { 
+  SentinelService, 
+  PRESET_VITALIK_ETH, 
+  PRESET_REVIEWER_TRANSACTION,
+  PRESET_MULTIPLI_PROTOCOL 
+} from './services/sentinelApi';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { Dashboard } from './components/Dashboard';
@@ -12,13 +17,13 @@ import { ShieldCheck } from 'lucide-react';
 export function App() {
   const [currentView, setCurrentView] = useState<'landing' | 'dashboard' | 'graph' | 'protocol' | 'coverage'>('landing');
   const [selectedChain, setSelectedChain] = useState<NetworkChainId>('ethereum');
-  const [report, setReport] = useState<InvestigationReport>(PRESET_COMPROMISED_WALLET);
+  const [report, setReport] = useState<InvestigationReport>(PRESET_VITALIK_ETH);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleInvestigate = async (address: string, chain: NetworkChainId = selectedChain) => {
+  const handleInvestigate = async (query: string, chain: NetworkChainId = selectedChain) => {
     setIsLoading(true);
     try {
-      const result = await SentinelService.investigateAddress(address, chain);
+      const result = await SentinelService.investigateAddress(query, chain);
       setReport(result);
       setSelectedChain(chain);
       setCurrentView('dashboard');
@@ -103,7 +108,8 @@ export function App() {
         {currentView === 'dashboard' && (
           <Dashboard
             report={report}
-            activeSubView="findings"
+            activeSubView="investigation"
+            onRetry={() => handleInvestigate(report.targetAddress, selectedChain)}
           />
         )}
 
@@ -112,6 +118,7 @@ export function App() {
             <EvidenceGraph
               nodes={report.evidenceGraph.nodes}
               edges={report.evidenceGraph.edges}
+              blockExplorerUrl={report.chain.blockExplorer}
             />
           </div>
         )}
@@ -127,7 +134,12 @@ export function App() {
 
         {currentView === 'coverage' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <CoverageView coverage={report.coverage} />
+            <CoverageView 
+              coverage={report.coverage} 
+              dataMode={report.dataMode}
+              unknowns={report.unknowns}
+              coverageGaps={report.coverageGaps}
+            />
           </div>
         )}
       </main>
@@ -147,7 +159,7 @@ export function App() {
             <span>•</span>
             <span className="text-[#7dd3fc]">From Alert to Evidence</span>
             <span>•</span>
-            <button onClick={() => setCurrentView('coverage')} className="hover:text-[#fdfbf7] transition underline">
+            <button onClick={() => setCurrentView('coverage')} className="hover:text-[#fdfbf7] transition underline cursor-pointer">
               Coverage & Scope
             </button>
           </div>
