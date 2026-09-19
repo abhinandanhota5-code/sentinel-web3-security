@@ -66,7 +66,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
       {/* Header & Filter Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#7dd3fc] mb-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#2dd4bf] mb-1 border border-[#2dd4bf]/30 bg-[#064e3b]/20">
             Verifiable Findings
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#fdfbf7] flex items-center gap-2">
@@ -111,7 +111,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
               onClick={() => onSelectFinding(f)}
               className={`liquid-glass rounded-3xl p-5 sm:p-6 transition cursor-pointer relative overflow-hidden liquid-card-hover group border border-white/15 ${
                 isSelected
-                  ? 'border-[#7dd3fc]/60 shadow-2xl shadow-[#7dd3fc]/15'
+                  ? 'border-[#2dd4bf]/60 shadow-2xl shadow-[#2dd4bf]/15'
                   : ''
               }`}
             >
@@ -132,12 +132,12 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                     {/* Confidence Tag */}
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold flex items-center gap-1 border ${
                       f.confidence === 'OBSERVED' 
-                        ? 'bg-[#7dd3fc]/15 text-[#7dd3fc] border-[#7dd3fc]/30' 
+                        ? 'bg-[#2dd4bf]/15 text-[#2dd4bf] border-[#2dd4bf]/30' 
                         : f.confidence === 'INFERRED'
                         ? 'bg-[#fef3c7]/20 text-[#fde68a] border-[#fde68a]/30'
                         : 'bg-[#cbd5e1]/15 text-[#cbd5e1] border-slate-400/30'
                     }`}>
-                      {f.confidence === 'OBSERVED' && <CheckCircle2 className="w-3 h-3 text-[#7dd3fc]" />}
+                      {f.confidence === 'OBSERVED' && <CheckCircle2 className="w-3 h-3 text-[#2dd4bf]" />}
                       {f.confidence === 'INFERRED' && <TrendingUp className="w-3 h-3 text-[#fde68a]" />}
                       {f.confidence === 'UNKNOWN' && <HelpCircle className="w-3 h-3 text-[#cbd5e1]" />}
                       <span>{f.confidence}</span>
@@ -155,7 +155,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                   </div>
 
                   {/* Title & Summary */}
-                  <h3 className="text-base font-bold text-[#fdfbf7] group-hover:text-[#7dd3fc] transition">
+                  <h3 className="text-base font-bold text-[#fdfbf7] group-hover:text-[#2dd4bf] transition">
                     {f.title}
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
@@ -164,8 +164,8 @@ export const FindingsList: React.FC<FindingsListProps> = ({
 
                   {/* Tripartite Preview Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1.5 text-[11px] font-mono">
-                    <div className="liquid-glass-subtle rounded-xl p-2.5 border-l-2 border-l-[#7dd3fc]">
-                      <span className="text-[#7dd3fc] font-bold block text-[10px] uppercase mb-0.5">OBSERVED FACT</span>
+                    <div className="liquid-glass-teal rounded-xl p-2.5 border-l-2 border-l-[#2dd4bf]">
+                      <span className="text-[#2dd4bf] font-bold block text-[10px] uppercase mb-0.5">OBSERVED FACT</span>
                       <span className="text-slate-300 line-clamp-2 leading-relaxed">{f.tripartite.observed[0]}</span>
                     </div>
 
@@ -211,7 +211,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                 <div className="lg:self-center shrink-0">
                   <button
                     type="button"
-                    className="w-full lg:w-auto px-4 py-2 rounded-xl liquid-pill text-slate-200 text-xs font-mono font-semibold flex items-center justify-center gap-2 group-hover:border-[#7dd3fc]/50 group-hover:text-[#7dd3fc] transition shadow-lg"
+                    className="w-full lg:w-auto px-4 py-2 rounded-xl liquid-pill text-slate-200 text-xs font-mono font-semibold flex items-center justify-center gap-2 group-hover:border-[#2dd4bf]/50 group-hover:text-[#2dd4bf] transition shadow-lg"
                   >
                     <span>Inspect Evidence</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />

@@ -20,10 +20,10 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
     switch (type) {
       case 'WALLET':
         return {
-          border: 'border-[#7dd3fc]/40',
-          bg: 'bg-[#7dd3fc]/10',
-          text: 'text-[#7dd3fc]',
-          badge: 'bg-[#7dd3fc]/15 text-[#7dd3fc] border-[#7dd3fc]/30',
+          border: 'border-[#2dd4bf]/40',
+          bg: 'bg-[#2dd4bf]/10',
+          text: 'text-[#2dd4bf]',
+          badge: 'bg-[#2dd4bf]/15 text-[#2dd4bf] border-[#2dd4bf]/30',
         };
       case 'TOKEN':
         return {
@@ -83,11 +83,11 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#7dd3fc] mb-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#2dd4bf] mb-1 border border-[#2dd4bf]/30 bg-[#064e3b]/20">
             Visual Provenance
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#fdfbf7] flex items-center gap-2">
-            <GitBranch className="w-5 h-5 text-[#7dd3fc]" />
+            <GitBranch className="w-5 h-5 text-[#2dd4bf]" />
             <span>Interactive Evidence Graph</span>
           </h2>
           <p className="text-xs text-slate-300 max-w-xl mt-0.5">
@@ -112,11 +112,11 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
             onClick={() => setFilterType('DIRECT')}
             className={`px-3 py-1 text-xs font-mono rounded-lg transition flex items-center gap-1.5 ${
               filterType === 'DIRECT'
-                ? 'bg-[#7dd3fc]/20 text-[#7dd3fc] font-bold border border-[#7dd3fc]/40 shadow-sm'
-                : 'text-slate-400 hover:text-[#7dd3fc]'
+                ? 'bg-[#2dd4bf]/20 text-[#2dd4bf] font-bold border border-[#2dd4bf]/40 shadow-sm'
+                : 'text-slate-400 hover:text-[#2dd4bf]'
             }`}
           >
-            <span className="w-2.5 h-0.5 bg-[#7dd3fc] inline-block"></span>
+            <span className="w-2.5 h-0.5 bg-[#2dd4bf] inline-block"></span>
             <span>Direct Evidence</span>
           </button>
 

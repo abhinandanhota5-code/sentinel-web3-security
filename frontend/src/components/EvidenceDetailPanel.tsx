@@ -47,7 +47,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
               <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold tracking-wider uppercase bg-white/10 text-rose-300 border border-rose-400/30">
                 {finding.severity}
               </span>
-              <span className="text-xs font-mono text-[#7dd3fc] font-semibold uppercase tracking-wider">
+              <span className="text-xs font-mono text-[#2dd4bf] font-semibold uppercase tracking-wider">
                 EVIDENCE INSPECTOR // {finding.findingType}
               </span>
             </div>
@@ -70,7 +70,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
             onClick={() => setActiveTab('tripartite')}
             className={`py-3 px-4 text-xs font-mono font-semibold border-b-2 transition flex items-center gap-2 ${
               activeTab === 'tripartite'
-                ? 'border-[#7dd3fc] text-[#7dd3fc] bg-[#7dd3fc]/10'
+                ? 'border-[#2dd4bf] text-[#2dd4bf] bg-[#2dd4bf]/10'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -111,13 +111,13 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
             <div className="space-y-4">
               
               {/* Section 1: OBSERVED */}
-              <div className="liquid-glass-subtle rounded-2xl p-5 border-l-4 border-l-[#7dd3fc]">
+              <div className="liquid-glass-teal rounded-2xl p-5 border-l-4 border-l-[#2dd4bf]">
                 <div className="flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-2 text-[#7dd3fc] font-mono font-bold text-xs">
+                  <div className="flex items-center gap-2 text-[#2dd4bf] font-mono font-bold text-xs">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>OBSERVED // VERIFIED FACTS</span>
                   </div>
-                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#7dd3fc]/15 text-[#7dd3fc] border border-[#7dd3fc]/30">
+                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#2dd4bf]/15 text-[#2dd4bf] border border-[#2dd4bf]/30">
                     Deterministic RPC Truth
                   </span>
                 </div>
@@ -125,7 +125,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 <ul className="space-y-2">
                   {finding.tripartite.observed.map((obs, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs text-slate-200 bg-white/[0.06] backdrop-blur-md p-2.5 rounded-xl border border-white/10 font-mono">
-                      <span className="text-[#7dd3fc] font-bold shrink-0 mt-0.5">[{i + 1}]</span>
+                      <span className="text-[#2dd4bf] font-bold shrink-0 mt-0.5">[{i + 1}]</span>
                       <span className="leading-relaxed">{obs}</span>
                     </li>
                   ))}
@@ -299,8 +299,8 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
           {/* TAB 3: REMEDIATION */}
           {activeTab === 'remediation' && (
             <div className="space-y-4">
-              <div className="liquid-glass-subtle rounded-2xl p-5 border-l-4 border-l-[#7dd3fc]">
-                <div className="flex items-center gap-2 text-[#7dd3fc] font-bold text-xs font-mono mb-2">
+              <div className="liquid-glass-teal rounded-2xl p-5 border-l-4 border-l-[#2dd4bf]">
+                <div className="flex items-center gap-2 text-[#2dd4bf] font-bold text-xs font-mono mb-2">
                   <ShieldAlert className="w-4 h-4" />
                   <span>ACTIONABLE REMEDIATION</span>
                 </div>
@@ -313,13 +313,13 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     <label className="text-[10px] font-mono text-slate-300 block">
                       Generated Zero-Allowance Revoke Calldata:
                     </label>
-                    <div className="bg-white/[0.06] backdrop-blur-md p-3 rounded-xl font-mono text-xs text-[#7dd3fc] break-all border border-white/10 flex items-start justify-between gap-2">
+                    <div className="bg-white/[0.06] backdrop-blur-md p-3 rounded-xl font-mono text-xs text-[#2dd4bf] break-all border border-white/10 flex items-start justify-between gap-2">
                       <span>{finding.remediation.suggestedCalldata}</span>
                       <button
                         onClick={() => handleCopy(finding.remediation!.suggestedCalldata!, 'calldata')}
                         className="p-1 text-slate-300 hover:text-white shrink-0 cursor-pointer"
                       >
-                        {copiedField === 'calldata' ? <Check className="w-3.5 h-3.5 text-[#7dd3fc]" /> : <Copy className="w-3.5 h-3.5 text-slate-300" />}
+                        {copiedField === 'calldata' ? <Check className="w-3.5 h-3.5 text-[#2dd4bf]" /> : <Copy className="w-3.5 h-3.5 text-slate-300" />}
                       </button>
                     </div>
                   </div>
@@ -328,10 +328,10 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 <div className="mt-5 flex items-center gap-3">
                   <button
                     onClick={() => alert(`Simulating on-chain transaction to revoke allowance... Target: ${finding.evidence.contractAddress}`)}
-                    className="px-4 py-2 bg-gradient-to-r from-[#fdfbf7] via-[#f7efe1] to-[#e8d7be] hover:opacity-95 text-[#14120f] font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 border border-white/50 cursor-pointer"
+                    className="px-4 py-2 bg-gradient-to-r from-[#fdfbf7] via-[#5eead4] to-[#2dd4bf] hover:opacity-95 text-[#042f2e] font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2 border border-[#2dd4bf]/40 cursor-pointer"
                   >
                     <span>Simulate Revoke Tx</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#14120f]" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#042f2e]" />
                   </button>
                   <span className="text-[10px] text-slate-400 font-mono">Zero gas estimation check</span>
                 </div>

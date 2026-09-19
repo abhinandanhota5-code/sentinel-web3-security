@@ -104,7 +104,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
               <DollarSign className="w-3.5 h-3.5 text-[#fde68a]" />
               <span>Current Blast Radius</span>
             </div>
-            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.totalBlastRadiusUsd > 0 ? 'text-rose-300' : 'text-[#7dd3fc]'}`}>
+            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.totalBlastRadiusUsd > 0 ? 'text-rose-300' : 'text-[#2dd4bf]'}`}>
               {formatUsd(report.totalBlastRadiusUsd)}
             </div>
             <div className="text-[10px] text-slate-400 font-mono">
@@ -133,10 +133,10 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
       <div className="mt-5 pt-4 border-t border-white/10 grid grid-cols-3 gap-3 text-center sm:text-left">
         
         {/* Observed */}
-        <div className="liquid-glass-subtle rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-[#7dd3fc]">
-          <CheckCircle2 className="w-4 h-4 text-[#7dd3fc] shrink-0" />
+        <div className="liquid-glass-teal rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-[#2dd4bf]">
+          <CheckCircle2 className="w-4 h-4 text-[#2dd4bf] shrink-0" />
           <div className="truncate">
-            <div className="text-[9px] font-mono uppercase tracking-wider text-[#7dd3fc]">Observed Facts</div>
+            <div className="text-[9px] font-mono uppercase tracking-wider text-[#2dd4bf]">Observed Facts</div>
             <div className="text-xs font-bold font-mono text-[#fdfbf7] truncate">
               {report.summary.observedFactsCount} State Truths
             </div>

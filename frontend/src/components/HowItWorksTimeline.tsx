@@ -106,8 +106,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   const squareFeatures = [
     {
       id: "facts",
-      icon: <CheckCircle2 className="w-5 h-5 text-[#7dd3fc]" />,
-      accent: "#7dd3fc",
+      icon: <CheckCircle2 className="w-5 h-5 text-[#2dd4bf]" />,
+      accent: "#2dd4bf",
       tag: "On-Chain Truth",
       title: "Observed Facts",
       description: "Direct EVM storage proofs proving mathematical facts with zero third-party heuristics.",
@@ -142,8 +142,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
     },
     {
       id: "decoder",
-      icon: <Terminal className="w-5 h-5 text-[#bae6fd]" />,
-      accent: "#bae6fd",
+      icon: <Terminal className="w-5 h-5 text-[#5eead4]" />,
+      accent: "#5eead4",
       tag: "State Inspector",
       title: "Slot Decompiler",
       description: "Inspects raw storage mappings like mapping(owner => spender) down to bytecode truth.",
@@ -163,8 +163,8 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
   return (
     <section className="relative w-full py-20 bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 border-t border-white/[0.08]">
       
-      {/* Ambient background glow mesh (Mixed Soft Blue, Warm Cream & Light Beige Caustics) */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[54rem] h-[32rem] bg-gradient-to-r from-[#fdfbf7]/16 via-[#efe4d0]/14 to-[#7dd3fc]/12 rounded-full blur-[170px] pointer-events-none" />
+      {/* Ambient background glow mesh (Mixed Deep Emerald, Oceanic Teal, Warm Cream & Soft Blue Caustics) */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[54rem] h-[32rem] bg-gradient-to-r from-[#064e3b]/22 via-[#0f766e]/18 via-[#fdfbf7]/14 to-[#2dd4bf]/14 rounded-full blur-[170px] pointer-events-none" />
 
       {/* ==========================================================================
           SECTION 1: DEVJAMS-STYLE SQUARE ICONS (MANUAL SLIDER)
@@ -172,7 +172,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
       <div className="max-w-7xl mx-auto mb-20 px-2 sm:px-4">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#fde68a] mb-2 border border-[#efe4d0]/30 bg-[#fdfbf7]/10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#2dd4bf] mb-2 border border-[#2dd4bf]/30 bg-[#064e3b]/20">
               Verification Modules
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight font-mono">
@@ -214,7 +214,13 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
           {squareFeatures.map((feat) => (
             <div
               key={feat.id}
-              className="w-56 h-56 sm:w-60 sm:h-60 shrink-0 rounded-3xl liquid-glass-beige p-5 flex flex-col justify-between snap-start border border-white/20 hover:border-[#fde68a]/60 liquid-card-hover group"
+              className={`w-56 h-56 sm:w-60 sm:h-60 shrink-0 rounded-3xl p-5 flex flex-col justify-between snap-start border transition-all liquid-card-hover group ${
+                feat.id === 'facts' 
+                  ? 'liquid-glass-teal border-[#2dd4bf]/35 hover:border-[#2dd4bf]/70' 
+                  : feat.id === 'blast' 
+                  ? 'liquid-glass-beige border-[#fde68a]/30 hover:border-[#fde68a]/60' 
+                  : 'liquid-glass-cream border-white/20 hover:border-[#2dd4bf]/50'
+              }`}
             >
               {/* Card Top: Icon & Tag */}
               <div className="flex items-start justify-between gap-2">
@@ -231,7 +237,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
               {/* Card Middle: Title & Layman Explanation */}
               <div className="my-auto py-1.5">
-                <h3 className="text-sm font-bold font-mono text-[#fdfbf7] group-hover:text-[#fde68a] transition">
+                <h3 className="text-sm font-bold font-mono text-[#fdfbf7] group-hover:text-[#2dd4bf] transition">
                   {feat.title}
                 </h3>
                 <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-3 mt-1.5 font-sans">
@@ -280,10 +286,10 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
             className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full bg-white/15 pointer-events-none"
           />
 
-          {/* Subtle Elapsed Track Fill Line (Muted cream & blue, tracks dot 1:1 with zero lag) */}
+          {/* Subtle Elapsed Track Fill Line (Mixed Oceanic Teal, Mint & Warm Cream, tracks dot 1:1 with zero lag) */}
           <div 
             ref={fillRef}
-            className="absolute left-4 sm:left-6 md:left-1/2 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-gradient-to-b from-[#fde68a]/70 via-[#fdfbf7]/60 to-[#7dd3fc]/70 shadow-[0_0_10px_rgba(253,251,247,0.4)]"
+            className="absolute left-4 sm:left-6 md:left-1/2 w-[2.5px] sm:w-[3px] -translate-x-1/2 rounded-full pointer-events-none z-20 bg-gradient-to-b from-[#2dd4bf]/80 via-[#5eead4]/70 to-[#fdfbf7]/60 shadow-[0_0_12px_rgba(45,212,191,0.5)]"
             style={{
               top: '16px',
               height: '0px'
@@ -299,9 +305,9 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               transform: 'translate3d(-50%, 16px, 0)'
             }}
           >
-            {/* 20px-24px diameter: Centered on dot position, tactile, luminous cream pearl */}
-            <div className="w-5 h-5 sm:w-6 sm:h-6 -translate-y-1/2 rounded-full bg-[#fdfbf7] border-2 border-[#efe4d0] shadow-[0_2px_12px_rgba(253,251,247,0.45),inset_0_1px_2px_rgba(255,255,255,0.9)] flex items-center justify-center">
-              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#38bdf8]" />
+            {/* 20px-24px diameter: Centered on dot position, tactile, luminous cream pearl with deep teal core */}
+            <div className="w-5 h-5 sm:w-6 sm:h-6 -translate-y-1/2 rounded-full bg-[#fdfbf7] border-2 border-[#5eead4] shadow-[0_2px_14px_rgba(45,212,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.9)] flex items-center justify-center">
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0f766e] shadow-[0_0_6px_#2dd4bf]" />
             </div>
           </div>
 
@@ -316,15 +322,15 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
               
               {/* LEFT: Visual Snapshot Card (DevJams historical image aesthetic) */}
               <div className="w-full md:w-[46%] group">
-                <div className="liquid-glass-blue rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-white/25">
+                <div className="liquid-glass-teal rounded-3xl p-5 shadow-2xl relative overflow-hidden liquid-card-hover border border-[#2dd4bf]/30">
                   
                   {/* Mockup Header */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#7dd3fc] animate-pulse" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2dd4bf] animate-pulse" />
                       <span className="font-bold text-[#fdfbf7]">SCANNER DETECTED // ON-CHAIN TRIGGER</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[9px] bg-[#7dd3fc]/15 text-[#7dd3fc] border border-[#7dd3fc]/30 font-medium">
+                    <span className="px-2 py-0.5 rounded text-[9px] bg-[#2dd4bf]/15 text-[#2dd4bf] border border-[#2dd4bf]/30 font-medium">
                       Block #19,402,118
                     </span>
                   </div>
@@ -363,7 +369,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     {onSelectPreset && (
                       <button
                         onClick={() => onSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
-                        className="text-[11px] font-mono text-[#7dd3fc] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
+                        className="text-[11px] font-mono text-[#2dd4bf] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
                       >
                         <span>Test This Scenario</span>
                         <ExternalLink className="w-3 h-3" />
@@ -375,7 +381,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
               {/* RIGHT: Layman's Explanation */}
               <div className="w-full md:w-[46%] text-left">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#7dd3fc] uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono text-[#2dd4bf] uppercase tracking-wider mb-2 border border-[#2dd4bf]/30 bg-[#064e3b]/20">
                   Timeline 01 • The Trigger
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-[#fdfbf7] tracking-tight mb-2">
@@ -383,7 +389,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 </h3>
                 
                 {/* Layman Analogy Callout */}
-                <div className="p-3.5 rounded-2xl liquid-glass-beige border-l-3 border-l-[#7dd3fc] mb-4 text-xs text-slate-200 leading-relaxed font-sans">
+                <div className="p-3.5 rounded-2xl liquid-glass-beige border-l-3 border-l-[#2dd4bf] mb-4 text-xs text-slate-200 leading-relaxed font-sans">
                   <strong className="text-[#fdfbf7] block mb-1">💡 The Everyday Analogy:</strong>
                   "Think of it like valet parking your car: you intended to hand the valet a single key to park it today, but the paperwork secretly gave them a master key to your entire garage forever."
                 </div>
@@ -396,7 +402,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#7dd3fc]">✓ No black-box scores</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#2dd4bf]">✓ No black-box scores</span>
                   <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#fdfbf7]">✓ Direct RPC storage proof</span>
                 </div>
               </div>
@@ -428,7 +434,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                     <button
                       onClick={() => setActiveTabT2('observed')}
                       className={`flex-1 py-1 text-[10px] font-mono font-bold rounded-lg transition ${
-                        activeTabT2 === 'observed' ? 'bg-[#7dd3fc]/25 text-[#7dd3fc] border border-[#7dd3fc]/40' : 'text-slate-300 hover:text-white'
+                        activeTabT2 === 'observed' ? 'bg-[#2dd4bf]/25 text-[#2dd4bf] border border-[#2dd4bf]/40' : 'text-slate-300 hover:text-white'
                       }`}
                     >
                       1. Observed
@@ -455,14 +461,14 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                   <div className="p-4 bg-white/[0.06] backdrop-blur-md rounded-2xl border border-white/15 min-h-[140px] flex flex-col justify-center">
                     {activeTabT2 === 'observed' && (
                       <div className="space-y-1.5 animate-in fade-in duration-200">
-                        <div className="flex items-center gap-2 text-[#7dd3fc] font-mono font-bold text-xs">
+                        <div className="flex items-center gap-2 text-[#2dd4bf] font-mono font-bold text-xs">
                           <CheckCircle2 className="w-4 h-4" />
                           <span>OBSERVED: Mathematical Facts</span>
                         </div>
                         <p className="text-[11px] font-mono text-slate-200 leading-relaxed">
                           "Storage Slot [0x02] in USDC token contract holds value 0xffffff... for Spender 0x68b...Fc45."
                         </p>
-                        <span className="inline-block text-[9px] font-mono text-[#7dd3fc] bg-[#7dd3fc]/15 px-2 py-0.5 rounded border border-[#7dd3fc]/30 font-medium">
+                        <span className="inline-block text-[9px] font-mono text-[#2dd4bf] bg-[#2dd4bf]/15 px-2 py-0.5 rounded border border-[#2dd4bf]/30 font-medium">
                           Verified by EVM Merkle Patricia Proof
                         </span>
                       </div>
@@ -528,7 +534,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#7dd3fc]">🔵 Facts Proved</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#2dd4bf]">🟢 Facts Proved</span>
                   <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#fde68a]">🟡 Deductions</span>
                   <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#fdfbf7]">⚪ Honest Limits</span>
                 </div>
@@ -577,23 +583,23 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
                       <span>Generated Zero-Allowance Calldata:</span>
                       <button
                         onClick={handleCopyCode}
-                        className="text-[#7dd3fc] hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-[#2dd4bf] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedCode ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
 
-                    <div className="p-2 bg-white/[0.08] backdrop-blur-md rounded-xl font-mono text-[10px] text-[#7dd3fc] break-all border border-white/15">
+                    <div className="p-2 bg-white/[0.08] backdrop-blur-md rounded-xl font-mono text-[10px] text-[#2dd4bf] break-all border border-white/15">
                       0x095ea7b3...0000000000000000000000000000000000000000
                     </div>
 
                     <button
                       onClick={() => setSimulatedRevoked(!simulatedRevoked)}
-                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold font-mono transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
+                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-black font-mono transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
                         simulatedRevoked
-                          ? 'bg-[#7dd3fc] text-[#080c16] hover:bg-[#7dd3fc]/90'
-                          : 'bg-gradient-to-r from-[#fdfbf7] via-[#f7efe1] to-[#e8d7be] text-[#14120f] hover:opacity-95 border border-white/50'
+                          ? 'bg-[#2dd4bf] text-[#042f2e] hover:bg-[#2dd4bf]/90'
+                          : 'bg-gradient-to-r from-[#fdfbf7] via-[#5eead4] to-[#2dd4bf] text-[#042f2e] hover:opacity-95 border border-[#2dd4bf]/40 shadow-[0_4px_20px_rgba(45,212,191,0.25)]'
                       }`}
                     >
                       <span>{simulatedRevoked ? 'Vault Sealed (Click to Reset)' : 'Simulate Revoke Tx (Zero Gas)'}</span>
@@ -631,7 +637,7 @@ export const HowItWorksTimeline: React.FC<HowItWorksTimelineProps> = ({ onSelect
 
                 <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono">
                   <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#fde68a] font-bold">Exact Dollar Exposure</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#7dd3fc]">1-Click Revoke</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#2dd4bf] font-bold">1-Click Revoke</span>
                   <span className="px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/15 text-[#fdfbf7]">Zero Guesswork</span>
                 </div>
               </div>

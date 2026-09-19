@@ -50,19 +50,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 cursor-pointer group select-none" 
           onClick={() => onSelectView('landing')}
         >
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#fdfbf7]/40 via-[#7dd3fc]/30 to-[#cbd5e1]/30 p-[1px] border border-white/30 shadow-lg shadow-black/40">
-            <div className="w-full h-full bg-[#0c1322]/85 rounded-[11px] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-[#7dd3fc] group-hover:scale-105 transition-transform" />
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#2dd4bf]/40 via-[#0f766e]/30 to-[#fdfbf7]/30 p-[1px] border border-[#2dd4bf]/40 shadow-lg shadow-black/40">
+            <div className="w-full h-full bg-[#051314]/90 rounded-[11px] flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-[#2dd4bf] group-hover:scale-105 transition-transform" />
             </div>
             <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7dd3fc] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#38bdf8]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2dd4bf] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#14b8a6]"></span>
             </span>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold tracking-wider text-[#fdfbf7] font-mono">SENTINEL</span>
-              <span className="px-2 py-0.2 text-[9px] font-mono tracking-wider rounded-full liquid-pill text-[#bae6fd]">
+              <span className="px-2 py-0.2 text-[9px] font-mono tracking-wider rounded-full liquid-pill text-[#2dd4bf] border border-[#2dd4bf]/30 bg-[#064e3b]/20">
                 Security Suite
               </span>
             </div>
@@ -81,12 +81,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Query address, ENS, or contract..."
-              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-white/[0.07] border border-white/20 rounded-xl text-[#fdfbf7] placeholder-slate-400 focus:outline-none focus:border-[#fde68a]/80 focus:ring-1 focus:ring-[#fde68a]/30 transition backdrop-blur-md"
+              className="w-full pl-8 pr-20 py-1.5 text-xs font-mono bg-white/[0.07] border border-white/20 rounded-xl text-[#fdfbf7] placeholder-slate-400 focus:outline-none focus:border-[#2dd4bf]/80 focus:ring-1 focus:ring-[#2dd4bf]/30 transition backdrop-blur-md"
             />
             <button
               type="submit"
               disabled={isInvestigating}
-              className="absolute inset-y-1 right-1 px-2.5 bg-white/15 hover:bg-[#fde68a]/20 border border-white/25 text-[#fdfbf7] rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+              className="absolute inset-y-1 right-1 px-2.5 bg-white/15 hover:bg-[#2dd4bf]/20 hover:border-[#2dd4bf]/40 border border-white/25 text-[#fdfbf7] rounded-lg text-[10px] font-mono font-medium transition flex items-center gap-1 disabled:opacity-50 cursor-pointer"
             >
               {isInvestigating ? 'Scanning' : 'Inspect'}
             </button>
@@ -113,11 +113,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('dashboard')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'dashboard'
-                ? 'liquid-pill text-[#7dd3fc] font-semibold border-[#7dd3fc]/50 shadow-sm'
+                ? 'liquid-glass-teal text-[#2dd4bf] font-semibold border-[#2dd4bf]/50 shadow-sm'
                 : 'text-slate-300 hover:text-[#fdfbf7] hover:bg-white/10'
             }`}
           >
-            <Activity className="w-3.5 h-3.5 text-[#7dd3fc]" />
+            <Activity className="w-3.5 h-3.5 text-[#2dd4bf]" />
             <span>Dashboard</span>
           </button>
 
