@@ -17,12 +17,82 @@ import {
   EvidenceIndex,
   type EvidenceBundle,
   type Explanation,
+  type ExplanationProvider,
   type UnknownField,
 } from "@sentinel/ai";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import type { ApiConfig, ExplainRequestBody } from "./config.js";
+import {
+  adaptEngineBundle,
+  normalizeChain,
+  type EngineBundle,
+} from "./engine-adapter.js";
+
+/**
+ * Port of the deterministic security engine. The real implementation is the
+ * CJS `src/security-engine` package; tests inject fakes. sentinel-api contains
+ * no blockchain logic of its own — it only invokes this port.
+ */
+export interface SecurityEnginePort {
+  analyzeAddressSecurity(args: {
+    provider: unknown;
+    address: string;
+    chain: string;
+  }): Promise<EngineBundle>;
+}
 
 export interface AppDeps {
   config: ApiConfig;
+  /** Deterministic engine; defaults to the real CJS security engine. */
+  securityEngine?: SecurityEnginePort | undefined;
+  /** Blockchain provider for the engine; defaults to createEthereumProvider(). */
+  blockchainProvider?: unknown;
+  /** Explanation provider override (tests); defaults from GEMINI_API_KEY. */
+  explanationProvider?: ExplanationProvider | undefined;
+}
+
+interface RealSecurityEngineModule {
+  createEthereumProvider: (opts?: Record<string, unknown>) => unknown;
+  analyzeAddressSecurity: SecurityEnginePort["analyzeAddressSecurity"];
+}
+
+/**
+ * Resolve the deterministic CJS security engine relative to this compiled
+ * file (dist/), independent of the process cwd. Returns undefined when the
+ * engine is not present so the AI-only endpoints still boot.
+ */
+function loadRealSecurityEngine(): RealSecurityEngineModule | undefined {
+  try {
+    const here = fileURLToPath(new URL(".", import.meta.url));
+    const enginePath = path.resolve(here, "..", "..", "src", "security-engine", "index.js");
+    return createRequire(import.meta.url)(enginePath) as RealSecurityEngineModule;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Real engine + provider, loaded lazily so AI-only routes work without it. */
+function createDefaultSecurityEngine(): SecurityEnginePort & {
+  provider: () => unknown;
+} {
+  let mod: RealSecurityEngineModule | undefined;
+  let provider: unknown;
+  const load = (): RealSecurityEngineModule => {
+    if (!mod) {
+      mod = loadRealSecurityEngine();
+      if (!mod) throw new Error("security engine module not found");
+    }
+    return mod;
+  };
+  return {
+    provider: () => {
+      if (provider === undefined) provider = load().createEthereumProvider();
+      return provider;
+    },
+    analyzeAddressSecurity: (args) => load().analyzeAddressSecurity(args),
+  };
 }
 
 const UNKNOWN_REASONS: readonly UnknownField["reason"][] = [
@@ -99,16 +169,35 @@ export function serializeExplanation(e: Explanation): Record<string, unknown> {
   };
 }
 
+const HEX_ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+
+/** Chains the deterministic engine currently supports. */
+const SUPPORTED_CHAINS = new Set(["ethereum"]);
+
 export function buildApp(deps: AppDeps): Express {
   const { config } = deps;
 
-  const provider = config.geminiApiKey
-    ? new GeminiExplanationProvider({
-        timeoutMs: config.timeoutMs,
-        maxRetries: config.maxRetries,
-        ...(config.model ? { model: config.model } : {}),
-      })
-    : new MockExplanationProvider();
+  // Deterministic engine wiring: injected port, else the real CJS engine.
+  const defaultEngine = deps.securityEngine ? undefined : createDefaultSecurityEngine();
+  const securityEngine: SecurityEnginePort = deps.securityEngine ?? defaultEngine!;
+  let blockchainProvider: unknown = deps.blockchainProvider;
+  if (blockchainProvider === undefined && defaultEngine) {
+    try {
+      blockchainProvider = defaultEngine.provider();
+    } catch {
+      blockchainProvider = undefined; // /analyze will fail per-request, AI routes still serve
+    }
+  }
+
+  const provider =
+    deps.explanationProvider ??
+    (config.geminiApiKey
+      ? new GeminiExplanationProvider({
+          timeoutMs: config.timeoutMs,
+          maxRetries: config.maxRetries,
+          ...(config.model ? { model: config.model } : {}),
+        })
+      : new MockExplanationProvider());
 
   const { engine, prism } = createSentinelAi({ provider, prismClient: new NullPrismClient() });
 
@@ -182,6 +271,71 @@ export function buildApp(deps: AppDeps): Express {
 
       await prism.submitEvaluation(evaluation);
       res.json(evaluation);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.post("/api/v1/analyze", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (typeof req.body !== "object" || req.body === null || Array.isArray(req.body)) {
+        throw new BadRequestError("body must be a JSON object");
+      }
+      const body = req.body as Record<string, unknown>;
+      const address = body.address;
+      if (typeof address !== "string" || !HEX_ADDRESS.test(address)) {
+        throw new BadRequestError("address must be a 20-byte hex address");
+      }
+      const chain = typeof body.chain === "string" && body.chain.length > 0 ? body.chain : "ethereum";
+      if (!SUPPORTED_CHAINS.has(chain)) {
+        throw new BadRequestError(`unsupported chain: ${chain}`);
+      }
+      const question =
+        typeof body.question === "string" && body.question.trim().length > 0
+          ? body.question
+          : `Explain the security posture of ${address} on ${chain}.`;
+      if (body.audience !== undefined && !["retail", "analyst", "developer"].includes(body.audience as string)) {
+        throw new BadRequestError("audience must be retail|analyst|developer");
+      }
+      const audience = (body.audience as "retail" | "analyst" | "developer" | undefined) ?? "retail";
+
+      // 1-2. Deterministic engine runs first; it is the sole source of truth.
+      if (blockchainProvider === undefined) {
+        throw new BadRequestError("blockchain provider unavailable", 503);
+      }
+      const rawEngineBundle = await securityEngine.analyzeAddressSecurity({
+        provider: blockchainProvider,
+        address,
+        chain,
+      });
+
+      // 3. Deterministic adapter: engine findings -> AI EvidenceBundle.
+      const adapted = adaptEngineBundle(rawEngineBundle);
+      // Defense-in-depth: the adapted bundle must satisfy the AI schema's
+      // epistemic invariants before it may reach the explanation engine.
+      parseEvidenceBundle(adapted.bundle);
+
+      // 4. Grounded AI explanation. The engine already refuses empty evidence.
+      const explanation = await engine.explain({
+        bundle: adapted.bundle,
+        question,
+        audience,
+        unknowns: adapted.unknowns,
+      });
+
+      res.json({
+        subject: {
+          chain: normalizeChain(chain),
+          address,
+          addressType: rawEngineBundle.addressType ?? null,
+        },
+        findings: adapted.findings,
+        evidence: adapted.bundle,
+        explanation: serializeExplanation(explanation),
+        coverageGaps: adapted.coverageGaps,
+        unknowns: adapted.unknowns,
+        dataMode: adapted.dataMode,
+      });
     } catch (err) {
       next(err);
     }

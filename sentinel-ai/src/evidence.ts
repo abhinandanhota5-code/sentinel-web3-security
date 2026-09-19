@@ -34,7 +34,8 @@ export type EvidenceKind =
   | "proxy"
   | "balance"
   | "protocol"
-  | "fund_flow";
+  | "fund_flow"
+  | "engine_finding";
 
 /** Provenance of a fact: which deterministic component produced it. */
 export interface EvidenceSource {
@@ -147,6 +148,22 @@ export interface FundFlowEvidence extends EvidenceBase {
   txHash: Hash32;
 }
 
+/**
+ * A deterministic security-engine finding, passed through verbatim.
+ *
+ * Deterministic engines report *findings* (e.g. UNLIMITED_ALLOWANCE,
+ * PROXY_DETECTED) whose shape varies per check, and UNKNOWN findings carry no
+ * fact fields at all. Forcing those into canonical fact kinds would require
+ * fabricating values, which this schema forbids. The adapter layer therefore
+ * embeds the engine's own finding object unmodified; the engine remains the
+ * source of truth for every literal inside it.
+ */
+export interface EngineFindingEvidence extends EvidenceBase {
+  kind: "engine_finding";
+  /** The deterministic engine's finding, unmodified. Never edited by the AI layer. */
+  finding: Record<string, unknown>;
+}
+
 export type Evidence =
   | TransactionEvidence
   | ContractEvidence
@@ -155,7 +172,8 @@ export type Evidence =
   | RoleEvidence
   | BalanceEvidence
   | ProtocolEvidence
-  | FundFlowEvidence;
+  | FundFlowEvidence
+  | EngineFindingEvidence;
 
 /**
  * An evidence record as handed to the AI layer: the on-chain fact plus the
@@ -316,6 +334,12 @@ export function parseEvidenceRecord(raw: unknown): EvidenceRecord {
       if (v.token !== undefined) assertAddress(v.token, "token");
       assertDecimalString(v.amount, "amount");
       assertHash32(v.txHash, "txHash");
+      assert(typeof v.knowledgeType === "string", "knowledgeType is required");
+      return v as unknown as EvidenceRecord;
+    }
+    case "engine_finding": {
+      assertBase(v, kind);
+      assert(isObject(v.finding), "finding must be an object");
       assert(typeof v.knowledgeType === "string", "knowledgeType is required");
       return v as unknown as EvidenceRecord;
     }

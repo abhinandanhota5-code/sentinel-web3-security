@@ -18,6 +18,43 @@ Frontend ──HTTP──> sentinel-api ──> @sentinel/ai (grounded engine)
 | GET | `/healthz` | Liveness + active provider (`gemini` or `mock`) + PRISM client name |
 | POST | `/api/v1/explain` | Grounded explanation for an `EvidenceBundle` + question |
 | POST | `/api/v1/evaluate` | Deterministic PRISM evaluation signals for a draft vs a bundle |
+| POST | `/api/v1/analyze` | Address -> deterministic engine -> adapter -> grounded explanation |
+
+### POST /api/v1/analyze
+
+Full pipeline in one call — the frontend only supplies an address:
+
+```jsonc
+{ "address": "0x…", "chain": "ethereum", "question": "optional", "audience": "retail" }
+```
+
+The route invokes the deterministic security engine (`analyzeAddressSecurity`
+with the existing `createEthereumProvider()` — Etherscan + RPC), adapts its
+findings via `src/engine-adapter.ts`, runs the grounded explanation, and
+returns:
+
+```jsonc
+{
+  "subject": { "chain": "eip155:1", "address": "0x…", "addressType": "EOA" },
+  "findings": [ /* engine findings verbatim, ids/types/severities/knowledgeType */ ],
+  "evidence": { /* the adapted @sentinel/ai EvidenceBundle */ },
+  "explanation": { "text", "blocked", "refused", "citations", "…" },
+  "coverageGaps": [ /* engine coverage gaps verbatim */ ],
+  "unknowns": [ { "field", "reason", "detail" } ],
+  "dataMode": "REAL"   // REAL | DEMO | MIXED | UNSPECIFIED
+}
+```
+
+Adapter guarantees (see `src/engine-adapter.ts`):
+
+- The engine is the sole source of truth; findings are embedded **verbatim**
+  (`kind: "engine_finding"`) — no value is completed, converted, or dropped.
+- Provider failures stay UNKNOWN: coverage gaps/limitations become
+  `UnknownField`s (`source_unreachable` / `no_evidence`), never findings.
+- `ethereum` -> `eip155:1` (CAIP-2) is normalized at this boundary only.
+- `source.tool` = `security-engine:<kind>`; `source.locator` = `dataMode:<MODE>`
+  (INFERRED findings cite `rule:<findingType>`). `capturedAt` is when the
+  adapter received the observation, NOT the blockchain event time.
 
 ### POST /api/v1/explain
 
@@ -54,6 +91,10 @@ npm start          # loads ../.env via --env-file; PORT defaults to 8787
 Without `GEMINI_API_KEY` the server automatically runs on the mock provider
 (no network, deterministic output) — useful for local development.
 
+The deterministic engine (`../src/security-engine`) is loaded from disk at
+startup; if it is missing, `/analyze` returns `503` while `/healthz`,
+`/explain`, and `/evaluate` still serve.
+
 ## Environment variables
 
 | Variable | Default | Purpose |
@@ -73,7 +114,10 @@ Without `GEMINI_API_KEY` the server automatically runs on the mock provider
 - All evidence is strictly validated before it reaches the engine; malformed
   bundles get `400`, oversized ones `413`.
 - Unknown errors return a generic `500` — no stacks, no provider internals.
-- No blockchain logic here: this service only orchestrates `@sentinel/ai`.
+- No blockchain logic here: this service only orchestrates `@sentinel/ai` and
+  the deterministic engine; it never talks to Etherscan/RPC itself.
+- `/analyze` re-validates every adapted bundle with `parseEvidenceBundle()`
+  before it may reach the explanation engine (schema + epistemic invariants).
 
 ## Checks
 

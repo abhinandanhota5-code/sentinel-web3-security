@@ -118,14 +118,20 @@ Both entry points return the same `EvidenceBundle` shape:
 
 The `evidence` entry retains the original structured provider evidence and normalized identifiers. `knowledgeType` is always `OBSERVED`, `INFERRED`, or `UNKNOWN`; no missing blockchain field is filled with a fabricated value. The engine does not emit a generic risk score.
 
-The handoff to Sentinel AI is intentionally direct and one-way:
+The handoff to Sentinel AI is wired end-to-end via the HTTP API:
 
-```js
-const bundle = await analyzeAddressSecurity({ provider, address, chain });
-const explanation = await createSentinelAi().engine.explain(bundle);
+```bash
+# Address in -> grounded explanation out; the API calls the engine for you:
+curl -X POST http://localhost:8787/api/v1/analyze \
+  -H 'content-type: application/json' \
+  -d '{"address":"0x…","chain":"ethereum"}'
 ```
 
-The security engine stops at `EvidenceBundle`. It has no AI dependency, does not call an LLM, and does not know about PRISM. The current repository does not contain the `sentinel-ai` package, so the integration test uses an injected `engine.explain` contract fixture and verifies that IDs, citations, addresses, allowances, hashes, and tri-state knowledge values survive the handoff.
+`sentinel-api` adapts the engine's findings to the AI layer's `EvidenceBundle`
+via `sentinel-api/src/engine-adapter.ts` (verbatim passthrough, documented
+`ethereum` -> `eip155:1` mapping, adapter-time `capturedAt`).
+
+The security engine stops at `EvidenceBundle`. It has no AI dependency, does not call an LLM, and does not know about PRISM. The `sentinel-api/src/engine-adapter.ts` integration is covered by tests that run the actual CJS engine against the demo provider and verify that IDs, citations, addresses, allowances, hashes, and tri-state knowledge values survive the handoff.
 
 ### Ethereum data providers
 
