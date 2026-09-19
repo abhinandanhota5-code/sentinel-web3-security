@@ -31,13 +31,15 @@ function decodeString(value) {
 }
 
 class RpcBlockchainProvider extends BlockchainProvider {
-  constructor({ rpcUrl, fetchImpl = globalThis.fetch, mode = 'REAL' } = {}) {
+  constructor({ rpcUrl, fetchImpl = globalThis.fetch, mode = 'REAL', logBlockRange = 10000, approvalFromBlock = 0 } = {}) {
     super();
     if (!rpcUrl) throw new Error('ETHEREUM_RPC_URL is required for the RPC provider');
     if (typeof fetchImpl !== 'function') throw new Error('A fetch implementation is required');
     this.mode = mode;
     this.rpcUrl = rpcUrl;
     this.fetchImpl = fetchImpl;
+    this.logBlockRange = logBlockRange;
+    this.approvalFromBlock = approvalFromBlock;
   }
 
   async rpc(method, params) {
@@ -65,7 +67,7 @@ class RpcBlockchainProvider extends BlockchainProvider {
   }
 
   async getTokenApprovals(address, chain) {
-    const logs = await this.rpc('eth_getLogs', [{ fromBlock: '0x0', toBlock: 'latest', topics: [APPROVAL_TOPIC, `0x${paddedAddress(address)}`] }]);
+    const logs = await this.getLogsInRanges({ fromBlock: this.approvalFromBlock, topics: [APPROVAL_TOPIC, `0x${paddedAddress(address)}`] });
     const approvals = [];
     for (const log of logs) {
       const spenderAddress = addressFromWord(log.topics?.[2]);
@@ -98,8 +100,20 @@ class RpcBlockchainProvider extends BlockchainProvider {
   }
 
   async getLogs(address) {
-    const logs = await this.rpc('eth_getLogs', [{ address, fromBlock: '0x0', toBlock: 'latest' }]);
+    const logs = await this.getLogsInRanges({ address });
     return logs.map((log) => ({ transactionHash: log.transactionHash, blockNumber: quantityToNumber(log.blockNumber), contractAddress: address, event: 'LOG', topics: log.topics, data: log.data }));
+  }
+
+  async getLogsInRanges(filter) {
+    const latest = quantityToNumber(await this.rpc('eth_blockNumber', []));
+    if (latest === undefined) throw new Error('RPC returned an invalid latest block number');
+    const logs = [];
+    for (let fromBlock = Number(filter.fromBlock || 0); fromBlock <= latest; fromBlock += this.logBlockRange + 1) {
+      const toBlock = Math.min(fromBlock + this.logBlockRange, latest);
+      const result = await this.rpc('eth_getLogs', [{ ...filter, fromBlock: `0x${fromBlock.toString(16)}`, toBlock: `0x${toBlock.toString(16)}` }]);
+      logs.push(...result);
+    }
+    return logs;
   }
 
   async getOwner(address) {

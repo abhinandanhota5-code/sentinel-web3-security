@@ -4,12 +4,13 @@ const DEFAULT_BASE_URL = 'https://api.etherscan.io/v2/api';
 const NO_RESULTS = new Set(['No transactions found', 'No records found', 'No logs found']);
 
 class EtherscanApiError extends Error {
-  constructor(message, { action, status, result } = {}) {
+  constructor(message, { action, status, result, retryable = false } = {}) {
     super(message);
     this.name = 'EtherscanApiError';
     this.action = action;
     this.status = status;
     this.result = result;
+    this.retryable = retryable;
   }
 }
 
@@ -31,7 +32,7 @@ function normalizeTransaction(transaction, kind, extra = {}) {
 }
 
 class EtherscanBlockchainProvider extends BlockchainProvider {
-  constructor({ apiKey = process.env.ETHERSCAN_API_KEY, chainId = 1, baseUrl = DEFAULT_BASE_URL, fetchImpl = globalThis.fetch, pageSize = 100, maxPages = 10, mode = 'REAL' } = {}) {
+  constructor({ apiKey = process.env.ETHERSCAN_API_KEY, chainId = 1, baseUrl = DEFAULT_BASE_URL, fetchImpl = globalThis.fetch, pageSize = 100, maxPages = 10, mode = 'REAL', minRequestIntervalMs = 350, maxRetries = 3, retryBaseDelayMs = 500 } = {}) {
     super();
     if (!apiKey) throw new Error('ETHERSCAN_API_KEY is required for the Etherscan provider');
     if (typeof fetchImpl !== 'function') throw new Error('A fetch implementation is required');
@@ -42,9 +43,34 @@ class EtherscanBlockchainProvider extends BlockchainProvider {
     this.fetchImpl = fetchImpl;
     this.pageSize = pageSize;
     this.maxPages = maxPages;
+    this.minRequestIntervalMs = minRequestIntervalMs;
+    this.maxRetries = maxRetries;
+    this.retryBaseDelayMs = retryBaseDelayMs;
+    this.requestQueue = Promise.resolve();
+    this.lastRequestAt = 0;
   }
 
   async request(action, params = {}) {
+    const run = this.requestQueue.then(() => this.requestWithRetry(action, params));
+    this.requestQueue = run.catch(() => undefined);
+    return run;
+  }
+
+  async requestWithRetry(action, params) {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await this.requestOnce(action, params);
+      } catch (error) {
+        if (!(error instanceof EtherscanApiError) || !error.retryable || attempt >= this.maxRetries) throw error;
+        await new Promise((resolve) => setTimeout(resolve, this.retryBaseDelayMs * (2 ** attempt)));
+      }
+    }
+  }
+
+  async requestOnce(action, params) {
+    const elapsed = Date.now() - this.lastRequestAt;
+    if (elapsed < this.minRequestIntervalMs) await new Promise((resolve) => setTimeout(resolve, this.minRequestIntervalMs - elapsed));
+    this.lastRequestAt = Date.now();
     const url = new URL(this.baseUrl);
     url.search = new URLSearchParams({ chainid: this.chainId, module: params.module || 'account', action, ...params, apikey: this.apiKey }).toString();
     let response;
@@ -53,7 +79,7 @@ class EtherscanBlockchainProvider extends BlockchainProvider {
     } catch (error) {
       throw new EtherscanApiError(`Etherscan request failed: ${error.message}`, { action });
     }
-    if (!response.ok) throw new EtherscanApiError(`Etherscan HTTP ${response.status}`, { action, status: response.status });
+    if (!response.ok) throw new EtherscanApiError(`Etherscan HTTP ${response.status}`, { action, status: response.status, retryable: response.status === 429 });
     let payload;
     try {
       payload = await response.json();
@@ -62,7 +88,9 @@ class EtherscanBlockchainProvider extends BlockchainProvider {
     }
     if (payload.status === '1') return payload.result;
     if (NO_RESULTS.has(payload.message) || NO_RESULTS.has(payload.result)) return [];
-    throw new EtherscanApiError(`Etherscan ${action} failed: ${payload.result || payload.message || 'unknown error'}`, { action, result: payload.result, status: payload.status });
+    const message = payload.result || payload.message || 'unknown error';
+    const retryable = /rate limit|max calls per sec|too many requests|temporarily unavailable/i.test(String(message));
+    throw new EtherscanApiError(`Etherscan ${action} failed: ${message}`, { action, result: payload.result, status: payload.status, retryable });
   }
 
   async paged(action, params) {
