@@ -20,52 +20,52 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
     switch (type) {
       case 'WALLET':
         return {
-          border: 'border-teal-400/50',
-          bg: 'bg-teal-500/10',
-          text: 'text-teal-300',
-          badge: 'bg-teal-500/20 text-teal-300 border-teal-500/40',
+          border: 'border-[#a7f3d0]/40',
+          bg: 'bg-[#a7f3d0]/10',
+          text: 'text-[#a7f3d0]',
+          badge: 'bg-[#a7f3d0]/15 text-[#a7f3d0] border-[#a7f3d0]/30',
         };
       case 'TOKEN':
         return {
-          border: 'border-amber-400/50',
-          bg: 'bg-amber-500/10',
-          text: 'text-amber-300',
-          badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+          border: 'border-[#fed7aa]/40',
+          bg: 'bg-[#fed7aa]/10',
+          text: 'text-[#fed7aa]',
+          badge: 'bg-[#fed7aa]/15 text-[#fed7aa] border-[#fed7aa]/30',
         };
       case 'SPENDER':
         return {
-          border: 'border-purple-400/50',
-          bg: 'bg-purple-500/10',
-          text: 'text-purple-300',
-          badge: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+          border: 'border-[#d8b4fe]/40',
+          bg: 'bg-[#d8b4fe]/10',
+          text: 'text-[#d8b4fe]',
+          badge: 'bg-[#d8b4fe]/15 text-[#d8b4fe] border-[#d8b4fe]/30',
         };
       case 'ADMIN':
         return {
-          border: 'border-rose-400/50',
-          bg: 'bg-rose-500/10',
-          text: 'text-rose-300',
-          badge: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+          border: 'border-[#fca5a5]/40',
+          bg: 'bg-[#fca5a5]/10',
+          text: 'text-[#fca5a5]',
+          badge: 'bg-[#fca5a5]/15 text-[#fca5a5] border-[#fca5a5]/30',
         };
       case 'IMPLEMENTATION':
         return {
-          border: 'border-indigo-400/50',
-          bg: 'bg-indigo-500/10',
-          text: 'text-indigo-300',
-          badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+          border: 'border-[#c4b5fd]/40',
+          bg: 'bg-[#c4b5fd]/10',
+          text: 'text-[#c4b5fd]',
+          badge: 'bg-[#c4b5fd]/15 text-[#c4b5fd] border-[#c4b5fd]/30',
         };
       case 'ORACLE':
         return {
-          border: 'border-cyan-400/50',
-          bg: 'bg-cyan-500/10',
-          text: 'text-cyan-300',
-          badge: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+          border: 'border-[#bae6fd]/40',
+          bg: 'bg-[#bae6fd]/10',
+          text: 'text-[#bae6fd]',
+          badge: 'bg-[#bae6fd]/15 text-[#bae6fd] border-[#bae6fd]/30',
         };
       default:
         return {
-          border: 'border-slate-500/50',
-          bg: 'bg-slate-800/20',
-          text: 'text-slate-300',
-          badge: 'bg-slate-800 text-slate-300 border-slate-700',
+          border: 'border-[#e6ded6]/30',
+          bg: 'bg-[#e6ded6]/5',
+          text: 'text-stone-300',
+          badge: 'bg-stone-800/60 text-stone-300 border-stone-700',
         };
     }
   };
@@ -78,31 +78,31 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
   });
 
   return (
-    <div className="liquid-glass rounded-2xl p-6 mb-10 shadow-2xl relative overflow-hidden">
+    <div className="liquid-glass rounded-3xl p-6 mb-10 shadow-2xl relative overflow-hidden border border-[#e6ded6]/15">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-indigo-300 mb-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-[#d8b4fe] mb-1">
             Visual Provenance
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-            <GitBranch className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-stone-100 flex items-center gap-2">
+            <GitBranch className="w-5 h-5 text-[#d8b4fe]" />
             <span>Interactive Evidence Graph</span>
           </h2>
-          <p className="text-xs text-slate-400 max-w-xl mt-0.5">
+          <p className="text-xs text-stone-400 max-w-xl mt-0.5">
             Every edge connects verified state facts. Solid lines represent direct on-chain evidence; dashed lines denote inferred threat pathways.
           </p>
         </div>
 
         {/* Legend Filters */}
-        <div className="flex items-center gap-1.5 liquid-glass-subtle p-1 rounded-xl self-start">
+        <div className="flex items-center gap-1.5 liquid-glass-subtle p-1 rounded-xl self-start border border-[#e6ded6]/15">
           <button
             onClick={() => setFilterType('ALL')}
             className={`px-3 py-1 text-xs font-mono rounded-lg transition ${
               filterType === 'ALL'
-                ? 'bg-white/15 text-white font-bold shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-stone-100/15 text-stone-100 font-bold shadow-sm'
+                : 'text-stone-400 hover:text-stone-200'
             }`}
           >
             All ({edges.length})
@@ -112,11 +112,11 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
             onClick={() => setFilterType('DIRECT')}
             className={`px-3 py-1 text-xs font-mono rounded-lg transition flex items-center gap-1.5 ${
               filterType === 'DIRECT'
-                ? 'bg-teal-500/25 text-teal-300 font-bold border border-teal-500/40 shadow-sm'
-                : 'text-slate-400 hover:text-teal-300'
+                ? 'bg-[#a7f3d0]/20 text-[#a7f3d0] font-bold border border-[#a7f3d0]/40 shadow-sm'
+                : 'text-stone-400 hover:text-[#a7f3d0]'
             }`}
           >
-            <span className="w-2.5 h-0.5 bg-teal-400 inline-block"></span>
+            <span className="w-2.5 h-0.5 bg-[#a7f3d0] inline-block"></span>
             <span>Direct Evidence</span>
           </button>
 
@@ -124,18 +124,18 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
             onClick={() => setFilterType('INFERRED')}
             className={`px-3 py-1 text-xs font-mono rounded-lg transition flex items-center gap-1.5 ${
               filterType === 'INFERRED'
-                ? 'bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
-                : 'text-slate-400 hover:text-amber-300'
+                ? 'bg-[#fed7aa]/20 text-[#fed7aa] font-bold border border-[#fed7aa]/40 shadow-sm'
+                : 'text-stone-400 hover:text-[#fed7aa]'
             }`}
           >
-            <span className="w-2.5 h-0.5 border-b-2 border-dashed border-amber-400 inline-block"></span>
+            <span className="w-2.5 h-0.5 border-b-2 border-dashed border-[#fed7aa] inline-block"></span>
             <span>Inferred Risk</span>
           </button>
         </div>
       </div>
 
       {/* Main Graph Arena */}
-      <div className="bg-black/40 border border-white/10 rounded-2xl p-6 min-h-[420px] relative overflow-hidden flex flex-col justify-between backdrop-blur-xl">
+      <div className="bg-black/35 border border-[#e6ded6]/10 rounded-2xl p-6 min-h-[420px] relative overflow-hidden flex flex-col justify-between backdrop-blur-xl">
         
         {/* Subtle grid backdrop */}
         <div className="absolute inset-0 cyber-grid opacity-40 pointer-events-none" />
@@ -154,7 +154,7 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                   setSelectedEdge(null);
                 }}
                 className={`liquid-glass-subtle p-4 rounded-2xl border transition cursor-pointer liquid-card-hover ${style.bg} ${
-                  isSelected ? 'border-white shadow-xl shadow-teal-500/20 scale-105' : style.border
+                  isSelected ? 'border-white shadow-xl shadow-[#a7f3d0]/20 scale-105' : style.border
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -162,24 +162,24 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                     {node.type}
                   </span>
                   {node.isTarget && (
-                    <span className="px-1.5 py-0.2 text-[8px] font-mono bg-teal-500/30 text-teal-300 border border-teal-500/50 rounded-md">
+                    <span className="px-1.5 py-0.5 text-[8px] font-mono bg-[#a7f3d0]/25 text-[#a7f3d0] border border-[#a7f3d0]/40 rounded-md">
                       TARGET
                     </span>
                   )}
                 </div>
 
-                <div className="text-sm font-bold text-white mb-0.5 truncate">
+                <div className="text-sm font-bold text-stone-100 mb-0.5 truncate">
                   {node.label}
                 </div>
 
                 {node.sublabel && (
-                  <div className="text-xs font-mono text-slate-300 truncate mb-2">
+                  <div className="text-xs font-mono text-stone-300 truncate mb-2">
                     {node.sublabel}
                   </div>
                 )}
 
                 {node.badge && (
-                  <div className="text-[10px] font-mono text-slate-400 bg-black/40 px-2 py-1 rounded-lg border border-white/5 truncate">
+                  <div className="text-[10px] font-mono text-stone-400 bg-black/40 px-2 py-1 rounded-lg border border-white/5 truncate">
                     {node.badge}
                   </div>
                 )}
@@ -190,9 +190,9 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
 
         {/* Edges List */}
         <div className="relative z-10 border-t border-white/10 pt-5">
-          <div className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+          <div className="text-xs font-mono uppercase tracking-wider text-stone-400 mb-3 flex items-center justify-between">
             <span>Verified Connections ({filteredEdges.length})</span>
-            <span className="text-[10px] text-teal-400 font-normal">Click edge to view state proof</span>
+            <span className="text-[10px] text-[#a7f3d0] font-normal">Click edge to view state proof</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -211,32 +211,32 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                   }}
                   className={`p-3 rounded-xl border transition cursor-pointer flex flex-col gap-1.5 ${
                     isSelected
-                      ? 'liquid-glass border-teal-400 shadow-lg'
+                      ? 'liquid-glass border-[#a7f3d0]/60 shadow-lg'
                       : 'liquid-glass-subtle hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="font-bold text-slate-200">
+                    <span className="font-bold text-stone-200">
                       {sourceNode?.label || edge.source}
                     </span>
 
                     <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-bold tracking-wide flex items-center gap-1 ${
                       isDirect 
-                        ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        ? 'bg-[#a7f3d0]/15 text-[#a7f3d0] border border-[#a7f3d0]/30' 
+                        : 'bg-[#fed7aa]/15 text-[#fed7aa] border border-[#fed7aa]/30'
                     }`}>
-                      {isDirect ? <CheckCircle2 className="w-3 h-3 text-teal-400" /> : <TrendingUp className="w-3 h-3 text-amber-400" />}
+                      {isDirect ? <CheckCircle2 className="w-3 h-3 text-[#a7f3d0]" /> : <TrendingUp className="w-3 h-3 text-[#fed7aa]" />}
                       <span>{edge.relationship}</span>
                     </span>
 
-                    <span className="font-bold text-slate-200">
+                    <span className="font-bold text-stone-200">
                       {targetNode?.label || edge.target}
                     </span>
                   </div>
 
                   {edge.evidenceRef && (
-                    <div className="text-[10px] text-slate-400 font-mono bg-black/40 p-2 rounded-lg border border-white/5">
-                      <span className="text-teal-400 font-semibold">Evidence: </span>
+                    <div className="text-[10px] text-stone-400 font-mono bg-black/40 p-2 rounded-lg border border-white/5">
+                      <span className="text-[#a7f3d0] font-semibold">Evidence: </span>
                       {edge.evidenceRef}
                     </div>
                   )}
@@ -248,9 +248,9 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
 
         {/* Selected Inspector Bar */}
         {(selectedNode || selectedEdge) && (
-          <div className="relative z-10 mt-5 p-4 rounded-xl liquid-glass border border-white/20 animate-in fade-in duration-150">
+          <div className="relative z-10 mt-5 p-4 rounded-2xl liquid-glass border border-[#e6ded6]/20 animate-in fade-in duration-150">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-mono uppercase tracking-wider text-teal-300 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#a7f3d0] font-bold">
                 {selectedNode ? `Node: ${selectedNode.label}` : `Edge: ${selectedEdge?.relationship}`}
               </span>
               <button
@@ -258,24 +258,24 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({ nodes, edges }) =>
                   setSelectedNode(null);
                   setSelectedEdge(null);
                 }}
-                className="text-xs font-mono text-slate-400 hover:text-white"
+                className="text-xs font-mono text-stone-400 hover:text-white"
               >
                 Close ✕
               </button>
             </div>
 
             {selectedNode && (
-              <div className="text-xs text-slate-300 font-mono space-y-0.5">
+              <div className="text-xs text-stone-300 font-mono space-y-0.5">
                 <div>Type: <span className="text-white font-bold">{selectedNode.type}</span></div>
-                {selectedNode.sublabel && <div>Target: <span className="text-teal-300">{selectedNode.sublabel}</span></div>}
-                {selectedNode.badge && <div>State Attribute: <span className="text-amber-300">{selectedNode.badge}</span></div>}
+                {selectedNode.sublabel && <div>Target: <span className="text-[#a7f3d0]">{selectedNode.sublabel}</span></div>}
+                {selectedNode.badge && <div>State Attribute: <span className="text-[#fed7aa]">{selectedNode.badge}</span></div>}
               </div>
             )}
 
             {selectedEdge && (
-              <div className="text-xs text-slate-300 font-mono space-y-0.5">
+              <div className="text-xs text-stone-300 font-mono space-y-0.5">
                 <div>Relationship: <span className="text-white font-bold">{selectedEdge.relationship}</span></div>
-                <div>Confidence: <span className={selectedEdge.relationshipType === 'DIRECT_EVIDENCE' ? 'text-teal-300' : 'text-amber-300'}>
+                <div>Confidence: <span className={selectedEdge.relationshipType === 'DIRECT_EVIDENCE' ? 'text-[#a7f3d0]' : 'text-[#fed7aa]'}>
                   {selectedEdge.relationshipType}
                 </span></div>
                 <div>Supporting Fact: <span className="text-white">{selectedEdge.evidenceRef}</span></div>

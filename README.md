@@ -1,6 +1,6 @@
 # SENTINEL — Web3 Security & Protocol Health
 
-> **Multipli Hackathon 2026** // Security & Protocol Health Track  
+> **Enterprise Web3 Security & Protocol Health Platform**  
 > **Tagline**: *"From Alert to Evidence."*
 
 Sentinel is an evidence-first Web3 security and protocol health platform. Rather than displaying opaque risk scores (e.g. `85/100`) that cause alarm fatigue, Sentinel decomposes every on-chain threat into verifiable cryptographic evidence, strict confidence classes, and exact dollar blast radius calculations.
@@ -62,7 +62,7 @@ npm run dev
 
 ---
 
-## 🔬 Interactive Hackathon Presets
+## 🔬 Interactive Inspection Scenarios
 
 Sentinel includes built-in test scenarios directly accessible from the header and hero presets:
 1. **Compromised Wallet (`alex-defi.eth`)**: Demonstrates active `MAX_UINT256` USDC allowance to an unverified spender with a single EOA admin, $3,840.00 liquid blast radius, and simulated revoke calldata.
@@ -76,7 +76,7 @@ Sentinel includes built-in test scenarios directly accessible from the header an
 
 - `frontend/src/types/sentinel.ts`: Rich TypeScript models for structured evidence, tripartite reasoning, protocol health diagnostics, and graph networks.
 - `frontend/src/services/sentinelApi.ts`: Decoupled data layer that consumes backend evidence structures without polluting UI components with blockchain RPC logic.
-- `frontend/src/components/Navbar.tsx`: Global navigation, chain selector, quick address search, and hackathon test presets.
+- `frontend/src/components/Navbar.tsx`: Global navigation, chain selector, quick address search, and scenario presets.
 - `frontend/src/components/LandingPage.tsx`: Hero section, value proposition, cybersecurity aesthetic, and rapid investigation launcher.
 - `frontend/src/components/Dashboard.tsx`: Unified investigation dashboard with sub-tab navigation and live inspector.
 - `frontend/src/components/InvestigationHeader.tsx`: Entity type badge, blast radius ticker, and epistemic summary bar.
