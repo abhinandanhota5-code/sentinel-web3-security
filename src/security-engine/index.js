@@ -3,6 +3,9 @@ const { DemoBlockchainProvider, ADDRESSES } = require('./demo-provider');
 const { analyzeAddressSecurity, analyzeProtocolSecurity } = require('./analyze');
 const { STATUSES, SEVERITIES } = require('./evidence');
 const { BUNDLE_VERSION, createEvidenceBundle } = require('./bundle');
+const { EtherscanBlockchainProvider, EtherscanApiError } = require('./etherscan-provider');
+const { RpcBlockchainProvider, CompositeBlockchainProvider } = require('./rpc-provider');
+const { createEthereumProvider } = require('./factory');
 
 module.exports = {
   BlockchainProvider,
@@ -12,6 +15,11 @@ module.exports = {
   analyzeProtocolSecurity,
   BUNDLE_VERSION,
   createEvidenceBundle,
+  EtherscanBlockchainProvider,
+  EtherscanApiError,
+  RpcBlockchainProvider,
+  CompositeBlockchainProvider,
+  createEthereumProvider,
   STATUSES,
   SEVERITIES
 };

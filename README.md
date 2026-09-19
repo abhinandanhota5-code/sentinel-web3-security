@@ -119,4 +119,29 @@ const explanation = await createSentinelAi().engine.explain(bundle);
 
 The security engine stops at `EvidenceBundle`. It has no AI dependency, does not call an LLM, and does not know about PRISM. The current repository does not contain the `sentinel-ai` package, so the integration test uses an injected `engine.explain` contract fixture and verifies that IDs, citations, addresses, allowances, hashes, and tri-state knowledge values survive the handoff.
 
+### Ethereum data providers
+
+Copy `.env.example` to `.env` and set:
+
+```bash
+ETHERSCAN_API_KEY=your-key
+ETHEREUM_RPC_URL=https://your-ethereum-rpc.example
+```
+
+`createEthereumProvider()` selects `CompositeBlockchainProvider` when both values exist. Etherscan supplies indexed data through its v2 API: `account/txlist`, `account/txlistinternal`, `account/tokentx`, `contract/getsourcecode`, and `logs/getlogs`. The RPC adapter separately handles `eth_getCode`, `eth_call`, `eth_getLogs`, and `eth_getStorageAt` for balances, allowances, owner/admin calls, and EIP-1967 proxy slots. Etherscan never makes security decisions; it only produces normalized observations.
+
+With no credentials, `createEthereumProvider()` returns `DemoBlockchainProvider` and the resulting bundle is marked `dataMode: "DEMO"`. With only an Etherscan key, indexed history still works, while unsupported direct state is represented as `UNKNOWN` coverage gaps. API failures, rate limits, unverified source, and unavailable RPC state are never converted into empty or safe results.
+
+Example real-address analysis:
+
+```js
+const { createEthereumProvider, analyzeAddressSecurity } = require('./src/security-engine');
+
+const bundle = await analyzeAddressSecurity({
+  provider: createEthereumProvider(),
+  address: '0x1111111111111111111111111111111111111111',
+  chain: 'ethereum'
+});
+```
+
 `BlockchainProvider` is the adapter contract for a future RPC/indexer implementation. `DemoBlockchainProvider` is deterministic and marks results with `dataMode: "DEMO"`; its addresses and transaction identifiers are demonstration fixtures, not claims about a live chain. Providers should set `mode` to `REAL` only when backed by a verified live source; otherwise results are marked `UNSPECIFIED`. The AI layer can consume the findings as evidence, but it is not involved in discovering them.
