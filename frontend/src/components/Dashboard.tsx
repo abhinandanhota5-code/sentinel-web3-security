@@ -7,15 +7,11 @@ import {
   FileText, 
   GitBranch, 
   Layers, 
-  Sparkles,
-  Search,
-  CheckCircle2,
-  AlertTriangle
+  Sparkles
 } from 'lucide-react';
 import type { 
   InvestigationReport, 
   Finding, 
-  CurrentExposureItem,
   ActiveSecurityVector 
 } from '../types/sentinel';
 import { InvestigationHeader } from './InvestigationHeader';
@@ -128,96 +124,96 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* SECTION 1: Investigation Summary Header (Top of page) */}
       <InvestigationHeader report={report} />
 
-      {/* Investigation Navigation Controls */}
-      <div className="flex flex-wrap items-center gap-1.5 liquid-glass-subtle p-1.5 rounded-2xl mb-6 border border-white/15">
+      {/* Investigation Navigation Controls (macOS Segmented Bar Style) */}
+      <div className="flex flex-wrap items-center gap-1.5 bg-white/[0.05] p-1.5 rounded-2xl mb-6 border border-white/15 backdrop-blur-xl">
         <button
           type="button"
           onClick={() => setCurrentTab('investigation')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'investigation'
-              ? 'liquid-pill text-[#2dd4bf] font-bold border-[#2dd4bf]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-[#2dd4bf]" />
-          <span>Complete Investigation Flow</span>
+          <ShieldAlert className={`w-3.5 h-3.5 ${currentTab === 'investigation' ? 'text-[#88b0d8]' : 'text-slate-400'}`} />
+          <span>Investigation Flow</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('vectors')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'vectors'
-              ? 'liquid-pill text-rose-300 font-bold border-rose-400/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-rose-300" />
+          <ShieldAlert className={`w-3.5 h-3.5 ${currentTab === 'vectors' ? 'text-[#d97f7f]' : 'text-slate-400'}`} />
           <span>Active Vectors ({vectors.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('exposure')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'exposure'
-              ? 'liquid-pill text-[#fde68a] font-bold border-[#fde68a]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-[#fde68a]" />
+          <Zap className={`w-3.5 h-3.5 ${currentTab === 'exposure' ? 'text-[#dfba82]' : 'text-slate-400'}`} />
           <span>Current Exposure</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('blast_radius')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'blast_radius'
-              ? 'liquid-pill text-[#bae6fd] font-bold border-[#bae6fd]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <DollarSign className="w-3.5 h-3.5 text-[#bae6fd]" />
+          <DollarSign className={`w-3.5 h-3.5 ${currentTab === 'blast_radius' ? 'text-slate-200' : 'text-slate-400'}`} />
           <span>Blast Radius</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('evidence')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'evidence'
-              ? 'liquid-pill text-[#7dd3fc] font-bold border-[#7dd3fc]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <FileText className="w-3.5 h-3.5 text-[#7dd3fc]" />
+          <FileText className={`w-3.5 h-3.5 ${currentTab === 'evidence' ? 'text-[#88b0d8]' : 'text-slate-400'}`} />
           <span>Evidence ({report.findings.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('history')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'history'
-              ? 'liquid-pill text-slate-200 font-bold border-white/40 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <History className="w-3.5 h-3.5 text-slate-300" />
+          <History className={`w-3.5 h-3.5 ${currentTab === 'history' ? 'text-slate-200' : 'text-slate-400'}`} />
           <span>History ({report.historicalActivities.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setCurrentTab('graph')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
             currentTab === 'graph'
-              ? 'liquid-pill text-[#93c5fd] font-bold border-[#93c5fd]/50 shadow-sm'
-              : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <GitBranch className="w-3.5 h-3.5 text-[#93c5fd]" />
+          <GitBranch className={`w-3.5 h-3.5 ${currentTab === 'graph' ? 'text-[#88b0d8]' : 'text-slate-400'}`} />
           <span>Evidence Graph</span>
         </button>
 
@@ -225,13 +221,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <button
             type="button"
             onClick={() => setCurrentTab('protocol')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentTab === 'protocol'
-                ? 'liquid-pill text-[#fef3c7] font-bold border-[#fef3c7]/50 shadow-sm'
-                : 'text-slate-400 hover:text-[#fdfbf7] hover:bg-white/5'
+                ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-[#fef3c7]" />
+            <Layers className={`w-3.5 h-3.5 ${currentTab === 'protocol' ? 'text-slate-200' : 'text-slate-400'}`} />
             <span>Protocol Health</span>
           </button>
         )}
@@ -290,7 +286,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {report.explanation && (
             <div className="mt-8">
               <div className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#2dd4bf]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#88b0d8]" />
                 <span>Deterministic Post-Analysis Reasoning (Grounded by Evidence)</span>
               </div>
               <GroundedExplanationCard

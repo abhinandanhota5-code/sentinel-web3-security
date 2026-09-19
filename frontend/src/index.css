@@ -2,68 +2,53 @@
 
 @layer base {
   :root {
-    /* Soft Blue + Cream + Light Beige + Soft Gray Theme Variables */
-    --bg-primary: #080c16;
-    --bg-surface: #0e1424;
-    --bg-elevated: #141b30;
+    /* macOS Liquid Glass Theme Variables - Restrained Professional Security SaaS */
+    --bg-primary: #0c0e12;
+    --bg-surface: #12151b;
+    --bg-elevated: #181c24;
 
-    /* Soft Blue Palette */
-    --soft-blue-50: #f0f7ff;
-    --soft-blue-100: #e0f0fe;
-    --soft-blue-200: #bae6fd;
-    --soft-blue-300: #7dd3fc;
-    --soft-blue-400: #38bdf8;
-    --soft-blue-500: #0ea5e9;
+    /* Translucent Glass Material Layers */
+    --glass-white: rgba(255, 255, 255, 0.06);
+    --glass-white-strong: rgba(255, 255, 255, 0.10);
+    --glass-border: rgba(255, 255, 255, 0.11);
+    --glass-border-strong: rgba(255, 255, 255, 0.22);
+    --glass-highlight: rgba(255, 255, 255, 0.28);
 
-    /* Cream & Light Beige Palette */
-    --cream-light: #fdfbf7;
-    --cream-base: #f7f2e7;
-    --cream-muted: #f2ece0;
-    --cream-gold: #fef3c7;
-    --cream-accent: #fde68a;
-    --beige-50: #fcf9f2;
-    --beige-100: #f7f1e4;
-    --beige-200: #efe4d0;
-    --beige-300: #e5d4bc;
-    --beige-400: #d8c0a2;
+    /* Typography & Hierarchy */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
 
-    /* Soft Gray Palette */
-    --soft-gray-50: #f8fafc;
-    --soft-gray-100: #f1f5f9;
-    --soft-gray-200: #e2e8f0;
-    --soft-gray-300: #cbd5e1;
-    --soft-gray-400: #94a3b8;
-    --soft-gray-500: #64748b;
-    --soft-gray-600: #475569;
-    --soft-gray-700: #334155;
-    --soft-gray-800: #1e293b;
-    --soft-gray-900: #0f172a;
+    /* Apple-like Muted Accent Blue (~#5B7FA6) */
+    --accent-blue: #5B7FA6;
+    --accent-blue-soft: rgba(91, 127, 166, 0.14);
+    --accent-blue-border: rgba(91, 127, 166, 0.30);
+    --accent-blue-hover: #6d92b8;
 
-    /* Dark Green & Oceanic Teal Palette */
-    --teal-950: #042f2e;
-    --teal-900: #0d3836;
-    --teal-800: #115e59;
-    --teal-700: #0f766e;
-    --teal-600: #0d9488;
-    --teal-500: #14b8a6;
-    --teal-400: #2dd4bf;
-    --teal-300: #5eead4;
-    --teal-200: #99f6e4;
-    --teal-100: #ccfbf1;
-    --dark-green-950: #022c22;
-    --dark-green-900: #064e3b;
-    --dark-green-800: #065f46;
-    --dark-green-700: #047857;
-    --dark-pine: #071f1a;
+    /* Status & Severity Accents (Restrained, No Neon) */
+    --success: #5E806A;
+    --success-soft: rgba(94, 128, 106, 0.14);
+    --success-border: rgba(94, 128, 106, 0.30);
+    --success-text: #8cc4a1;
+
+    --warning: #9A7A4A;
+    --warning-soft: rgba(154, 122, 74, 0.14);
+    --warning-border: rgba(154, 122, 74, 0.30);
+    --warning-text: #dfba82;
+
+    --danger: #A45F5F;
+    --danger-soft: rgba(164, 95, 95, 0.14);
+    --danger-border: rgba(164, 95, 95, 0.30);
+    --danger-text: #d97f7f;
   }
 
   body {
     margin: 0;
     padding: 0;
-    background-color: #051314;
-    background: radial-gradient(circle at 50% -10%, #0c2d2a 0%, #071c1b 35%, #041012 75%, #020a0c 100%);
+    background-color: #0c0e12;
+    background: radial-gradient(circle at 50% -10%, #161b24 0%, #10131a 45%, #0c0e12 85%, #08090c 100%);
     color: #f8fafc;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -79,34 +64,28 @@
 }
 
 /* ==========================================================================
-   MAXIMUM LIQUID GLASS SYSTEM (Dark Green / Teal + Soft Blue + Cream + Beige)
-   Blended gradients, seamless optical diffusion, specular edges & zero harsh cutouts
+   macOS LIQUID GLASS SYSTEM (Neutral Translucent Material, Restrained Tones)
+   Pure optical diffusion, specular edges, soft material depth, high contrast
    ========================================================================== */
 
-/* 1. Primary Maximum Liquid Glass Surface (Multi-tone Mixed Diffusion with Teal Underglow) */
+/* 1. Primary Liquid Glass Surface */
 .liquid-glass {
   background: linear-gradient(
-    135deg, 
-    rgba(253, 251, 247, 0.25) 0%, 
-    rgba(247, 241, 228, 0.14) 20%, 
-    rgba(45, 212, 191, 0.11) 48%,
-    rgba(186, 230, 253, 0.08) 74%,
-    rgba(6, 26, 26, 0.65) 100%
+    145deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.025) 28%, 
+    rgba(18, 22, 30, 0.60) 70%,
+    rgba(12, 15, 21, 0.85) 100%
   );
-  backdrop-filter: blur(36px) saturate(210%) brightness(108%);
-  -webkit-backdrop-filter: blur(36px) saturate(210%) brightness(108%);
-  border: 1px solid rgba(245, 238, 225, 0.26);
-  border-top: 1px solid rgba(255, 255, 255, 0.88);
-  border-left: 1px solid rgba(253, 251, 247, 0.55);
-  border-right: 1px solid rgba(45, 212, 191, 0.24);
-  border-bottom: 1px solid rgba(15, 118, 110, 0.25);
+  backdrop-filter: blur(24px) saturate(110%);
+  -webkit-backdrop-filter: blur(24px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.70),
-    inset 0 -1.5px 3px 0 rgba(0, 0, 0, 0.32),
-    inset 0 0 35px 0 rgba(45, 212, 191, 0.12),
-    inset 0 0 25px 0 rgba(253, 251, 247, 0.12),
-    0 24px 60px -15px rgba(0, 0, 0, 0.72),
-    0 0 45px -5px rgba(20, 184, 166, 0.16);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.35),
+    0 12px 36px -8px rgba(0, 0, 0, 0.50);
   position: relative;
 }
 
@@ -117,40 +96,33 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 44%;
+  height: 38%;
   background: linear-gradient(
     180deg, 
-    rgba(255, 255, 255, 0.22) 0%, 
-    rgba(253, 251, 247, 0.08) 50%, 
+    rgba(255, 255, 255, 0.09) 0%, 
+    rgba(255, 255, 255, 0.015) 50%, 
     rgba(255, 255, 255, 0) 100%
   );
   border-radius: inherit;
   pointer-events: none;
 }
 
-/* 2. Soft Blue Infused Liquid Glass (Mixed with Warm Cream & Teal Highlights) */
+/* 2. Apple Muted Blue Infused Liquid Glass */
 .liquid-glass-blue {
   background: linear-gradient(
-    135deg, 
-    rgba(253, 251, 247, 0.24) 0%,
-    rgba(186, 230, 253, 0.22) 25%, 
-    rgba(45, 212, 191, 0.12) 55%, 
-    rgba(247, 240, 227, 0.10) 78%,
-    rgba(8, 26, 32, 0.62) 100%
+    145deg, 
+    rgba(91, 127, 166, 0.14) 0%, 
+    rgba(255, 255, 255, 0.04) 28%, 
+    rgba(15, 20, 30, 0.70) 100%
   );
-  backdrop-filter: blur(34px) saturate(220%) brightness(108%);
-  -webkit-backdrop-filter: blur(34px) saturate(220%) brightness(108%);
-  border: 1px solid rgba(186, 230, 253, 0.36);
-  border-top: 1px solid rgba(255, 255, 255, 0.90);
-  border-left: 1px solid rgba(224, 242, 254, 0.62);
-  border-right: 1px solid rgba(45, 212, 191, 0.25);
+  backdrop-filter: blur(24px) saturate(110%);
+  -webkit-backdrop-filter: blur(24px) saturate(110%);
+  border: 1px solid rgba(91, 127, 166, 0.28);
+  border-top: 1px solid rgba(255, 255, 255, 0.26);
+  border-left: 1px solid rgba(91, 127, 166, 0.20);
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.72),
-    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.30),
-    inset 0 0 35px 0 rgba(125, 211, 252, 0.18),
-    inset 0 0 25px 0 rgba(45, 212, 191, 0.12),
-    0 24px 60px -15px rgba(0, 0, 0, 0.70),
-    0 0 45px -5px rgba(45, 212, 191, 0.18);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.20),
+    0 12px 36px -8px rgba(0, 0, 0, 0.50);
   position: relative;
 }
 
@@ -160,35 +132,27 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 44%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(224, 242, 254, 0.12) 50%, rgba(255, 255, 255, 0) 100%);
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(91, 127, 166, 0.04) 50%, rgba(255, 255, 255, 0) 100%);
   border-radius: inherit;
   pointer-events: none;
 }
 
-/* 2b. Luminous Teal / Dark Green Infused Liquid Glass */
+/* 2b. Restrained Muted Green / Slate Liquid Glass (Replaces legacy neon teal) */
 .liquid-glass-teal {
   background: linear-gradient(
-    135deg, 
-    rgba(253, 251, 247, 0.26) 0%, 
-    rgba(45, 212, 191, 0.20) 25%, 
-    rgba(15, 118, 110, 0.15) 55%,
-    rgba(6, 78, 59, 0.22) 80%,
-    rgba(4, 28, 27, 0.68) 100%
+    145deg, 
+    rgba(94, 128, 106, 0.10) 0%, 
+    rgba(255, 255, 255, 0.035) 28%, 
+    rgba(14, 18, 25, 0.72) 100%
   );
-  backdrop-filter: blur(36px) saturate(220%) brightness(109%);
-  -webkit-backdrop-filter: blur(36px) saturate(220%) brightness(109%);
-  border: 1px solid rgba(45, 212, 191, 0.38);
-  border-top: 1px solid rgba(255, 255, 255, 0.94);
-  border-left: 1px solid rgba(94, 234, 212, 0.65);
-  border-right: 1px solid rgba(20, 184, 166, 0.28);
+  backdrop-filter: blur(24px) saturate(110%);
+  -webkit-backdrop-filter: blur(24px) saturate(110%);
+  border: 1px solid rgba(94, 128, 106, 0.24);
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.30),
-    inset 0 0 35px 0 rgba(45, 212, 191, 0.22),
-    inset 0 0 20px 0 rgba(253, 251, 247, 0.12),
-    0 24px 60px -15px rgba(0, 0, 0, 0.72),
-    0 0 45px -5px rgba(45, 212, 191, 0.26);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18),
+    0 12px 36px -8px rgba(0, 0, 0, 0.48);
   position: relative;
 }
 
@@ -198,100 +162,46 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 44%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(94, 234, 212, 0.14) 50%, rgba(255, 255, 255, 0) 100%);
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(94, 128, 106, 0.04) 50%, rgba(255, 255, 255, 0) 100%);
   border-radius: inherit;
   pointer-events: none;
 }
 
-/* 3. Cream & Light Beige Infused Liquid Glass */
-.liquid-glass-cream {
-  background: linear-gradient(
-    135deg, 
-    rgba(253, 251, 247, 0.32) 0%, 
-    rgba(247, 238, 222, 0.20) 25%, 
-    rgba(238, 222, 202, 0.14) 55%,
-    rgba(186, 230, 253, 0.09) 80%,
-    rgba(15, 20, 32, 0.58) 100%
-  );
-  backdrop-filter: blur(34px) saturate(210%) brightness(109%);
-  -webkit-backdrop-filter: blur(34px) saturate(210%) brightness(109%);
-  border: 1px solid rgba(247, 238, 222, 0.38);
-  border-top: 1px solid rgba(255, 255, 255, 0.92);
-  border-left: 1px solid rgba(253, 251, 247, 0.68);
-  border-right: 1px solid rgba(238, 222, 202, 0.28);
-  box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.28),
-    inset 0 0 35px 0 rgba(254, 243, 199, 0.20),
-    inset 0 0 20px 0 rgba(253, 251, 247, 0.15),
-    0 24px 60px -15px rgba(0, 0, 0, 0.68),
-    0 0 45px -5px rgba(253, 251, 247, 0.24);
-  position: relative;
-}
-
-.liquid-glass-cream::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 44%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(253, 251, 247, 0.12) 50%, rgba(255, 255, 255, 0) 100%);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-/* 3b. Dedicated Luminous Light Beige Glass */
+/* 3. Subtle Warm Charcoal & Slate Infused Glass */
+.liquid-glass-cream,
 .liquid-glass-beige {
   background: linear-gradient(
-    135deg, 
-    rgba(252, 249, 242, 0.34) 0%, 
-    rgba(245, 237, 224, 0.22) 28%, 
-    rgba(235, 222, 204, 0.16) 62%,
-    rgba(15, 19, 30, 0.55) 100%
+    145deg, 
+    rgba(255, 255, 255, 0.07) 0%, 
+    rgba(240, 235, 228, 0.03) 28%, 
+    rgba(17, 20, 27, 0.68) 100%
   );
-  backdrop-filter: blur(34px) saturate(205%) brightness(109%);
-  -webkit-backdrop-filter: blur(34px) saturate(205%) brightness(109%);
-  border: 1px solid rgba(240, 230, 214, 0.38);
-  border-top: 1px solid rgba(255, 255, 255, 0.94);
-  border-left: 1px solid rgba(252, 249, 242, 0.70);
+  backdrop-filter: blur(24px) saturate(110%);
+  -webkit-backdrop-filter: blur(24px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.80),
-    inset 0 0 35px 0 rgba(245, 235, 220, 0.22),
-    0 24px 60px -15px rgba(0, 0, 0, 0.65),
-    0 0 45px -5px rgba(240, 230, 214, 0.26);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18),
+    0 12px 36px -8px rgba(0, 0, 0, 0.48);
   position: relative;
-}
-
-.liquid-glass-beige::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 44%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(250, 245, 235, 0.12) 50%, rgba(255, 255, 255, 0) 100%);
-  border-radius: inherit;
-  pointer-events: none;
 }
 
 /* 4. Subdued Frosted Pane (Translucent inner panels, code blocks, cards) */
 .liquid-glass-subtle {
   background: linear-gradient(
-    135deg,
-    rgba(253, 251, 247, 0.16) 0%,
-    rgba(247, 240, 227, 0.10) 35%,
-    rgba(186, 230, 253, 0.06) 70%,
-    rgba(11, 16, 28, 0.45) 100%
+    145deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.015) 40%,
+    rgba(14, 17, 24, 0.50) 100%
   );
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(240, 232, 220, 0.22);
-  border-top: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(110%);
+  -webkit-backdrop-filter: blur(20px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 
-    inset 0 1px 2.5px 0 rgba(255, 255, 255, 0.45),
-    0 12px 32px -8px rgba(0, 0, 0, 0.48);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.10),
+    0 8px 24px -6px rgba(0, 0, 0, 0.35);
   position: relative;
 }
 
@@ -299,60 +209,56 @@
 .liquid-pill {
   background: linear-gradient(
     180deg, 
-    rgba(253, 251, 247, 0.26) 0%, 
-    rgba(247, 240, 227, 0.14) 45%, 
-    rgba(12, 17, 30, 0.40) 100%
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.03) 50%, 
+    rgba(16, 20, 27, 0.60) 100%
   );
-  backdrop-filter: blur(22px) saturate(200%);
-  -webkit-backdrop-filter: blur(22px) saturate(200%);
-  border: 1px solid rgba(240, 232, 220, 0.30);
-  border-top: 1px solid rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px) saturate(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.58),
-    inset 0 -1px 1.5px 0 rgba(0, 0, 0, 0.20),
-    0 6px 18px -4px rgba(0, 0, 0, 0.40);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.16),
+    0 4px 14px -3px rgba(0, 0, 0, 0.25);
 }
 
-/* 6. Liquid Glass Card Hover Interaction */
+/* 6. Liquid Glass Card Hover Interaction (Restrained elevation, no fluorescent glow) */
 .liquid-card-hover {
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .liquid-card-hover:hover {
-  transform: translateY(-3px);
-  border-color: rgba(247, 238, 222, 0.50);
-  border-top-color: rgba(255, 255, 255, 0.96);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.22);
+  border-top-color: rgba(255, 255, 255, 0.40);
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.80),
-    inset 0 0 35px 0 rgba(253, 251, 247, 0.20),
-    0 30px 75px -15px rgba(0, 0, 0, 0.75),
-    0 0 50px -5px rgba(253, 251, 247, 0.26);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.22),
+    0 18px 45px -10px rgba(0, 0, 0, 0.55);
 }
 
-/* 7. Organic Ambient Light Mesh (NO GRID LINES: Mixed Dark Green, Oceanic Teal, Warm Cream & Soft Blue) */
+/* 7. Organic Ambient Atmospheric Mesh (Extremely low saturation gradients) */
 .ambient-mesh,
 .cyber-grid {
   background-image: 
-    radial-gradient(circle at 35% 10%, rgba(13, 148, 136, 0.20) 0%, transparent 60%),
-    radial-gradient(circle at 75% 20%, rgba(6, 78, 59, 0.18) 0%, transparent 58%),
-    radial-gradient(circle at 50% 38%, rgba(253, 251, 247, 0.14) 0%, transparent 62%),
-    radial-gradient(circle at 18% 65%, rgba(45, 212, 191, 0.15) 0%, transparent 55%),
-    radial-gradient(circle at 82% 82%, rgba(15, 118, 110, 0.18) 0%, transparent 60%),
-    radial-gradient(circle at 50% 92%, rgba(186, 230, 253, 0.10) 0%, transparent 58%);
+    radial-gradient(circle at 35% 8%, rgba(91, 127, 166, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 75% 15%, rgba(71, 85, 105, 0.05) 0%, transparent 55%),
+    radial-gradient(circle at 20% 50%, rgba(91, 127, 166, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 75%, rgba(51, 65, 85, 0.05) 0%, transparent 55%),
+    radial-gradient(circle at 50% 95%, rgba(91, 127, 166, 0.04) 0%, transparent 60%);
   background-size: 100% 100%;
 }
 
-/* Refined minimal teal & cream scrollbars */
+/* Refined minimal neutral scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #051314;
+  background: #0c0e12;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(45, 212, 191, 0.28);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(94, 234, 212, 0.55);
+  background: rgba(255, 255, 255, 0.28);
 }
