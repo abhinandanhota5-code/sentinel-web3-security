@@ -59,6 +59,29 @@ const explanation = await ai.engine.explain({
 });
 ```
 
+### Gemini provider (server-side only)
+
+`GeminiExplanationProvider` implements `ExplanationProvider` on the official
+`@google/genai` SDK. It reads the API key **only** from `GEMINI_API_KEY`
+(never hardcoded, never logged, errors are redacted before surfacing), maps
+`PromptPair.system` -> Gemini `systemInstruction` and `PromptPair.user` ->
+`contents`, enforces a request timeout (default 30s) and honors external
+`AbortSignal`s, and returns only the generated text. All output still passes
+through the engine's `validateDraft()`/`sanitizeDraft()` safeguards.
+
+```ts
+import { GeminiExplanationProvider, MockExplanationProvider } from "@sentinel/ai";
+
+// Production (backend only):
+const provider = new GeminiExplanationProvider();            // uses GEMINI_API_KEY
+const provider2 = new GeminiExplanationProvider({ model: "gemini-flash-latest", timeoutMs: 30_000 });
+
+// Tests / local dev (no network, no key required):
+const mock = new MockExplanationProvider(() => "Grounded explanation [E0].");
+```
+
+Required environment variable: `GEMINI_API_KEY` (see `.env.example`).
+
 ## Evaluation signals (for PRISM)
 
 `evaluateExplanation()` computes: citation coverage, invalid citations,

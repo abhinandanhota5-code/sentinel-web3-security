@@ -5,3 +5,5 @@ export * from "./validate.js";
 export * from "./engine.js";
 export * from "./prism.js";
 export * from "./factory.js";
+export * from "./providers/gemini.js";
+export * from "./providers/mock.js";
