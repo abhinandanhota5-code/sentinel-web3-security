@@ -1,3 +1,5 @@
 node_modules/
 .env
 .DS_Store
+sentinel-ai/node_modules/
+sentinel-ai/dist/

@@ -3,6 +3,11 @@
 **From alert to evidence.** An evidence-first investigation layer for Web3 security,
 explored as a *complement* to detection systems (Forta) and protection systems (Hypernative).
 
+> **Sentinel AI layer:** the evidence-grounded AI explanation layer + PRISM
+> (BlockConvey) observability adapter lives in [`sentinel-ai/`](./sentinel-ai) —
+> TypeScript, fully tested, isolated from the frontend. See its README for the
+> OBSERVED/INFERRED/UNKNOWN contract and hallucination safeguards.
+
 ## View & Export the Deck
 
 ```bash
