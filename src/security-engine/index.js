@@ -4,7 +4,7 @@ const { analyzeAddressSecurity, analyzeProtocolSecurity } = require('./analyze')
 const { STATUSES, SEVERITIES } = require('./evidence');
 const { BUNDLE_VERSION, createEvidenceBundle } = require('./bundle');
 const { EtherscanBlockchainProvider, EtherscanApiError } = require('./etherscan-provider');
-const { RpcBlockchainProvider, CompositeBlockchainProvider } = require('./rpc-provider');
+const { RpcBlockchainProvider, CompositeBlockchainProvider, safeBigInt } = require('./rpc-provider');
 const { createEthereumProvider } = require('./factory');
 
 const fraudIntelligence = require('./fraud-intelligence');
@@ -22,6 +22,7 @@ module.exports = {
   RpcBlockchainProvider,
   CompositeBlockchainProvider,
   createEthereumProvider,
+  safeBigInt,
   STATUSES,
   SEVERITIES,
   ...fraudIntelligence
