@@ -89,7 +89,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Error Alert Banner */}
         {errorMessage && (
-          <div className="max-w-2xl mx-auto mb-5 p-4 rounded-2xl bg-white/50 border border-bad/25 text-ink-2 flex items-start gap-3 backdrop-blur-xl animate-in fade-in duration-200 text-left">
+          <div className="max-w-2xl mx-auto mb-5 p-4 rounded-2xl bg-ink/5 border border-bad/25 text-ink-2 flex items-start gap-3 backdrop-blur-xl animate-in fade-in duration-200 text-left">
             <AlertTriangle className="w-5 h-5 text-bad shrink-0 mt-0.5" />
             <div className="flex-1">
               <div className="text-xs font-bold text-bad uppercase tracking-wider">
@@ -152,7 +152,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             >
               {isLoading ? (
                 <>
-                  <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
                   <span>Scanning...</span>
                 </>
               ) : (
@@ -174,7 +174,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => handleSelectPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4', 'ethereum')}
-              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-white/75 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-ink/10 transition flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-bad"></span>
               alex-defi.eth (Unlimited Approval)
@@ -183,7 +183,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => handleSelectPreset('0x44d9a51837f81b1e13d508f850b3e1c0154942e5', 'multipli')}
-              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-white/75 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-ink/10 transition flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-ok"></span>
               Multipli Prime Yield Engine
@@ -192,7 +192,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => handleSelectPreset('0xdeadbeef0000000000000000000000000000beef', 'base')}
-              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-white/75 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-ink/10 transition flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-warn"></span>
               ShadySwap (0s Timelock Backdoor)
@@ -201,7 +201,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => handleSelectPreset('0x1010101010101010101010101010101010101010', 'ethereum')}
-              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-white/75 transition flex items-center gap-1.5"
+              className="px-3 py-1 rounded-full text-[11px] liquid-pill text-ink-2 hover:bg-ink/10 transition flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-ok"></span>
               Cold Multisig Safe (Clean)

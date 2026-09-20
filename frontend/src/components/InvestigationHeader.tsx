@@ -6,9 +6,10 @@ import {
   CheckCircle2, 
   HelpCircle, 
   Clock, 
-  DollarSign,
+  Coins,
   TrendingUp,
-  ShieldAlert
+  ShieldAlert,
+  HelpCircle as UnknownIcon
 } from 'lucide-react';
 import type { InvestigationReport } from '../types/sentinel';
 
@@ -19,18 +20,21 @@ interface InvestigationHeaderProps {
 export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report }) => {
   const [copied, setCopied] = useState(false);
 
+  const ces = report.currentExposureSummary;
+  const nativeEth = (() => {
+    try {
+      return (Number(BigInt(ces?.nativeBalanceWei ?? '0') / 10n ** 15n) / 1000).toFixed(4);
+    } catch {
+      return '0.0000';
+    }
+  })();
+  const positiveTokens = ces ? ces.tokens.filter((t) => t.positive).length : 0;
+  const totalTokens = ces ? ces.tokens.length : 0;
+
   const handleCopy = () => {
     navigator.clipboard.writeText(report.targetAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const formatUsd = (val: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
   };
 
   return (
@@ -43,7 +47,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
           
           <div className="flex flex-wrap items-center gap-2">
             {/* Entity Badge */}
-            <span className="px-2.5 py-0.5 rounded-lg text-[10px] tracking-wider uppercase bg-white/55 border border-[#171a1f]/10 text-ink-2">
+            <span className="px-2.5 py-0.5 rounded-lg text-[10px] tracking-wider uppercase bg-ink/5 border border-[var(--border-1)] text-ink-2">
               {report.entityType.replace('_', ' ')}
             </span>
 
@@ -64,7 +68,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
                 <span>MIXED PROVENANCE</span>
               </span>
             ) : report.dataMode === 'PRESET' ? (
-              <span className="px-2.5 py-0.5 rounded-lg text-[10px] tracking-wider uppercase bg-white/55 border border-[#171a1f]/10 text-ink-2 font-bold flex items-center gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-lg text-[10px] tracking-wider uppercase bg-ink/5 border border-[var(--border-1)] text-ink-2 font-bold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-ink-3"></span>
                 <span>PRESET SCENARIO</span>
               </span>
@@ -99,7 +103,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
             {/* Quick Copy */}
             <button
               onClick={handleCopy}
-              className="p-1.5 text-ink-3 hover:text-accent hover:bg-white/60 rounded-lg transition"
+              className="p-1.5 text-ink-3 hover:text-accent hover:bg-ink/10 rounded-lg transition"
               title="Copy EVM Address"
             >
               {copied ? <Check className="w-4 h-4 text-ok" /> : <Copy className="w-4 h-4" />}
@@ -110,7 +114,7 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
               href={`${report.chain.blockExplorer}/address/${report.targetAddress}`}
               target="_blank"
               rel="noreferrer"
-              className="p-1.5 text-ink-3 hover:text-accent hover:bg-white/60 rounded-lg transition"
+              className="p-1.5 text-ink-3 hover:text-accent hover:bg-ink/10 rounded-lg transition"
               title="View on Block Explorer"
             >
               <ExternalLink className="w-4 h-4" />
@@ -119,19 +123,32 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
 
         </div>
 
-        {/* Right: Blast Radius Liquid Gauge */}
+        {/* Right: Structured Current Exposure (NOT a single $ figure) */}
         <div className="flex flex-wrap items-center gap-4 liquid-glass-subtle rounded-2xl p-4 self-stretch lg:self-auto justify-between lg:justify-end">
-          
-          <div className="border-r border-[#171a1f]/10 pr-5">
+          <div className="border-r border-[var(--border-1)] pr-5">
             <div className="text-[10px] uppercase tracking-wider text-ink-3 flex items-center gap-1">
-              <DollarSign className="w-3.5 h-3.5 text-warn" />
-              <span>Current Blast Radius</span>
+              <Coins className="w-3.5 h-3.5 text-accent" />
+              <span>Native Balance</span>
             </div>
-            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.totalBlastRadiusUsd > 0 ? 'text-bad' : 'text-ok'}`}>
-              {formatUsd(report.totalBlastRadiusUsd)}
+            <div className="text-2xl font-mono font-bold text-ink mt-0.5">
+              {nativeEth} <span className="text-sm text-ink-3 font-sans">ETH</span>
             </div>
             <div className="text-[10px] text-ink-3 font-mono">
-              {report.totalBlastRadiusUsd > 0 ? 'Liquid funds exposed' : 'Zero liquid funds exposed'}
+              {ces?.nativeBalanceWei === '0' ? 'zero balance ≠ zero exposure' : ces ? 'observed via eth_getBalance' : '—'}
+            </div>
+          </div>
+
+          <div className="border-r border-[var(--border-1)] pr-5">
+            <div className="text-[10px] uppercase tracking-wider text-ink-3 flex items-center gap-1">
+              <TrendingUp className="w-3.5 h-3.5 text-cyan" />
+              <span>Token Exposure</span>
+            </div>
+            <div className="text-2xl font-mono font-bold text-ink mt-0.5">
+              {positiveTokens}
+              <span className="text-sm text-ink-3 font-sans"> / {totalTokens}</span>
+            </div>
+            <div className="text-[10px] text-ink-3 font-mono truncate max-w-[140px]" title={ces?.blastRadius.note}>
+              {ces ? 'raw balances, no USD pricing' : '—'}
             </div>
           </div>
 
@@ -140,11 +157,13 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
               <ShieldAlert className="w-3.5 h-3.5 text-bad" />
               <span>Active Vectors</span>
             </div>
-            <div className="text-2xl font-mono font-bold text-ink mt-0.5">
+            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.currentExposures.length > 0 ? 'text-bad' : 'text-ink'}`}>
               {report.currentExposures.length}
             </div>
             <div className="text-[10px] text-ink-3">
-              {report.findings.filter(f => f.severity === 'CRITICAL' || f.severity === 'HIGH').length} critical/high
+              {report.currentExposures.length === 0
+                ? 'No active finding detected'
+                : `${report.findings.filter(f => f.severity === 'CRITICAL' || f.severity === 'HIGH').length} critical/high`}
             </div>
           </div>
 
@@ -152,8 +171,19 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
 
       </div>
 
+      {/* Coverage uncertainty strip — UNKNOWN is reported honestly, never hidden */}
+      {(report.coverageGaps?.length ?? 0) > 0 && (
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-warn/30 bg-warn/10 px-3.5 py-2">
+          <UnknownIcon className="w-3.5 h-3.5 text-warn shrink-0" />
+          <span className="text-[11px] text-ink-2">
+            <span className="text-warn font-bold">UNKNOWN:</span> {report.coverageGaps![0]}
+            {(report.coverageGaps?.length ?? 0) > 1 && ` (+${(report.coverageGaps?.length ?? 0) - 1} more — see Coverage)`}
+          </span>
+        </div>
+      )}
+
       {/* Epistemic Status Strip — blue / amber / grey accents */}
-      <div className="mt-5 pt-4 border-t border-[#171a1f]/8 grid grid-cols-3 gap-3 text-center sm:text-left">
+      <div className="mt-5 pt-4 border-t border-[var(--border-1)] grid grid-cols-3 gap-3 text-center sm:text-left">
         
         {/* Observed */}
         <div className="liquid-glass-subtle rounded-xl p-2.5 px-3 flex items-center gap-2.5 border-l-2 border-l-accent">

@@ -6,4 +6,6 @@ export * from "./engine.js";
 export * from "./prism.js";
 export * from "./factory.js";
 export * from "./providers/gemini.js";
+export * from "./providers/openrouter.js";
+export * from "./providers/ollama.js";
 export * from "./providers/mock.js";

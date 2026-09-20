@@ -15,7 +15,7 @@ async function analyzeApprovals(provider, address, chain) {
   try {
     approvals = await provider.getTokenApprovals(address, chain);
   } catch (error) {
-    return [unknownFinding({ findingType: 'TOKEN_APPROVALS', entity: address, chain, limitations: [`Provider approval lookup failed: ${error.message}`] })];
+    return [unknownFinding({ findingType: 'TOKEN_APPROVALS', entity: address, chain, limitations: [`Historical approval enumeration unavailable through current RPC provider. (${error.message})`] })];
   }
   const findings = [];
   for (const approval of approvals.filter((item) => item.active)) {

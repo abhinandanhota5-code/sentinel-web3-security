@@ -42,7 +42,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
                     ? 'bg-warn/12 border-warn/30 text-warn'
                     : dataMode === 'MIXED'
                     ? 'bg-accent/12 border-accent/30 text-accent'
-                    : 'bg-white/[0.08] border-white/15 text-ink-2'
+                    : 'bg-ink/8 border-ink/12 text-ink-2'
                 }`}>
                   Mode: {dataMode}
                 </span>
@@ -88,7 +88,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
         
         {/* Networks Checked */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[var(--border-1)]">
             <Server className="w-4 h-4 text-accent" />
             <h3 className="text-sm font-bold text-ink">Networks Checked</h3>
           </div>
@@ -113,7 +113,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
 
         {/* Analysis Modules */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[var(--border-1)]">
             <Cpu className="w-4 h-4 text-accent" />
             <h3 className="text-sm font-bold text-ink">Analysis Modules</h3>
           </div>
@@ -133,7 +133,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
 
         {/* Ingestion Sources */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[var(--border-1)]">
             <Database className="w-4 h-4 text-accent" />
             <h3 className="text-sm font-bold text-ink">Ingestion Sources</h3>
           </div>
@@ -156,7 +156,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
 
         {/* Explicit Limitations */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[var(--border-1)]">
             <HelpCircle className="w-4 h-4 text-warn" />
             <h3 className="text-sm font-bold text-ink">Explicit Boundaries & Limitations</h3>
           </div>
@@ -176,7 +176,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
       {/* Active Backend Epistemic Coverage Gaps & Unknowns */}
       {(coverageGaps.length > 0 || unknowns.length > 0) && (
         <div className="liquid-glass rounded-3xl p-6 shadow-xl border-warn/25">
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-[var(--border-1)]">
             <AlertTriangle className="w-4 h-4 text-warn" />
             <h3 className="text-sm font-bold text-ink">Active Analysis Coverage Gaps & Epistemic Boundaries</h3>
           </div>
@@ -192,7 +192,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
             ))}
             {unknowns.map((u, idx) => (
               <div key={`unk-${idx}`} className="p-3 liquid-glass-subtle rounded-xl text-ink-2 flex items-start gap-2">
-                <span className="text-ink-2 font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-white/[0.08] border border-white/15 shrink-0">
+                <span className="text-ink-2 font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-ink/8 border border-ink/12 shrink-0">
                   {u.reason}
                 </span>
                 <div className="text-[11px] leading-relaxed">

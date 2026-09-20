@@ -11,14 +11,17 @@ interface HistoryVsExposureProps {
   currentExposures: CurrentExposureItem[];
   historicalActivities: HistoricalActivityItem[];
   onSelectExposure?: (exposure: CurrentExposureItem) => void;
+  /** Activity section: history is the focus; exposure lives in Overview/Security. */
+  historyOnly?: boolean;
 }
 
 export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
   currentExposures,
   historicalActivities,
   onSelectExposure,
+  historyOnly = false,
 }) => {
-  const [activeTab, setActiveTab] = useState<'both' | 'exposure' | 'history'>('both');
+  const [activeTab, setActiveTab] = useState<'both' | 'exposure' | 'history'>(historyOnly ? 'history' : 'both');
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -31,7 +34,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
       case 'LOW':
         return 'bg-accent/12 text-accent border-accent/25';
       default:
-        return 'bg-white/55 text-ink-2 border-[#171a1f]/10';
+        return 'bg-ink/5 text-ink-2 border-[var(--border-1)]';
     }
   };
 
@@ -54,32 +57,36 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
 
         {/* View Toggle */}
         <div className="flex items-center liquid-glass-subtle rounded-xl p-1 self-start">
-          <button
-            onClick={() => setActiveTab('both')}
-            className={`px-3 py-1 rounded-lg text-xs transition ${
-              activeTab === 'both'
-                ? 'bg-white/80 text-ink font-semibold shadow-sm'
-                : 'text-ink-3 hover:text-ink'
-            }`}
-          >
-            Side-by-Side
-          </button>
-          <button
-            onClick={() => setActiveTab('exposure')}
-            className={`px-3 py-1 rounded-lg text-xs transition flex items-center gap-1.5 ${
-              activeTab === 'exposure'
-                ? 'bg-accent-soft text-accent font-semibold border border-accent/30'
-                : 'text-ink-3 hover:text-ink'
-            }`}
-          >
-            <Zap className="w-3 h-3 text-accent" />
-            <span>Exposure ({currentExposures.length})</span>
-          </button>
+          {!historyOnly && (
+            <button
+              onClick={() => setActiveTab('both')}
+              className={`px-3 py-1 rounded-lg text-xs transition ${
+                activeTab === 'both'
+                  ? 'bg-accent/15 text-accent font-semibold border border-accent/30'
+                  : 'text-ink-3 hover:text-ink'
+              }`}
+            >
+              Side-by-Side
+            </button>
+          )}
+          {!historyOnly && (
+            <button
+              onClick={() => setActiveTab('exposure')}
+              className={`px-3 py-1 rounded-lg text-xs transition flex items-center gap-1.5 ${
+                activeTab === 'exposure'
+                  ? 'bg-accent/15 text-accent font-semibold border border-accent/30'
+                  : 'text-ink-3 hover:text-ink'
+              }`}
+            >
+              <Zap className="w-3 h-3 text-accent" />
+              <span>Exposure ({currentExposures.length})</span>
+            </button>
+          )}
           <button
             onClick={() => setActiveTab('history')}
             className={`px-3 py-1 rounded-lg text-xs transition flex items-center gap-1.5 ${
               activeTab === 'history'
-                ? 'bg-white/80 text-ink font-semibold border border-[#171a1f]/10'
+                ? 'bg-ink/10 text-ink font-semibold border border-[var(--border-1)]'
                 : 'text-ink-3 hover:text-ink'
             }`}
           >
@@ -96,7 +103,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
         {(activeTab === 'both' || activeTab === 'exposure') && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
             
-            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#171a1f]/8">
+            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[var(--border-1)]">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-warn/12 border border-warn/25 flex items-center justify-center text-warn">
                   <Zap className="w-4 h-4" />
@@ -168,7 +175,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-2 pt-2 border-t border-[#171a1f]/[0.06] flex items-center justify-between text-[10px] text-ink-3">
+                    <div className="mt-2 pt-2 border-t border-[var(--border-1)] flex items-center justify-between text-[10px] text-ink-3">
                       <span>Since: {item.activeSince}</span>
                       <span className="text-accent group-hover:translate-x-1 transition flex items-center gap-1 font-medium">
                         Inspect Evidence <ChevronRight className="w-3 h-3" />
@@ -187,9 +194,9 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
         {(activeTab === 'both' || activeTab === 'history') && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
             
-            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#171a1f]/8">
+            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[var(--border-1)]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white/55 border border-[#171a1f]/10 flex items-center justify-center text-ink-2">
+                <div className="w-8 h-8 rounded-xl bg-ink/5 border border-[var(--border-1)] flex items-center justify-center text-ink-2">
                   <History className="w-4 h-4" />
                 </div>
                 <div>
@@ -224,7 +231,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
                 >
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 text-[9px] font-bold rounded-md bg-white/55 text-ink-2 border border-[#171a1f]/10 uppercase">
+                      <span className="px-2 py-0.5 text-[9px] font-bold rounded-md bg-ink/5 text-ink-2 border border-[var(--border-1)] uppercase">
                         {act.actionType}
                       </span>
                       <span className="text-ink-3 text-[10px] font-mono">
@@ -255,7 +262,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
                     )}
                   </div>
 
-                  <div className="mt-2 pt-1.5 text-[10px] text-ink-3 border-t border-[#171a1f]/[0.06]">
+                  <div className="mt-2 pt-1.5 text-[10px] text-ink-3 border-t border-[var(--border-1)]">
                     <span className="text-ink-2 font-semibold">Analysis: </span>
                     {act.note}
                   </div>

@@ -3,7 +3,7 @@
  * nothing here logs configuration values.
  */
 
-import { buildApp, type SecurityEnginePort } from "./app.js";
+import { buildApp, configuredProviderName, type SecurityEnginePort } from "./app.js";
 import { loadConfig } from "./config.js";
 import type { EngineBundle } from "./engine-adapter.js";
 
@@ -41,7 +41,7 @@ const app = buildApp({ config, securityEngine, blockchainProvider });
 
 const server = app.listen(config.port, () => {
   console.log(
-    `sentinel-api listening on :${config.port} (provider: ${config.geminiApiKey ? "gemini" : "mock"}, engine: ${securityEngine ? "real" : "unavailable"})`,
+    `sentinel-api listening on :${config.port} (provider: ${configuredProviderName(config)}, engine: ${securityEngine ? "real" : "unavailable"})`,
   );
 });
 

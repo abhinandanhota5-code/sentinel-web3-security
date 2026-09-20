@@ -8,6 +8,8 @@ import express, { type Express, type Request, type Response, type NextFunction }
 import {
   createSentinelAi,
   GeminiExplanationProvider,
+  OllamaExplanationProvider,
+  OpenRouterExplanationProvider,
   MockExplanationProvider,
   NullPrismClient,
   evaluateExplanation,
@@ -49,7 +51,7 @@ export interface AppDeps {
   securityEngine?: SecurityEnginePort | undefined;
   /** Blockchain provider for the engine; defaults to createEthereumProvider(). */
   blockchainProvider?: unknown;
-  /** Explanation provider override (tests); defaults from GEMINI_API_KEY. */
+  /** Explanation provider override (tests); defaults from the provider config. */
   explanationProvider?: ExplanationProvider | undefined;
 }
 
@@ -102,6 +104,28 @@ const UNKNOWN_REASONS: readonly UnknownField["reason"][] = [
   "contradicted",
   "deprecated",
 ];
+
+/** Which explanation provider the given config resolves to (never secrets). */
+export function configuredProviderName(config: ApiConfig): string {
+  if (
+    config.explanationProvider === "ollama" &&
+    (config.ollamaBaseUrl ?? true)
+  ) {
+    // Ollama needs no API key; a local server URL (or the default) suffices.
+    return "ollama";
+  }
+  if (
+    config.explanationProvider === "openrouter" &&
+    config.openrouterApiKey &&
+    config.openrouterApiKey.trim().length > 0
+  ) {
+    return "openrouter";
+  }
+  if (config.explanationProvider === "gemini" && config.geminiApiKey && config.geminiApiKey.trim().length > 0) {
+    return "gemini";
+  }
+  return "mock";
+}
 
 /** Minimal request validation; errors carry an HTTP status. */
 export class BadRequestError extends Error {
@@ -162,8 +186,13 @@ export function serializeExplanation(e: Explanation): Record<string, unknown> {
     // Exact provider failure cause (already sanitized upstream: secrets
     // redacted, message text only). Present only for provider_error so clients
     // can report e.g. "Gemini 429 quota" instead of an opaque refusal.
+    // providerCode is the machine-readable classification (OLLAMA_UNAVAILABLE,
+    // MODEL_NOT_FOUND, TIMEOUT, INVALID_RESPONSE) for UI root-cause display.
     ...(e.refused === "provider_error" && e.providerError
       ? { providerError: e.providerError }
+      : {}),
+    ...(e.refused === "provider_error" && e.providerCode
+      ? { providerCode: e.providerCode }
       : {}),
     citations: Object.fromEntries(e.citations),
     knowledgeByCitation: Object.fromEntries(e.knowledgeByCitation),
@@ -195,15 +224,35 @@ export function buildApp(deps: AppDeps): Express {
     }
   }
 
-  const provider =
-    deps.explanationProvider ??
-    (config.geminiApiKey
-      ? new GeminiExplanationProvider({
-          timeoutMs: config.timeoutMs,
-          maxRetries: config.maxRetries,
-          ...(config.model ? { model: config.model } : {}),
-        })
-      : new MockExplanationProvider());
+  /** Resolve the vendor-agnostic explanation provider from server config. */
+  function defaultExplanationProvider(): ExplanationProvider {
+    if (config.explanationProvider === "ollama") {
+      return new OllamaExplanationProvider({
+        timeoutMs: Math.max(config.timeoutMs, 120_000), // local inference needs headroom
+        ...(config.ollamaBaseUrl ? { baseUrl: config.ollamaBaseUrl } : {}),
+        ...(config.ollamaModel ? { model: config.ollamaModel } : {}),
+      });
+    }
+    const openrouterReady = config.explanationProvider === "openrouter" && !!config.openrouterApiKey;
+    const geminiReady = config.explanationProvider === "gemini" && !!config.geminiApiKey;
+    if (openrouterReady) {
+      return new OpenRouterExplanationProvider({
+        timeoutMs: config.timeoutMs,
+        maxRetries: config.maxRetries,
+        ...(config.openrouterModel ? { model: config.openrouterModel } : {}),
+      });
+    }
+    if (geminiReady) {
+      return new GeminiExplanationProvider({
+        timeoutMs: config.timeoutMs,
+        maxRetries: config.maxRetries,
+        ...(config.model ? { model: config.model } : {}),
+      });
+    }
+    return new MockExplanationProvider();
+  }
+
+  const provider = deps.explanationProvider ?? defaultExplanationProvider();
 
   const { engine, prism } = createSentinelAi({ provider, prismClient: new NullPrismClient() });
 
@@ -214,7 +263,7 @@ export function buildApp(deps: AppDeps): Express {
   app.get("/healthz", (_req: Request, res: Response) => {
     res.json({
       ok: true,
-      provider: config.geminiApiKey ? "gemini" : "mock",
+      provider: configuredProviderName(config),
       prism: prism.name,
     });
   });
@@ -329,17 +378,93 @@ export function buildApp(deps: AppDeps): Express {
         unknowns: adapted.unknowns,
       });
 
+      // Compact deterministic current-state view for the UI. Derived ONLY
+      // from engine records; nothing inferred here, nothing erased by AI.
+      const recs =
+        (rawEngineBundle as unknown as { evidence?: Array<Record<string, unknown>> }).evidence ?? [];
+      const byType = (t: string) => recs.filter((r) => r.findingType === t);
+      const nativeRec = byType("NATIVE_BALANCE")[0]?.explanationInputs as
+        | { nativeBalanceWei?: string }
+        | undefined;
+      const delegationRec = byType("EIP7702_DELEGATION")[0]?.evidence as
+        | { delegatedTo?: string; delegatedToIsContract?: boolean; delegatedToCodeSizeBytes?: number }
+        | undefined;
+      const txCountRec = byType("TRANSACTION_COUNT")[0]?.explanationInputs as
+        | { transactionCount?: number }
+        | undefined;
+      const tokens = byType("CURRENT_TOKEN_EXPOSURE").map((r) => {
+        const ev = r.evidence as { tokenAddress?: string; tokenBalance?: string; tokenSymbol?: string } | undefined;
+        const inputs = r.explanationInputs as { currentBalance?: string } | undefined;
+        const balance = inputs?.currentBalance ?? ev?.tokenBalance ?? "0";
+        let positive = false;
+        try {
+          positive = BigInt(balance) > BigInt(0);
+        } catch {
+          positive = false;
+        }
+        return {
+          token: ev?.tokenAddress ?? null,
+          symbol: ev?.tokenSymbol ?? null,
+          balance,
+          positive,
+          knowledgeType: r.knowledgeType ?? null,
+        };
+      });
+      const activeVectors = tokens
+        .filter((t) => t.positive)
+        .map((t) => ({ type: "TOKEN_BALANCE", token: t.token, symbol: t.symbol, balance: t.balance }));
+      let tokenWeiTotal = BigInt(0);
+      for (const t of tokens) {
+        try {
+          tokenWeiTotal += BigInt(t.balance);
+        } catch {
+          // skip malformed
+        }
+      }
+      const engineUnknowns = recs
+        .filter((r) => r.knowledgeType === "UNKNOWN")
+        .map((r) => ({
+          findingType: r.findingType ?? null,
+          detail:
+            (r.coverageGaps as string[] | undefined)?.[0] ??
+            (r.limitations as string[] | undefined)?.[0] ??
+            null,
+        }));
+
       res.json({
         subject: {
           chain: normalizeChain(chain),
           address,
           addressType: rawEngineBundle.addressType ?? null,
         },
+        investigation: {
+          address,
+          chain,
+          addressType: rawEngineBundle.addressType ?? null,
+          dataMode: rawEngineBundle.dataMode ?? null,
+          engine: "deterministic-security-engine",
+        },
+        history: {
+          transactionCount: txCountRec?.transactionCount ?? null,
+          contractInteractions: byType("CONTRACT_INTERACTION").length,
+          tokenTransfers: byType("TOKEN_TRANSFER").length,
+        },
+        currentExposure: {
+          nativeBalanceWei: nativeRec?.nativeBalanceWei ?? null,
+          eip7702: delegationRec ?? null,
+          tokens,
+        },
+        activeVectors,
+        blastRadius: {
+          tokenWeiTotal: tokenWeiTotal.toString(),
+          note: "Raw sum of observed token balances; no USD pricing. Allowance state may be UNKNOWN — see coverageGaps/unknowns.",
+        },
         findings: adapted.findings,
         evidence: adapted.bundle,
         explanation: serializeExplanation(explanation),
         coverageGaps: adapted.coverageGaps,
         unknowns: adapted.unknowns,
+        engineUnknowns,
         dataMode: adapted.dataMode,
       });
     } catch (err) {
@@ -371,13 +496,18 @@ export function buildApp(deps: AppDeps): Express {
       res.status(400).json({ error: "malformed JSON body" });
       return;
     }
-    // GeminiProviderError: sanitized upstream (secrets redacted, message only).
+    // Provider errors: sanitized upstream (secrets redacted, message only).
     // Report the exact provider failure (e.g. HTTP 429 quota exhaustion)
-    // instead of hiding it behind a generic 500.
-    // Structural name check: avoids importing the vendor SDK into the API
-    // layer while still surfacing exactly the provider's sanitized message.
+    // instead of hiding it behind a generic 500. Structural name check avoids
+    // importing vendor SDKs into the API layer while still surfacing exactly
+    // the provider's sanitized message.
     const providerMessage =
-      anyErr instanceof Error && anyErr.name === "GeminiProviderError" ? anyErr.message : undefined;
+      anyErr instanceof Error &&
+      (anyErr.name === "GeminiProviderError" ||
+        anyErr.name === "OpenRouterProviderError" ||
+        anyErr.name === "OllamaProviderError")
+        ? anyErr.message
+        : undefined;
     if (providerMessage) {
       res.status(502).json({ error: providerMessage });
       return;

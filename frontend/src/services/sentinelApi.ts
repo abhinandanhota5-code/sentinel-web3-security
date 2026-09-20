@@ -3,6 +3,9 @@
 
 import type {
   InvestigationReport,
+  CurrentExposureSummary,
+  EvidenceRecordView,
+  FindingStatus,
   NetworkChainId,
   ChainInfo,
   CoverageReport,
@@ -1026,6 +1029,38 @@ function deriveTripartite(f: RawEngineFinding, allUnknowns: UnknownFieldItem[]):
   return { observed, inferred, unknown };
 }
 
+/**
+ * Deterministic temporal state: does this finding describe something ACTIVE
+ * right now, a settled HISTORICAL event, or an UNKNOWN state? Derived ONLY
+ * from finding type + knowledgeType — never from AI text.
+ */
+function deriveFindingStatus(f: RawEngineFinding): 'ACTIVE' | 'HISTORICAL' | 'UNKNOWN' {
+  switch (f.findingType) {
+    case 'UNLIMITED_ALLOWANCE':
+    case 'ACTIVE_APPROVAL':
+    case 'CURRENT_TOKEN_EXPOSURE':
+    case 'APPROVAL_WITHOUT_CURRENT_BALANCE':
+    case 'PRIVILEGED_ADMIN':
+    case 'TIMELOCK_ABSENT':
+    case 'PROXY_DETECTED':
+    case 'EIP7702_DELEGATION':
+    case 'NATIVE_BALANCE':
+    case 'ADDRESS_CLASSIFICATION':
+      return 'ACTIVE';
+    case 'TRANSACTION_COUNT':
+    case 'FIRST_ACTIVITY':
+    case 'LAST_ACTIVITY':
+    case 'CONTRACT_INTERACTION':
+    case 'TOKEN_TRANSFER':
+    case 'IMPORTANT_INTERACTION':
+      return 'HISTORICAL';
+    case 'TOKEN_APPROVALS':
+      return 'UNKNOWN';
+    default:
+      return f.knowledgeType === 'UNKNOWN' ? 'UNKNOWN' : 'HISTORICAL';
+  }
+}
+
 function extractCurrentExposures(findings: RawEngineFinding[], subjectAddress: string): CurrentExposureItem[] {
   // "Active Vectors" must contain only genuine current exposures: findings
   // that represent actionable, revocable state right now. Passive/probe
@@ -1129,6 +1164,39 @@ function buildEvidenceGraph(
   const nodesMap = new Map<string, GraphNode>();
   const edgesMap = new Map<string, GraphEdge>();
 
+  /** Aggregate interactions per counterparty, bounded for readability. */
+  const MAX_INTERACTION_ENTITIES = 12;
+  const interactionEntities = new Set<string>();
+
+  /** Every edge must trace to actual engine evidence: collect finding ids. */
+  const edgeEvidence = new Map<string, string[]>();
+  const addEdge = (
+    source: string,
+    target: string,
+    relationship: string,
+    relationshipType: 'DIRECT_EVIDENCE' | 'INFERRED',
+    evidenceId: string,
+    evidenceRef: string | undefined,
+    transactionHash: string | undefined,
+  ): void => {
+    const key = `${source}->${target}:${relationship}`;
+    if (!edgesMap.has(key)) {
+      edgesMap.set(key, {
+        id: `edge-${edgesMap.size + 1}`,
+        source,
+        target,
+        relationship,
+        relationshipType,
+        evidenceRef,
+        ...(transactionHash ? { transactionHash } : {}),
+      });
+      edgeEvidence.set(key, [evidenceId]);
+    } else {
+      const seen = edgeEvidence.get(key)!;
+      if (!seen.includes(evidenceId)) seen.push(evidenceId);
+    }
+  };
+
   const targetId = 'target';
   nodesMap.set(targetId, {
     id: targetId,
@@ -1153,18 +1221,15 @@ function buildEvidenceGraph(
           address: f.token,
         });
       }
-      const edgeKey = `${targetId}->${tokenId}:approval`;
-      if (!edgesMap.has(edgeKey)) {
-        edgesMap.set(edgeKey, {
-          id: `e-tok-${edgesMap.size + 1}`,
-          source: targetId,
-          target: tokenId,
-          relationship: f.findingType === 'UNLIMITED_ALLOWANCE' ? 'unlimited approval' : 'holds / approved asset',
-          relationshipType: 'DIRECT_EVIDENCE',
-          evidenceRef: f.allowance ? `Allowance: ${f.allowance.slice(0, 10)}...` : undefined,
-          transactionHash: f.transactionHash,
-        });
-      }
+      addEdge(
+        targetId,
+        tokenId,
+        f.findingType === 'UNLIMITED_ALLOWANCE' || f.findingType === 'ACTIVE_APPROVAL' ? 'APPROVED' : 'HOLDS',
+        'DIRECT_EVIDENCE',
+        f.id,
+        f.allowance ? `Allowance: ${f.allowance.slice(0, 10)}...` : undefined,
+        f.transactionHash,
+      );
     }
 
     if (f.spender) {
@@ -1179,18 +1244,15 @@ function buildEvidenceGraph(
           address: f.spender,
         });
       }
-      const edgeKey = `${targetId}->${spenderId}:allowance`;
-      if (!edgesMap.has(edgeKey)) {
-        edgesMap.set(edgeKey, {
-          id: `e-sp-${edgesMap.size + 1}`,
-          source: targetId,
-          target: spenderId,
-          relationship: 'authorized spender',
-          relationshipType: 'DIRECT_EVIDENCE',
-          evidenceRef: f.evidence?.slot ? `Slot ${formatShortAddress(f.evidence.slot)}` : undefined,
-          transactionHash: f.transactionHash,
-        });
-      }
+      addEdge(
+        targetId,
+        spenderId,
+        'ALLOWANCE',
+        'DIRECT_EVIDENCE',
+        f.id,
+        f.evidence?.slot ? `Slot ${formatShortAddress(f.evidence.slot)}` : undefined,
+        f.transactionHash,
+      );
     }
 
     const adminAddr = f.admin || f.owner;
@@ -1206,18 +1268,15 @@ function buildEvidenceGraph(
           address: adminAddr,
         });
       }
-      const parentId = f.spender ? `spender-${f.spender.toLowerCase()}` : targetId;
-      const edgeKey = `${parentId}->${adminId}:admin`;
-      if (!edgesMap.has(edgeKey)) {
-        edgesMap.set(edgeKey, {
-          id: `e-adm-${edgesMap.size + 1}`,
-          source: parentId,
-          target: adminId,
-          relationship: f.admin ? 'controlled by proxy admin' : 'owned by admin key',
-          relationshipType: f.knowledgeType === 'INFERRED' ? 'INFERRED' : 'DIRECT_EVIDENCE',
-          evidenceRef: 'Admin authority record',
-        });
-      }
+      addEdge(
+        f.spender ? `spender-${f.spender.toLowerCase()}` : targetId,
+        adminId,
+        'CONTROLLED_BY',
+        f.knowledgeType === 'INFERRED' ? 'INFERRED' : 'DIRECT_EVIDENCE',
+        f.id,
+        'Admin authority record',
+        undefined,
+      );
     }
 
     if (f.implementation) {
@@ -1232,17 +1291,95 @@ function buildEvidenceGraph(
           address: f.implementation,
         });
       }
-      const parentId = f.spender ? `spender-${f.spender.toLowerCase()}` : targetId;
-      const edgeKey = `${parentId}->${implId}:impl`;
-      if (!edgesMap.has(edgeKey)) {
-        edgesMap.set(edgeKey, {
-          id: `e-impl-${edgesMap.size + 1}`,
-          source: parentId,
-          target: implId,
-          relationship: 'delegates execution to',
-          relationshipType: 'DIRECT_EVIDENCE',
-          evidenceRef: f.evidence?.slot ? `Slot ${formatShortAddress(f.evidence.slot)}` : 'EIP-1967 delegatecall',
+      addEdge(
+        f.spender ? `spender-${f.spender.toLowerCase()}` : targetId,
+        implId,
+        'UPGRADEABLE_TO',
+        'DIRECT_EVIDENCE',
+        f.id,
+        f.evidence?.slot ? `Slot ${formatShortAddress(f.evidence.slot)}` : 'EIP-1967 delegatecall',
+        undefined,
+      );
+    }
+
+    // EIP-7702 delegation: an OBSERVED relationship, never a verdict.
+    if (f.findingType === 'EIP7702_DELEGATION' && f.evidence?.delegatedTo) {
+      const delegateId = `delegate-${String(f.evidence.delegatedTo).toLowerCase()}`;
+      if (!nodesMap.has(delegateId)) {
+        nodesMap.set(delegateId, {
+          id: delegateId,
+          label: formatShortAddress(String(f.evidence.delegatedTo)),
+          sublabel: 'Delegated Target (EIP-7702)',
+          type: 'DELEGATED_TARGET',
+          badge: f.evidence.delegatedToIsContract
+            ? `Contract · ${f.evidence.delegatedToCodeSizeBytes ?? '?'} bytes`
+            : 'EOA',
+          address: String(f.evidence.delegatedTo),
         });
+      }
+      addEdge(
+        targetId,
+        delegateId,
+        'DELEGATES_TO',
+        'DIRECT_EVIDENCE',
+        f.id,
+        `eth_getCode delegation designator -> ${formatShortAddress(String(f.evidence.delegatedTo))}`,
+        undefined,
+      );
+    }
+
+    // Historical interactions: entity-level edges only, DEDUPLICATED per
+    // counterparty and aggregated (30 interactions with one contract → ONE
+    // node + ONE edge carrying 30 evidence ids). Bounded to the most repeated
+    // counterparties so the graph never renders hundreds of tiny nodes.
+    if (
+      (f.findingType === 'CONTRACT_INTERACTION' || f.findingType === 'TOKEN_TRANSFER' || f.findingType === 'IMPORTANT_INTERACTION') &&
+      (f.contractAddress || f.wallet)
+    ) {
+      const counterpartyAddress = (f.contractAddress || f.wallet) as string;
+      const key = counterpartyAddress.toLowerCase();
+      if (key !== targetAddress.toLowerCase()) {
+        if (!nodesMap.has(`entity-${key}`) && interactionEntities.size >= MAX_INTERACTION_ENTITIES && !interactionEntities.has(key)) {
+          continue; // cap reached and this counterparty is not already present
+        }
+        interactionEntities.add(key);
+        const interactedId = `entity-${key}`;
+        if (!nodesMap.has(interactedId)) {
+          nodesMap.set(interactedId, {
+            id: interactedId,
+            label: f.evidence?.tokenSymbol
+              ? `${f.evidence.tokenSymbol}`
+              : formatShortAddress(counterpartyAddress),
+            sublabel: 'Historical Interaction',
+            type: 'CONTRACT',
+            badge: f.findingType === 'TOKEN_TRANSFER' ? 'Token Transfers' : 'Interactions',
+            address: counterpartyAddress,
+          });
+        }
+        addEdge(
+          targetId,
+          interactedId,
+          'INTERACTED_WITH',
+          'DIRECT_EVIDENCE',
+          f.id,
+          f.transactionHash ? `tx ${formatShortAddress(f.transactionHash)}` : undefined,
+          f.transactionHash,
+        );
+      }
+    }
+  }
+
+  // Attach the collected evidence ids to every edge; annotate aggregated
+  // relationship edges with their event count (e.g. INTERACTED_WITH ×30).
+  for (const [key, ids] of edgeEvidence) {
+    const edge = edgesMap.get(key);
+    if (edge) {
+      edge.evidenceIds = ids;
+      if (ids.length > 1) {
+        edge.count = ids.length;
+        if (edge.relationship === 'INTERACTED_WITH') {
+          edge.evidenceRef = `${ids.length} indexed on-chain events with this entity`;
+        }
       }
     }
   }
@@ -1287,6 +1424,8 @@ export function adaptAnalyzeResponse(
       findingType: rf.findingType,
       severity,
       confidence: rf.knowledgeType,
+      status: deriveFindingStatus(rf),
+      evidenceIds: [rf.id],
       title: deriveFindingTitle(rf),
       summary: deriveFindingSummary(rf, targetAddress),
       category: deriveFindingCategory(rf),
@@ -1330,6 +1469,42 @@ export function adaptAnalyzeResponse(
   const historicalActivities = extractHistoricalActivities(data.findings, targetAddress);
   const evidenceGraph = buildEvidenceGraph(targetAddress, entityType, data.findings);
 
+  // Deterministic current-state summary straight from the API block (never
+  // derived from findings prose, never erased by AI failure).
+  const currentExposureSummary: CurrentExposureSummary | undefined = data.currentExposure
+    ? {
+        nativeBalanceWei: data.currentExposure.nativeBalanceWei,
+        eip7702: data.currentExposure.eip7702
+          ? { ...data.currentExposure.eip7702, evidenceId: data.findings.find(f => f.findingType === 'EIP7702_DELEGATION')?.id }
+          : null,
+        tokens: data.currentExposure.tokens.map(({ token, symbol, balance, positive }) => ({ token, symbol, balance, positive })),
+        activeVectors: data.activeVectors ?? [],
+        blastRadius: data.blastRadius ?? { tokenWeiTotal: '0' },
+      }
+    : undefined;
+
+  // Consolidated evidence records for the dedicated Evidence view.
+  const findingTypeById = new Map(data.findings.map(f => [f.id, f.findingType] as const));
+  const evidenceRecords: EvidenceRecordView[] = (data.evidence?.records as Array<Record<string, unknown>> | undefined ?? []).map((r) => {
+    const finding = r.finding as Record<string, unknown> | undefined;
+    const fid = typeof r.id === 'string' ? r.id : '';
+    const ftype = (finding?.findingType as string | undefined) ?? findingTypeById.get(fid);
+    return {
+      id: fid,
+      kind: String(r.kind ?? 'engine_finding'),
+      chain: typeof r.chain === 'string' ? r.chain : undefined,
+      knowledgeType: (r.knowledgeType as EvidenceRecordView['knowledgeType']) ?? 'UNKNOWN',
+      sourceTool: (r.source as { tool?: string } | undefined)?.tool,
+      sourceLocator: (r.source as { locator?: string } | undefined)?.locator,
+      capturedAt: typeof r.capturedAt === 'string' ? r.capturedAt : undefined,
+      findingType: ftype,
+      title: ftype ? deriveFindingTitle({ id: fid, findingType: ftype } as RawEngineFinding) : undefined,
+      summary: ftype ? deriveFindingSummary({ id: fid, findingType: ftype, evidence: finding?.evidence } as RawEngineFinding, targetAddress) : undefined,
+      detail: finding,
+      coverageGaps: (finding?.coverageGaps as string[] | undefined) ?? undefined,
+    };
+  });
+
   const observedFactsCount = data.findings.filter(f => f.knowledgeType === 'OBSERVED').length;
   const inferredHypothesesCount = data.findings.filter(f => f.knowledgeType === 'INFERRED').length;
   const unknownBoundariesCount = data.findings.filter(f => f.knowledgeType === 'UNKNOWN').length + (data.unknowns?.length || 0);
@@ -1337,14 +1512,65 @@ export function adaptAnalyzeResponse(
 
   const totalBlastRadiusUsd = currentExposures.reduce((acc, curr) => acc + (curr.blastRadiusUsd || 0), 0);
 
-  const coverage: CoverageReport = {
-    ...COMMON_COVERAGE,
-    limitations: [
-      ...((data.coverageGaps && data.coverageGaps.length > 0) ? data.coverageGaps : []),
-      ...((data.unknowns && data.unknowns.length > 0) ? data.unknowns.map(u => `${u.field} [${u.reason}]: ${u.detail || 'epistemic boundary'}`) : []),
-      ...COMMON_COVERAGE.limitations,
-    ],
-  };
+  // Honest coverage: what the engine VERIFIED vs what it could NOT establish.
+  // Preset reports keep their curated demo coverage; real investigations
+  // reflect only the sources the deterministic engine actually used.
+  const isReal = data.dataMode === 'REAL' || data.dataMode === 'MIXED';
+  const coverage: CoverageReport = isReal
+    ? {
+        networksChecked: [
+          { chain: 'Ethereum Mainnet', status: 'VERIFIED', latestBlockIndexed: 0 },
+        ],
+        analysisModules: [
+          {
+            id: 'MOD_ADDRESS_CLASSIFICATION',
+            name: 'Address Classification (eth_getCode)',
+            description: 'EOA vs contract classification including EIP-7702 delegation designators',
+            status: 'ACTIVE',
+            lastRunLatencyMs: 0,
+          },
+          {
+            id: 'MOD_HISTORY',
+            name: 'Indexed History (Etherscan)',
+            description: 'Normal transactions, contract interactions, and token transfers',
+            status: 'ACTIVE',
+            lastRunLatencyMs: 0,
+          },
+          {
+            id: 'MOD_CURRENT_STATE',
+            name: 'Current State (RPC)',
+            description: 'Native balance, token balances, EIP-7702 delegated target',
+            status: 'ACTIVE',
+            lastRunLatencyMs: 0,
+          },
+          {
+            id: 'MOD_ALLOWANCE_BLAST',
+            name: 'Token Allowance Enumeration',
+            description: 'Historical approval logs and current allowance state',
+            status: (data.coverageGaps ?? []).some(g => /approval/i.test(g)) ? 'DEGRADED' : 'ACTIVE',
+            lastRunLatencyMs: 0,
+          },
+        ],
+        dataSources: [
+          { name: 'Ethereum RPC', provider: 'Configured EVM provider', type: 'RPC_ARCHIVE', freshness: 'Current block' },
+          { name: 'Etherscan', provider: 'Etherscan API', type: 'INDEXER', freshness: 'Indexed' },
+        ],
+        limitations: [
+          ...((data.coverageGaps && data.coverageGaps.length > 0) ? data.coverageGaps : []),
+          ...((data.unknowns && data.unknowns.length > 0) ? data.unknowns.map(u => `${u.field} [${u.reason}]: ${u.detail || 'epistemic boundary'}`) : []),
+          'Pending mempool transactions and private bundle executions are unobservable.',
+        ],
+        disclaimer:
+          'Absence of findings is NOT evidence of absence. Findings are limited to the verified coverage above; everything the engine could not establish is reported as UNKNOWN.',
+      }
+    : {
+        ...COMMON_COVERAGE,
+        limitations: [
+          ...((data.coverageGaps && data.coverageGaps.length > 0) ? data.coverageGaps : []),
+          ...((data.unknowns && data.unknowns.length > 0) ? data.unknowns.map(u => `${u.field} [${u.reason}]: ${u.detail || 'epistemic boundary'}`) : []),
+          ...COMMON_COVERAGE.limitations,
+        ],
+      };
 
   return {
     targetAddress,
@@ -1368,6 +1594,8 @@ export function adaptAnalyzeResponse(
     explanation: data.explanation,
     unknowns: data.unknowns,
     coverageGaps: data.coverageGaps,
+    evidenceRecords,
+    currentExposureSummary,
   };
 }
 

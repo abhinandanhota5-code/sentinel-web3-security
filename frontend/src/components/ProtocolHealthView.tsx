@@ -78,7 +78,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
           {/* TVL Metrics */}
           <div className="flex items-center gap-4 liquid-glass-subtle rounded-2xl p-4">
-            <div className="border-r border-white/10 pr-5">
+            <div className="border-r border-[var(--border-1)] pr-5">
               <div className="text-[10px] uppercase font-mono tracking-wider text-ink-3">Total Value Locked</div>
               <div className="text-xl font-bold font-mono text-ink mt-0.5">
                 {formatUsd(health.totalValueLockedUsd)}
@@ -102,7 +102,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
         
         {/* Card 1: Admin Concentration */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-accent/12 border border-accent/25 flex items-center justify-center text-accent">
                 <Key className="w-4 h-4" />
@@ -153,7 +153,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
         {/* Card 2: Upgradeability Architecture */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-accent/12 border border-accent/25 flex items-center justify-center text-accent">
                 <GitFork className="w-4 h-4" />
@@ -196,9 +196,9 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
         {/* Card 3: Privileged Roles */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white/[0.08] border border-white/15 flex items-center justify-center text-ink-2">
+              <div className="w-8 h-8 rounded-xl bg-ink/8 border border-ink/12 flex items-center justify-center text-ink-2">
                 <Lock className="w-4 h-4" />
               </div>
               <div>
@@ -232,7 +232,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
         {/* Card 4: Contract Dependencies */}
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-warn/12 border border-warn/25 flex items-center justify-center text-warn">
                 <Share2 className="w-4 h-4" />

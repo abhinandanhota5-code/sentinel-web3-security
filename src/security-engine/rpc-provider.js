@@ -104,6 +104,22 @@ class RpcBlockchainProvider extends BlockchainProvider {
     return this.rpc('eth_call', [{ to, data: `${selector}${data}` }, 'latest']);
   }
 
+  async getNativeBalance(address) {
+    const wei = await this.rpc('eth_getBalance', [address, 'latest']);
+    return BigInt(wei).toString();
+  }
+
+  /** EIP-7702 (Pectra): extract the delegated target from a designator code. */
+  async getEip7702Delegate(address) {
+    const code = await this.rpc('eth_getCode', [address, 'latest']);
+    const hex = typeof code === 'string' ? code.toLowerCase().replace(/^0x/, '') : '';
+    if (!hex.startsWith(EIP7702_DELEGATION_PREFIX) || hex.length !== 46) return undefined;
+    const delegatedTo = `0x${hex.slice(6, 46)}`;
+    const targetCode = await this.rpc('eth_getCode', [delegatedTo, 'latest']).catch(() => '0x');
+    const isContract = Boolean(targetCode && targetCode !== '0x');
+    return { delegatedTo, delegatedToIsContract: isContract, delegatedToCodeSizeBytes: isContract ? (targetCode.length - 2) / 2 : 0 };
+  }
+
   async getContractMetadata(address) {
     const owner = await this.getOwner(address).catch(() => null);
     const proxy = await this.getProxyImplementation(address).catch(() => null);
@@ -161,6 +177,8 @@ class CompositeBlockchainProvider extends BlockchainProvider {
   async getLogs(address, chain) { return this.indexer.getLogs(address, chain); }
   async getOwner(address, chain) { return this.rpcProvider.getOwner(address, chain); }
   async getProxyImplementation(address, chain) { return this.rpcProvider.getProxyImplementation(address, chain); }
+  async getNativeBalance(address, chain) { return this.rpcProvider.getNativeBalance(address, chain); }
+  async getEip7702Delegate(address, chain) { return this.rpcProvider.getEip7702Delegate(address, chain); }
 }
 
 module.exports = { RpcBlockchainProvider, CompositeBlockchainProvider, APPROVAL_TOPIC, IMPLEMENTATION_SLOT, ADMIN_SLOT };

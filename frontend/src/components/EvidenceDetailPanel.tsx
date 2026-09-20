@@ -41,7 +41,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
       <div className="w-full max-w-2xl liquid-glass-strong border-l border-white/70 shadow-2xl h-full flex flex-col relative z-10 animate-in slide-in-from-right duration-300">
         
         {/* Panel Header */}
-        <div className="p-6 border-b border-[#171a1f]/8 flex items-start justify-between gap-4">
+        <div className="p-6 border-b border-[var(--border-1)] flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-bad/12 text-bad border border-bad/25">
@@ -58,14 +58,14 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-ink-3 hover:text-ink bg-white/55 hover:bg-white/80 rounded-xl border border-[#171a1f]/10 transition"
+            className="p-2 text-ink-3 hover:text-ink bg-ink/5 hover:bg-ink/10 rounded-xl border border-[var(--border-1)] transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#171a1f]/8 bg-white/25 px-6">
+        <div className="flex border-b border-[var(--border-1)] bg-ink/5 px-6">
           <button
             onClick={() => setActiveTab('tripartite')}
             className={`py-3 px-4 text-xs font-semibold border-b-2 transition flex items-center gap-2 ${
@@ -132,7 +132,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                 </ul>
 
                 {/* Evidence Details */}
-                <div className="mt-3 pt-3 border-t border-[#171a1f]/8 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
+                <div className="mt-3 pt-3 border-t border-[var(--border-1)] grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
                   {finding.evidence.transactionHash && (
                     <div className="glass-well p-2 flex items-center justify-between">
                       <span className="text-ink-3">Tx Hash:</span>
@@ -195,7 +195,7 @@ export const EvidenceDetailPanel: React.FC<EvidenceDetailPanelProps> = ({
                     <HelpCircle className="w-4 h-4 text-ink-3" />
                     <span>UNKNOWN // EXPLICIT BOUNDARIES</span>
                   </div>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/55 text-ink-2 border border-[#171a1f]/10 font-medium">
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-ink/5 text-ink-2 border border-[var(--border-1)] font-medium">
                     Epistemic Bound
                   </span>
                 </div>

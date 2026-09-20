@@ -95,6 +95,13 @@ export interface Explanation {
    * instead of a generic refusal. Never present for fabricated text.
    */
   providerError?: string;
+  /**
+   * Machine-readable failure classification (e.g. OLLAMA_UNAVAILABLE,
+   * MODEL_NOT_FOUND, TIMEOUT, INVALID_RESPONSE) when the provider exposes
+   * one. Lets the UI distinguish root causes instead of collapsing every
+   * problem into "AI unavailable".
+   */
+  providerCode?: string;
 }
 
 /**
@@ -144,6 +151,11 @@ export class GroundedExplanationEngine implements ExplanationEngine {
       // the evidence is never fabricated to compensate for a failed model.
       const providerError =
         err instanceof Error ? err.message : err !== undefined ? String(err) : undefined;
+      const providerCode =
+        err instanceof Error &&
+        typeof (err as unknown as { code?: unknown }).code === "string"
+          ? ((err as unknown as { code: string }).code)
+          : undefined;
       return {
         text: "Explanation is temporarily unavailable. The underlying evidence remains valid.",
         citations: new Map(),
@@ -154,6 +166,7 @@ export class GroundedExplanationEngine implements ExplanationEngine {
         providerError: providerError
           ? providerError.slice(0, 500)
           : "provider generate() failed without an error message",
+        ...(providerCode ? { providerCode } : {}),
       };
     }
 

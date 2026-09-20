@@ -1,7 +1,7 @@
 // Sentinel Web3 Security & Protocol Health - Core Type Definitions
 // Follows strict separation of OBSERVED, INFERRED, and UNKNOWN confidence classes
 
-export type SeverityLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFORMATIONAL';
+export type SeverityLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFORMATIONAL' | 'UNKNOWN';
 
 export type ConfidenceClass = 'OBSERVED' | 'INFERRED' | 'UNKNOWN';
 
@@ -64,6 +64,8 @@ export interface TripartiteReasoning {
 }
 
 // Core Finding Object
+export type FindingStatus = 'ACTIVE' | 'HISTORICAL' | 'UNKNOWN';
+
 export interface Finding {
   id: string;
   findingType: 
@@ -79,6 +81,10 @@ export interface Finding {
     | (string & {});
   severity: SeverityLevel;
   confidence: ConfidenceClass;
+  /** Temporal state: ACTIVE = current exposure, HISTORICAL = settled event, UNKNOWN = unverifiable. Derived deterministically from finding type + evidence, never from the LLM. Optional for legacy preset reports. */
+  status?: FindingStatus;
+  /** Stable evidence record ids supporting this finding (== engine record id). Optional for legacy preset reports. */
+  evidenceIds?: string[];
   title: string;
   summary: string;
   category: 'EXPOSURE' | 'AUTHORIZATION' | 'LOGIC' | 'GOVERNANCE' | 'ORACLE';
@@ -182,24 +188,81 @@ export interface ProtocolHealth {
 }
 
 // Graph Representation
+export type GraphNodeType =
+  | 'WALLET'
+  | 'TOKEN'
+  | 'SPENDER'
+  | 'CONTRACT'
+  | 'ADMIN'
+  | 'IMPLEMENTATION'
+  | 'ORACLE'
+  | 'DELEGATED_TARGET';
+
 export interface GraphNode {
   id: string;
   label: string;
   sublabel?: string;
-  type: 'WALLET' | 'TOKEN' | 'SPENDER' | 'ADMIN' | 'IMPLEMENTATION' | 'ORACLE';
+  type: GraphNodeType;
   address?: string;
   badge?: string;
   isTarget?: boolean;
 }
 
+/** Canonical relationship labels — every edge must map to real evidence. */
+export type GraphRelationshipType =
+  | 'HOLDS'
+  | 'APPROVED'
+  | 'ALLOWANCE'
+  | 'INTERACTED_WITH'
+  | 'DELEGATES_TO'
+  | 'CONTROLLED_BY'
+  | 'UPGRADEABLE_TO'
+  | 'TRANSFERRED_TO'
+  | 'DEPENDS_ON'
+  | (string & {});
+
 export interface GraphEdge {
   id: string;
   source: string;
   target: string;
-  relationship: string;
+  relationship: GraphRelationshipType;
   relationshipType: 'DIRECT_EVIDENCE' | 'INFERRED';
+  /** Stable engine evidence record ids supporting this relationship. */
+  evidenceIds?: string[];
+  /** Number of aggregated evidence records (e.g. 30 interactions → one edge, count 30). */
+  count?: number;
   evidenceRef?: string;
   transactionHash?: string;
+}
+
+/** One consolidated evidence record for the Evidence view. */
+export interface EvidenceRecordView {
+  id: string;
+  kind: string;
+  chain?: string;
+  knowledgeType: ConfidenceClass;
+  sourceTool?: string;
+  sourceLocator?: string;
+  capturedAt?: string;
+  findingType?: string;
+  title?: string;
+  summary?: string;
+  detail?: Record<string, unknown>;
+  coverageGaps?: string[];
+}
+
+/** Deterministic current-state summary produced by the engine (not the LLM). */
+export interface CurrentExposureSummary {
+  nativeBalanceWei: string | null;
+  eip7702: {
+    delegatedTo?: string;
+    delegatedToIsContract?: boolean;
+    delegatedToCodeSizeBytes?: number;
+    evidenceId?: string;
+  } | null;
+  tokens: Array<{ token: string | null; symbol: string | null; balance: string; positive: boolean }>;
+  activeVectors: Array<{ type: string; token?: string | null; symbol?: string | null; balance?: string }>;
+  blastRadius: { tokenWeiTotal: string; note?: string };
 }
 
 // Coverage and Bounds
@@ -232,6 +295,10 @@ export interface GroundedExplanation {
   text: string;
   blocked?: boolean;
   refused?: string | null;
+  /** Exact sanitized provider failure detail when refused === 'provider_error'. */
+  providerError?: string;
+  /** Machine-readable failure classification (OLLAMA_UNAVAILABLE, MODEL_NOT_FOUND, TIMEOUT, INVALID_RESPONSE). */
+  providerCode?: string;
   citations: Record<string, string>;
   knowledgeByCitation: Record<string, ConfidenceClass>;
   validation?: {
@@ -280,6 +347,30 @@ export interface AnalyzeApiResponse {
     address: string;
     addressType: string | null;
   };
+  investigation?: {
+    address: string;
+    chain: string;
+    addressType: string | null;
+    dataMode: string | null;
+    engine: string;
+  };
+  history?: {
+    transactionCount: number | null;
+    contractInteractions: number;
+    tokenTransfers: number;
+  };
+  currentExposure?: {
+    nativeBalanceWei: string | null;
+    eip7702: {
+      delegatedTo?: string;
+      delegatedToIsContract?: boolean;
+      delegatedToCodeSizeBytes?: number;
+    } | null;
+    tokens: Array<{ token: string | null; symbol: string | null; balance: string; positive: boolean; knowledgeType?: string | null }>;
+  };
+  activeVectors?: Array<{ type: string; token?: string | null; symbol?: string | null; balance?: string }>;
+  blastRadius?: { tokenWeiTotal: string; note?: string };
+  engineUnknowns?: Array<{ findingType: string | null; detail: string | null }>;
   findings: RawEngineFinding[];
   evidence: {
     subject: {
@@ -325,4 +416,8 @@ export interface InvestigationReport {
   explanation?: GroundedExplanation;
   unknowns?: UnknownFieldItem[];
   coverageGaps?: string[];
+  /** Consolidated evidence records for the dedicated Evidence view. */
+  evidenceRecords?: EvidenceRecordView[];
+  /** Deterministic current-state summary from the engine (ETH balance, 7702, tokens). */
+  currentExposureSummary?: CurrentExposureSummary;
 }

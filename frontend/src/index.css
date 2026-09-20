@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   SENTINEL DESIGN SYSTEM — macOS Liquid Glass (Light)
+   SENTINEL DESIGN SYSTEM — Dark Security Console
    --------------------------------------------------------------------------
-   Translucent white glass above a soft neutral environment. Dark charcoal
-   typography with strong hierarchy. ONE muted Apple-blue accent; semantic
-   colors are muted and reserved for security state. Monospace is reserved
-   for technical identifiers only. All colors are centralized here.
+   Premium, technical, calm. Deep navy surfaces with restrained blue/cyan
+   accents. Semantic colors (blue/green/amber/red) communicate information
+   state only. Monospace is reserved for technical identifiers. All colors
+   are centralized here as CSS variables consumed by Tailwind theme tokens.
    ========================================================================== */
 
 /* Tailwind theme tokens -> utilities like text-ink / text-accent / bg-warn/12 */
@@ -26,45 +26,45 @@
 
 @layer base {
   :root {
-    /* Environment — soft neutral, slightly cool */
-    --bg: #eceff1;
+    /* Environment — deep navy security console */
+    --bg: #07111f;
+    --surface-1: #0d1928;
+    --surface-2: #13243a;
+    --surface-3: #1a2d47;
+    --border-1: #203653;
+    --border-2: #2c4568;
 
-    /* Typography — high contrast on light glass */
-    --text-primary: #171a1f;    /* titles, primary content   */
-    --text-secondary: #59616c;  /* body text                 */
-    --text-muted: #7a828c;      /* metadata                  */
-    --text-technical: #4e5661;  /* monospace technical values */
+    /* Typography — bright on dark, strong hierarchy */
+    --text-primary: #e8f0f8;   /* titles, primary content */
+    --text-secondary: #b7c6d6; /* body text */
+    --text-muted: #8fa3b8;     /* metadata */
+    --text-technical: #9fb3c8; /* monospace technical values */
 
-    /* Accent — one muted Apple-style blue */
-    --accent: #5b78a0;
-    --accent-text: #405a78;     /* darker variant for small text */
-    --accent-soft: rgba(91, 120, 160, 0.13);
+    /* Accents — one primary blue + cool cyan highlight */
+    --accent: #3b82f6;
+    --accent-text: #60a5fa;
+    --cyan: #38bdf8;
+    --accent-soft: rgba(59, 130, 246, 0.14);
 
-    /* Semantic state — muted, for security status only */
-    --success: #5e8068;
-    --success-text: #46614c;
-    --success-soft: rgba(94, 128, 104, 0.13);
+    /* Semantic state — blue=info, green=verified, amber=unknown, red=concern */
+    --success: #34d399;
+    --success-text: #4ade80;
+    --success-soft: rgba(52, 211, 153, 0.13);
 
-    --warning: #9a7745;
-    --warning-text: #7d5f33;
-    --warning-soft: rgba(154, 119, 69, 0.13);
+    --warning: #fbbf24;
+    --warning-text: #fbbf24;
+    --warning-soft: rgba(251, 191, 36, 0.12);
 
-    --danger: #a55c5c;
-    --danger-text: #8f4747;
-    --danger-soft: rgba(165, 92, 92, 0.13);
+    --danger: #f87171;
+    --danger-text: #f87171;
+    --danger-soft: rgba(248, 113, 113, 0.13);
 
-    /* Glass material */
-    --glass: rgba(255, 255, 255, 0.42);
-    --glass-strong: rgba(255, 255, 255, 0.58);
-    --glass-subtle: rgba(255, 255, 255, 0.30);
-    --glass-border: rgba(255, 255, 255, 0.68);
-    --glass-blur: 28px;
-    --glass-shadow: 0 10px 35px rgba(40, 45, 55, 0.10);
-    --glass-shadow-hover: 0 14px 42px rgba(40, 45, 55, 0.14);
+    /* Panel material */
+    --panel-shadow: 0 10px 35px rgba(2, 8, 18, 0.55);
   }
 
   html {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   body {
@@ -72,10 +72,9 @@
     padding: 0;
     background-color: var(--bg);
     background-image:
-      linear-gradient(135deg, #eef1f3 0%, #e6e9ed 45%, #f1f2f3 100%),
-      radial-gradient(900px 560px at 78% -6%, rgba(160, 176, 194, 0.20) 0%, transparent 58%),
-      radial-gradient(760px 520px at -6% 38%, rgba(168, 174, 182, 0.14) 0%, transparent 52%),
-      radial-gradient(820px 560px at 90% 98%, rgba(150, 162, 178, 0.16) 0%, transparent 55%);
+      radial-gradient(1000px 600px at 80% -8%, rgba(59, 130, 246, 0.08) 0%, transparent 58%),
+      radial-gradient(820px 540px at -6% 36%, rgba(56, 189, 248, 0.05) 0%, transparent 52%),
+      radial-gradient(880px 580px at 92% 96%, rgba(20, 42, 70, 0.55) 0%, transparent 58%);
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', 'SF Pro Display', 'SF Pro Text', system-ui, -apple-system,
@@ -96,8 +95,8 @@
   }
 
   ::selection {
-    background: rgba(91, 120, 160, 0.25);
-    color: #171a1f;
+    background: rgba(59, 130, 246, 0.35);
+    color: #e8f0f8;
   }
 
   :focus-visible {
@@ -112,172 +111,99 @@
 }
 
 /* ==========================================================================
-   LIQUID GLASS MATERIALS — translucent white, soft depth, neutral
+   SURFACE MATERIALS — layered dark panels with subtle depth
    ========================================================================== */
 
-/* 1. Primary glass surface (cards, panels, navigation) */
+/* 1. Primary surface (cards, panels, navigation) */
 .liquid-glass {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.52) 0%, var(--glass) 55%, rgba(255, 255, 255, 0.36) 100%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.75),
-    var(--glass-shadow);
+  background: linear-gradient(170deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  border: 1px solid var(--border-1);
+  box-shadow: var(--panel-shadow);
   position: relative;
 }
 
-/* Specular sheen along the top edge — subtle */
+/* Specular top edge — very subtle */
 .liquid-glass::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 42%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.30) 0%,
-    rgba(255, 255, 255, 0.08) 55%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border-radius: inherit;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(143, 163, 184, 0.28), transparent);
   pointer-events: none;
 }
 
-/* 2. Featured glass — slightly brighter material, still neutral */
-.liquid-glass-teal {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.60) 0%, var(--glass-strong) 55%, rgba(255, 255, 255, 0.44) 100%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    var(--glass-shadow);
-  position: relative;
-}
-
-.liquid-glass-teal::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 42%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 100%);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-/* 3. Warm-leaning glass — barely perceptible warm cast (legacy class name) */
+/* 2. Featured surface — slightly elevated */
+.liquid-glass-teal,
 .liquid-glass-cream,
-.liquid-glass-beige {
-  background: linear-gradient(165deg, rgba(255, 254, 251, 0.54) 0%, rgba(255, 253, 249, 0.44) 55%, rgba(255, 252, 248, 0.38) 100%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(112%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(112%);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.80),
-    var(--glass-shadow);
-  position: relative;
-}
-
-.liquid-glass-cream::before,
-.liquid-glass-beige::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 42%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0) 100%);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-/* 4. Blue-leaning glass — a whisper of the accent */
+.liquid-glass-beige,
 .liquid-glass-blue {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.55) 0%, rgba(228, 236, 244, 0.44) 55%, rgba(255, 255, 255, 0.40) 100%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(115%);
-  border: 1px solid rgba(255, 255, 255, 0.74);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.80),
-    var(--glass-shadow);
+  background: linear-gradient(170deg, var(--surface-3) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border-2);
+  box-shadow: var(--panel-shadow);
   position: relative;
 }
 
+.liquid-glass-teal::before,
+.liquid-glass-cream::before,
+.liquid-glass-beige::before,
 .liquid-glass-blue::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 42%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0) 100%);
-  border-radius: inherit;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(143, 163, 184, 0.32), transparent);
   pointer-events: none;
 }
 
-/* 4b. Strong glass — popovers, menus: more opaque for readability */
+/* 2b. Strong surface — popovers, modals: more opaque for readability */
 .liquid-glass-strong {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(28px) saturate(118%);
-  -webkit-backdrop-filter: blur(28px) saturate(118%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.90),
-    0 16px 48px rgba(40, 45, 55, 0.16);
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  box-shadow: 0 18px 50px rgba(2, 8, 18, 0.65);
   position: relative;
 }
 
-/* 5. Frosted inner pane — lists, nested panels, wells */
+/* 3. Nested pane — lists, wells, sub-panels */
 .liquid-glass-subtle {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.26) 100%);
-  backdrop-filter: blur(18px) saturate(112%);
-  -webkit-backdrop-filter: blur(18px) saturate(112%);
-  border: 1px solid rgba(255, 255, 255, 0.60);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    0 3px 12px rgba(40, 45, 55, 0.06);
+  background: rgba(19, 36, 58, 0.6);
+  border: 1px solid rgba(32, 54, 83, 0.7);
   position: relative;
 }
 
-/* 6. Capsule pill — badges, buttons, small controls */
+/* 4. Capsule pill — badges, buttons, small controls */
 .liquid-pill {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.66) 0%, rgba(255, 255, 255, 0.46) 100%);
-  backdrop-filter: blur(16px) saturate(112%);
-  -webkit-backdrop-filter: blur(16px) saturate(112%);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    0 1px 4px rgba(40, 45, 55, 0.08);
+  background: rgba(26, 45, 71, 0.8);
+  border: 1px solid var(--border-1);
 }
 
-/* 7. Sunken well — technical readouts, code, data rows inside glass cards */
+/* 5. Sunken well — technical readouts, code, data rows */
 .glass-well {
-  background: rgba(226, 231, 236, 0.55);
-  border: 1px solid rgba(23, 26, 31, 0.07);
-  box-shadow: inset 0 1px 2px rgba(23, 26, 31, 0.06);
+  background: rgba(7, 17, 31, 0.65);
+  border: 1px solid rgba(32, 54, 83, 0.8);
   border-radius: 0.75rem;
 }
 
-/* 8. Glass input — Apple-style field surface */
+/* 6. Input surface */
 .glass-input {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(14px) saturate(112%);
-  -webkit-backdrop-filter: blur(14px) saturate(112%);
-  border: 1px solid rgba(23, 26, 31, 0.12);
-  box-shadow: inset 0 1px 2px rgba(23, 26, 31, 0.05);
+  background: rgba(7, 17, 31, 0.6);
+  border: 1px solid var(--border-1);
+  color: var(--text-primary);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
 .glass-input:focus {
-  border-color: rgba(91, 120, 160, 0.55);
-  box-shadow: 0 0 0 3px rgba(91, 120, 160, 0.15);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
-/* 9. Hover interaction — gentle lift, no colored glow */
+/* 7. Hover interaction — gentle lift, no colored glow */
 .liquid-card-hover {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
@@ -285,23 +211,17 @@
 }
 .liquid-card-hover:hover {
   transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.80),
-    var(--glass-shadow-hover);
+  border-color: var(--border-2);
+  box-shadow: 0 14px 42px rgba(2, 8, 18, 0.6);
 }
 
-/* 10. Ambient environment mesh — desaturated blue/slate depth cues */
+/* 8. Ambient environment — barely-there depth cues */
 .ambient-mesh,
 .cyber-grid {
-  background-image:
-    radial-gradient(circle at 30% 12%, rgba(158, 172, 190, 0.16) 0%, transparent 55%),
-    radial-gradient(circle at 78% 22%, rgba(172, 176, 182, 0.12) 0%, transparent 52%),
-    radial-gradient(circle at 20% 70%, rgba(150, 162, 180, 0.13) 0%, transparent 55%),
-    radial-gradient(circle at 84% 86%, rgba(142, 150, 162, 0.12) 0%, transparent 55%);
-  background-size: 100% 100%;
+  background-image: none;
 }
 
-/* 11. Quiet neutral scrollbar */
+/* 9. Quiet scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -310,13 +230,13 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(23, 26, 31, 0.16);
+  background: rgba(44, 69, 104, 0.7);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(23, 26, 31, 0.26);
+  background: rgba(59, 96, 143, 0.8);
   border: 2px solid transparent;
   background-clip: padding-box;
 }

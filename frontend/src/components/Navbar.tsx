@@ -4,8 +4,6 @@ import {
   Search, 
   Layers, 
   Activity, 
-  GitBranch, 
-  FileCheck2, 
   ChevronDown, 
   Sparkles
 } from 'lucide-react';
@@ -13,8 +11,8 @@ import { SUPPORTED_CHAINS } from '../services/sentinelApi';
 import type { NetworkChainId } from '../types/sentinel';
 
 interface NavbarProps {
-  currentView: 'landing' | 'dashboard' | 'graph' | 'protocol' | 'coverage';
-  onSelectView: (view: 'landing' | 'dashboard' | 'graph' | 'protocol' | 'coverage') => void;
+  currentView: 'landing' | 'dashboard' | 'protocol';
+  onSelectView: (view: 'landing' | 'dashboard' | 'protocol') => void;
   selectedChain: NetworkChainId;
   onSelectChain: (chain: NetworkChainId) => void;
   onSearch: (address: string) => void;
@@ -50,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 cursor-pointer group select-none" 
           onClick={() => onSelectView('landing')}
         >
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-white/70 border border-white/80 shadow-sm">
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-ink/8 border border-ink/15 shadow-sm">
             <ShieldCheck className="w-5 h-5 text-accent-deep group-hover:scale-105 transition-transform" />
             <span className="absolute -top-1 -right-1 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ok opacity-50"></span>
@@ -92,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </form>
 
         {/* Navigation Tabs (Liquid Glass Pills) */}
-        <nav className="flex items-center gap-1 bg-white/35 backdrop-blur-md border border-white/60 p-1 rounded-xl">
+        <nav className="flex items-center gap-1 bg-ink/5 backdrop-blur-md border border-ink/12 p-1 rounded-xl">
           <button
             onClick={() => {
               onSelectView('landing');
@@ -101,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 100);
             }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-ink-2 hover:text-ink hover:bg-white/60 cursor-pointer"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-ink-2 hover:text-ink hover:bg-ink/10 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-ink-3" />
             <span className="hidden sm:inline">How It Works</span>
@@ -111,8 +109,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onSelectView('dashboard')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'dashboard'
-                ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
-                : 'text-ink-2 hover:text-ink hover:bg-white/60'
+                ? 'bg-accent/15 text-accent font-semibold'
+                : 'text-ink-2 hover:text-ink hover:bg-ink/10'
             }`}
           >
             <Activity className="w-3.5 h-3.5" />
@@ -120,41 +118,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => onSelectView('graph')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
-              currentView === 'graph'
-                ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
-                : 'text-ink-2 hover:text-ink hover:bg-white/60'
-            }`}
-          >
-            <GitBranch className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Evidence Graph</span>
-            <span className="sm:hidden">Graph</span>
-          </button>
-
-          <button
             onClick={() => onSelectView('protocol')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
               currentView === 'protocol'
-                ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
-                : 'text-ink-2 hover:text-ink hover:bg-white/60'
+                ? 'bg-accent/15 text-accent font-semibold'
+                : 'text-ink-2 hover:text-ink hover:bg-ink/10'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Protocol Health</span>
             <span className="sm:hidden">Protocol</span>
-          </button>
-
-          <button
-            onClick={() => onSelectView('coverage')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
-              currentView === 'coverage'
-                ? 'bg-[rgba(91,120,160,0.12)] text-[#405a78] font-semibold'
-                : 'text-ink-2 hover:text-ink hover:bg-white/60'
-            }`}
-          >
-            <FileCheck2 className="w-3.5 h-3.5" />
-            <span>Coverage</span>
           </button>
         </nav>
 
@@ -182,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => setShowPresetsDropdown(!showPresetsDropdown)}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-medium liquid-pill text-ink hover:bg-white/80 transition flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-medium liquid-pill text-ink hover:bg-ink/10 transition flex items-center gap-1.5"
               title="Load audit inspection scenarios"
             >
               <Sparkles className="w-3.5 h-3.5 text-ink-3" />
@@ -192,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {showPresetsDropdown && (
               <div className="absolute right-0 mt-2 w-80 liquid-glass-strong rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="text-[10px] font-semibold text-ink-3 px-2 py-1.5 uppercase tracking-wider border-b border-[#171a1f]/8">
+                <div className="text-[10px] font-semibold text-ink-3 px-2 py-1.5 uppercase tracking-wider border-b border-[var(--border-1)]">
                   Inspection Scenarios
                 </div>
                 <div className="mt-1 space-y-1">
@@ -201,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onQuickPreset('0x71c8fb8172f19e9efea17c76b93f783309a632b4');
                       setShowPresetsDropdown(false);
                     }}
-                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-[#171a1f]/[0.05] transition group"
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-ink/8 transition group"
                   >
                     <div className="text-xs font-medium text-ink flex items-center justify-between">
                       <span>alex-defi.eth</span>
@@ -215,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onQuickPreset('0x44d9a51837f81b1e13d508f850b3e1c0154942e5');
                       setShowPresetsDropdown(false);
                     }}
-                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-[#171a1f]/[0.05] transition group"
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-ink/8 transition group"
                   >
                     <div className="text-xs font-medium text-ink flex items-center justify-between">
                       <span>Multipli Prime Yield</span>
@@ -229,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onQuickPreset('0xdeadbeef0000000000000000000000000000beef');
                       setShowPresetsDropdown(false);
                     }}
-                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-[#171a1f]/[0.05] transition group"
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-ink/8 transition group"
                   >
                     <div className="text-xs font-medium text-ink flex items-center justify-between">
                       <span>ShadySwap Router</span>
@@ -243,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onQuickPreset('0x1010101010101010101010101010101010101010');
                       setShowPresetsDropdown(false);
                     }}
-                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-[#171a1f]/[0.05] transition group"
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-ink/8 transition group"
                   >
                     <div className="text-xs font-medium text-ink flex items-center justify-between">
                       <span>treasury-cold.eth</span>

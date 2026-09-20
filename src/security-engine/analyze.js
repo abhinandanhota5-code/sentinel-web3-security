@@ -4,6 +4,7 @@ const { analyzeApprovals } = require('./approvals');
 const { analyzeContract, analyzeUpgradeability } = require('./contracts');
 const { analyzeProtocol } = require('./protocol');
 const { createEvidenceBundle } = require('./bundle');
+const { analyzeCurrentState, analyzeTokenExposure } = require('./current-state');
 
 async function analyzeAddressSecurity({ provider, address, chain = 'ethereum' }) {
   if (!provider) throw new Error('A BlockchainProvider is required');
@@ -14,6 +15,14 @@ async function analyzeAddressSecurity({ provider, address, chain = 'ethereum' })
     findings.push(...(await analyzeContract(provider, address, chain)));
     findings.push(...(await analyzeUpgradeability(provider, address, chain)));
   }
+  // Current state: native balance + EIP-7702 delegation (OBSERVED/UNKNOWN).
+  findings.push(...(await analyzeCurrentState(provider, address, chain)));
+  // Token balances for tokens already seen in history (no approval scan).
+  const tokenAddresses = [...new Set(findings
+    .filter((f) => f.findingType === 'TOKEN_TRANSFER')
+    .map((f) => f.token || (f.evidence && (f.evidence.tokenAddress || f.evidence.token)))
+    .filter(Boolean))];
+  findings.push(...(await analyzeTokenExposure(provider, address, chain, tokenAddresses)));
   return createEvidenceBundle({ address, chain, addressType: classification.addressType, dataMode: provider.mode || 'UNSPECIFIED', findings });
 }
 

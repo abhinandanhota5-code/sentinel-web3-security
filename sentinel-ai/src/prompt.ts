@@ -9,6 +9,26 @@
 import type { EvidenceBundle, EvidenceRecord } from "./evidence.js";
 import type { UnknownField } from "./knowledge.js";
 
+/**
+ * Maximum number of evidence records rendered into the user prompt. Sized so
+ * the rendered prompt stays well under provider payload limits while keeping
+ * every structural/summary record plus recent bulk history.
+ */
+export const DEFAULT_EVIDENCE_WINDOW = 120;
+
+/** Minimum window the byte-budget guard may shrink to. */
+export const MIN_EVIDENCE_WINDOW = 20;
+
+/**
+ * Rendered-prompt byte budget. Upstream providers reject oversized inputs
+ * (HTTP 413), and LOCAL models (Ollama llama3.1 8B) scale super-linearly with
+ * context: a 30K-char prompt took >120s on the demo machine. 16K keeps the
+ * grounded window responsive (single-digit seconds warm) while still fitting
+ * every structural/summary record plus recent bulk history. Deterministic:
+ * same bundle, same prompt bytes.
+ */
+export const MAX_PROMPT_CHARS = 16_000;
+
 /** The system prompt is a static contract; it is never assembled from data. */
 export const SYSTEM_PROMPT = [
   "You are Sentinel's explanation layer for a Web3 security product.",
@@ -72,6 +92,59 @@ function renderUnknowns(unknowns: readonly UnknownField[]): string {
   return ["", "UNKNOWN FIELDS (do not speculate about these):", ...lines].join("\n");
 }
 
+/**
+ * Bulk history kinds that may be windowed to respect the model's context and
+ * upstream payload limits. Structural/summary records (approvals, roles,
+ * balances, protocol facts, engine findings of every other kind) are always
+ * kept so the security surface is never summarized away.
+ */
+const BULK_HISTORY_KINDS: ReadonlySet<string> = new Set(["TRANSACTION", "TRANSFER"]);
+
+/**
+ * Deterministic evidence window: keep every non-bulk record, then fill the
+ * remaining slots with the most recent bulk history records. Selection is a
+ * pure function of the record array — same input, same window, every time.
+ *
+ * Returns the selected records in their ORIGINAL order (so citation ids stay
+ * stable and gaps are explicit) plus the number of omitted bulk records.
+ */
+export function selectEvidenceWindow(
+  records: readonly EvidenceRecord[],
+  limit = DEFAULT_EVIDENCE_WINDOW,
+): { selected: EvidenceRecord[]; omittedBulk: number } {
+  if (records.length <= limit) {
+    return { selected: [...records], omittedBulk: 0 };
+  }
+  const selected: EvidenceRecord[] = [];
+  const bulkCandidates: Array<{ record: EvidenceRecord; at: number }> = [];
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i]!;
+    const findingType = (record as { finding?: { findingType?: string } }).finding?.findingType;
+    if (findingType !== undefined && BULK_HISTORY_KINDS.has(findingType)) {
+      bulkCandidates.push({ record, at: i });
+    } else {
+      selected.push(record);
+    }
+  }
+  if (selected.length > limit) {
+    // Pathological bundle (mostly structural records): keep the first `limit`
+    // in original order rather than exceed the window.
+    return { selected: selected.slice(0, limit), omittedBulk: 0 };
+  }
+  // Most recent bulk records first (input order is chronological).
+  const bulkSlots = Math.max(0, limit - selected.length);
+  const bulkStart = Math.max(0, bulkCandidates.length - bulkSlots);
+  const keptBulk = bulkCandidates.slice(bulkStart);
+  const allBulkAt = new Set(bulkCandidates.map((c) => c.at));
+  const keptBulkAt = new Set(keptBulk.map((c) => c.at));
+  const merged: EvidenceRecord[] = [];
+  for (let i = 0; i < records.length; i++) {
+    // Keep non-bulk records unconditionally; bulk records only if kept.
+    if (!allBulkAt.has(i) || keptBulkAt.has(i)) merged.push(records[i]!);
+  }
+  return { selected: merged, omittedBulk: bulkCandidates.length - keptBulk.length };
+}
+
 function renderRecord(r: EvidenceRecord, index: number): string {
   const meta = [
     `chain=${r.chain}`,
@@ -100,10 +173,33 @@ export function buildGroundedUserPrompt(req: ExplanationRequest): string {
     bundle.subject.txHash ? `tx=${bundle.subject.txHash}` : undefined,
   ].filter(Boolean);
 
-  const evidenceBlock =
+  // Deterministic evidence window, then byte-budget guard for oversized records.
+  let limit = DEFAULT_EVIDENCE_WINDOW;
+  let { selected, omittedBulk } = selectEvidenceWindow(bundle.records, limit);
+  let evidenceBlock =
     bundle.records.length === 0
       ? "(no evidence records — every on-chain question must be answered UNKNOWN)"
-      : bundle.records.map(renderRecord).join("\n");
+      : selected.map(renderRecord).join("\n");
+  while (
+    bundle.records.length > 0 &&
+    evidenceBlock.length > MAX_PROMPT_CHARS &&
+    limit > MIN_EVIDENCE_WINDOW
+  ) {
+    limit = Math.max(MIN_EVIDENCE_WINDOW, Math.floor((limit * MAX_PROMPT_CHARS) / evidenceBlock.length));
+    const next = selectEvidenceWindow(bundle.records, limit);
+    selected = next.selected;
+    omittedBulk = next.omittedBulk;
+    evidenceBlock = selected.map(renderRecord).join("\n");
+  }
+  const windowNote =
+    omittedBulk > 0
+      ? [
+          "",
+          `EVIDENCE WINDOW: ${omittedBulk} bulk history record(s) (TRANSACTION/TRANSFER) are omitted`,
+          "from this context for size. Everything not listed above is UNKNOWN —",
+          "do not speculate about the omitted records.",
+        ].join("\n")
+      : "";
 
   return [
     `<question>${question}</question>`,
@@ -113,6 +209,7 @@ export function buildGroundedUserPrompt(req: ExplanationRequest): string {
     "",
     "EVIDENCE (canonical, numbered; cite as [E<n>]):",
     evidenceBlock,
+    windowNote,
     renderUnknowns(unknowns),
     "",
     AUDIENCE_GUIDANCE[audience],

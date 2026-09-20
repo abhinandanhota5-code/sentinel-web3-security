@@ -4,13 +4,11 @@ import { SentinelService, PRESET_COMPROMISED_WALLET, PRESET_MULTIPLI_PROTOCOL } 
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { Dashboard } from './components/Dashboard';
-import { EvidenceGraph } from './components/EvidenceGraph';
 import { ProtocolHealthView } from './components/ProtocolHealthView';
-import { CoverageView } from './components/CoverageView';
 import { ShieldCheck, AlertTriangle, X } from 'lucide-react';
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'landing' | 'dashboard' | 'graph' | 'protocol' | 'coverage'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'dashboard' | 'protocol'>('landing');
   const [selectedChain, setSelectedChain] = useState<NetworkChainId>('ethereum');
   const [report, setReport] = useState<InvestigationReport>(PRESET_COMPROMISED_WALLET);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,15 +49,11 @@ export function App() {
   return (
     <div className="min-h-screen text-ink flex flex-col relative overflow-x-hidden ambient-mesh">
       
-      {/* Ambient environmental depth — desaturated blue/slate, very subtle */}
-      <div className="fixed top-[-15%] left-[18%] w-[58rem] h-[58rem] bg-[#a8b8c8]/22 rounded-full blur-[180px] pointer-events-none -z-10" />
-      <div className="fixed top-[12%] right-[-5%] w-[52rem] h-[52rem] bg-[#b4c2d0]/24 rounded-full blur-[170px] pointer-events-none -z-10" />
-      <div className="fixed top-[-5%] right-[25%] w-[48rem] h-[48rem] bg-[#c6ccd4]/22 rounded-full blur-[170px] pointer-events-none -z-10" />
-      <div className="fixed top-[5%] left-[-10%] w-[48rem] h-[48rem] bg-[#b0bccb]/20 rounded-full blur-[170px] pointer-events-none -z-10" />
-      <div className="fixed top-[45%] left-[25%] w-[46rem] h-[46rem] bg-[#c9cdd4]/18 rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="fixed bottom-[-10%] left-[10%] w-[54rem] h-[54rem] bg-[#9fadbf]/20 rounded-full blur-[170px] pointer-events-none -z-10" />
-      <div className="fixed bottom-[15%] right-[5%] w-[44rem] h-[44rem] bg-[#c3c9d1]/18 rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="fixed top-[65%] left-[-5%] w-[38rem] h-[38rem] bg-[#aeb9c6]/18 rounded-full blur-[150px] pointer-events-none -z-10" />
+      {/* Ambient environmental depth — deep blue/slate, very subtle (dark console) */}
+      <div className="fixed top-[-15%] left-[18%] w-[58rem] h-[58rem] bg-[#3b82f6]/[0.05] rounded-full blur-[180px] pointer-events-none -z-10" />
+      <div className="fixed top-[12%] right-[-5%] w-[52rem] h-[52rem] bg-[#38bdf8]/[0.04] rounded-full blur-[170px] pointer-events-none -z-10" />
+      <div className="fixed top-[45%] left-[25%] w-[46rem] h-[46rem] bg-[#1a2d47]/40 rounded-full blur-[170px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[-10%] left-[10%] w-[54rem] h-[54rem] bg-[#3b82f6]/[0.04] rounded-full blur-[170px] pointer-events-none -z-10" />
 
       {/* Liquid Floating Navigation */}
       <Navbar
@@ -82,7 +76,7 @@ export function App() {
         {/* Global Error Banner (visible across views when investigation fails) */}
         {apiError && currentView !== 'landing' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-            <div className="p-4 rounded-2xl bg-white/45 border border-bad/25 text-ink-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-xl animate-in fade-in duration-200">
+            <div className="p-4 rounded-2xl bg-ink/5 border border-bad/25 text-ink-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-xl animate-in fade-in duration-200">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="w-5 h-5 text-bad shrink-0" />
                 <div>
@@ -118,10 +112,10 @@ export function App() {
         )}
 
         {isLoading && (
-          <div className="fixed inset-0 z-50 bg-white/40 backdrop-blur-2xl flex items-center justify-center animate-in fade-in duration-150">
-            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center shadow-2xl">
+          <div className="fixed inset-0 z-50 bg-[#07111f]/70 backdrop-blur-xl flex items-center justify-center animate-in fade-in duration-150">
+            <div className="liquid-glass rounded-3xl p-8 max-w-sm text-center">
               <div className="relative w-14 h-14 mx-auto mb-4">
-                <div className="w-14 h-14 rounded-full border-2 border-[#171a1f]/10 border-t-accent animate-spin" />
+                <div className="w-14 h-14 rounded-full border-2 border-[var(--border-1)] border-t-accent animate-spin" />
                 <ShieldCheck className="w-5 h-5 text-accent absolute inset-0 m-auto" />
               </div>
               <h3 className="text-base font-bold text-ink mb-1">Reconstructing State...</h3>
@@ -147,17 +141,8 @@ export function App() {
         {currentView === 'dashboard' && (
           <Dashboard
             report={report}
-            activeSubView="findings"
+            initialSection="overview"
           />
-        )}
-
-        {currentView === 'graph' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <EvidenceGraph
-              nodes={report.evidenceGraph.nodes}
-              edges={report.evidenceGraph.edges}
-            />
-          </div>
         )}
 
         {currentView === 'protocol' && (
@@ -168,16 +153,10 @@ export function App() {
             />
           </div>
         )}
-
-        {currentView === 'coverage' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <CoverageView coverage={report.coverage} />
-          </div>
-        )}
       </main>
 
       {/* Floating Liquid Footer */}
-      <footer className="border-t border-[#171a1f]/8 bg-white/25 backdrop-blur-2xl py-6 text-xs text-ink-3 mt-auto">
+      <footer className="border-t border-[var(--border-1)] bg-ink/5 py-6 text-xs text-ink-3 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-accent" />
@@ -190,10 +169,6 @@ export function App() {
             <span>Autonomous Protocol Security</span>
             <span>•</span>
             <span className="text-accent">From Alert to Evidence</span>
-            <span>•</span>
-            <button onClick={() => setCurrentView('coverage')} className="hover:text-ink transition underline">
-              Coverage & Scope
-            </button>
           </div>
         </div>
       </footer>
