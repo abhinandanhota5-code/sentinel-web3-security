@@ -31,7 +31,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-accent">
+              <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] font-mono tracking-wider uppercase text-ink-2">
                 Coverage Transparency
               </span>
               {dataMode && (
@@ -59,7 +59,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
 
           <div className="liquid-glass-subtle rounded-2xl p-3 px-4 text-right">
             <div className="text-[10px] uppercase font-mono tracking-wider text-ink-3">Verdict Standard</div>
-            <div className="text-xs font-mono font-bold text-accent mt-0.5">
+            <div className="text-xs font-mono font-bold text-ink mt-0.5">
               "No active finding detected"
             </div>
             <div className="text-[9px] text-ink-3">Strict Non-binary Posture</div>
@@ -78,7 +78,7 @@ export const CoverageView: React.FC<CoverageViewProps> = ({
           </h3>
           <p className="text-xs text-ink-2 leading-relaxed">
             In Web3 security, displaying a generic green "SAFE" badge creates dangerous false confidence. Sentinel strictly uses 
-            <span className="text-accent font-mono font-bold"> "No active finding detected within analyzed coverage"</span> to emphasize that safety guarantees only extend to the specific indexed vectors.
+            <span className="text-ink-2 font-mono font-bold"> "No active finding detected within analyzed coverage"</span> to emphasize that safety guarantees only extend to the specific indexed vectors.
           </p>
         </div>
       </div>

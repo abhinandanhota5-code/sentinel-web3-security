@@ -26,25 +26,26 @@
 
 @layer base {
   :root {
-    /* Environment — deep navy security console */
-    --bg: #07111f;
-    --surface-1: #0d1928;
-    --surface-2: #13243a;
-    --surface-3: #1a2d47;
-    --border-1: #203653;
-    --border-2: #2c4568;
+    /* Environment — premium monochrome security console.
+       Dark black/grey glass, white lettering, restrained blue accents only. */
+    --bg: #07090d;
+    --surface-1: #0d1117;
+    --surface-2: #131820;
+    --surface-3: #1a212b;
+    --border-1: #2a323c;
+    --border-2: #3a4450;
 
-    /* Typography — bright on dark, strong hierarchy */
-    --text-primary: #e8f0f8;   /* titles, primary content */
-    --text-secondary: #b7c6d6; /* body text */
-    --text-muted: #8fa3b8;     /* metadata */
-    --text-technical: #9fb3c8; /* monospace technical values */
+    /* Typography — neutral white/grey (no blue cast). */
+    --text-primary: #eef0f3;   /* headings — soft white */
+    --text-secondary: #b8bec7; /* body text — light grey */
+    --text-muted: #7f8995;     /* metadata — medium grey */
+    --text-technical: #9aa4b0; /* monospace technical values */
 
-    /* Accents — one primary blue + cool cyan highlight */
-    --accent: #3b82f6;
-    --accent-text: #60a5fa;
-    --cyan: #38bdf8;
-    --accent-soft: rgba(59, 130, 246, 0.14);
+    /* Accents — blue reserved for tabs, links, controls, graph highlights. */
+    --accent: #3f7bc9;
+    --accent-text: #6c97d9;
+    --cyan: #6eaedd;
+    --accent-soft: rgba(63, 123, 201, 0.12);
 
     /* Semantic state — blue=info, green=verified, amber=unknown, red=concern */
     --success: #34d399;
@@ -60,7 +61,7 @@
     --danger-soft: rgba(248, 113, 113, 0.13);
 
     /* Panel material */
-    --panel-shadow: 0 10px 35px rgba(2, 8, 18, 0.55);
+    --panel-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
   }
 
   html {
@@ -72,9 +73,9 @@
     padding: 0;
     background-color: var(--bg);
     background-image:
-      radial-gradient(1000px 600px at 80% -8%, rgba(59, 130, 246, 0.08) 0%, transparent 58%),
-      radial-gradient(820px 540px at -6% 36%, rgba(56, 189, 248, 0.05) 0%, transparent 52%),
-      radial-gradient(880px 580px at 92% 96%, rgba(20, 42, 70, 0.55) 0%, transparent 58%);
+      radial-gradient(1000px 600px at 80% -8%, rgba(206, 216, 226, 0.05) 0%, transparent 58%),
+      radial-gradient(820px 540px at -6% 36%, rgba(206, 216, 226, 0.03) 0%, transparent 52%),
+      radial-gradient(880px 580px at 92% 96%, rgba(12, 16, 22, 0.6) 0%, transparent 58%);
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', 'SF Pro Display', 'SF Pro Text', system-ui, -apple-system,
@@ -95,8 +96,8 @@
   }
 
   ::selection {
-    background: rgba(59, 130, 246, 0.35);
-    color: #e8f0f8;
+    background: rgba(108, 151, 217, 0.3);
+    color: #ffffff;
   }
 
   :focus-visible {
@@ -116,7 +117,7 @@
 
 /* 1. Primary surface (cards, panels, navigation) */
 .liquid-glass {
-  background: linear-gradient(170deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  background: linear-gradient(170deg, #141a22 0%, #0d1117 100%);
   border: 1px solid var(--border-1);
   box-shadow: var(--panel-shadow);
   position: relative;
@@ -130,7 +131,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(143, 163, 184, 0.28), transparent);
+  background: linear-gradient(90deg, transparent, rgba(238, 240, 243, 0.14), transparent);
   pointer-events: none;
 }
 
@@ -139,7 +140,7 @@
 .liquid-glass-cream,
 .liquid-glass-beige,
 .liquid-glass-blue {
-  background: linear-gradient(170deg, var(--surface-3) 0%, var(--surface-2) 100%);
+  background: linear-gradient(170deg, #1a212b 0%, #131820 100%);
   border: 1px solid var(--border-2);
   box-shadow: var(--panel-shadow);
   position: relative;
@@ -155,41 +156,41 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(143, 163, 184, 0.32), transparent);
+  background: linear-gradient(90deg, transparent, rgba(238, 240, 243, 0.16), transparent);
   pointer-events: none;
 }
 
 /* 2b. Strong surface — popovers, modals: more opaque for readability */
 .liquid-glass-strong {
-  background: var(--surface-3);
+  background: linear-gradient(170deg, #161c25 0%, #131820 100%);
   border: 1px solid var(--border-2);
-  box-shadow: 0 18px 50px rgba(2, 8, 18, 0.65);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
   position: relative;
 }
 
 /* 3. Nested pane — lists, wells, sub-panels */
 .liquid-glass-subtle {
-  background: rgba(19, 36, 58, 0.6);
-  border: 1px solid rgba(32, 54, 83, 0.7);
+  background: rgba(21, 27, 36, 0.55);
+  border: 1px solid rgba(58, 68, 80, 0.45);
   position: relative;
 }
 
 /* 4. Capsule pill — badges, buttons, small controls */
 .liquid-pill {
-  background: rgba(26, 45, 71, 0.8);
+  background: rgba(30, 37, 47, 0.8);
   border: 1px solid var(--border-1);
 }
 
 /* 5. Sunken well — technical readouts, code, data rows */
 .glass-well {
-  background: rgba(7, 17, 31, 0.65);
-  border: 1px solid rgba(32, 54, 83, 0.8);
+  background: rgba(8, 11, 16, 0.7);
+  border: 1px solid rgba(42, 50, 60, 0.8);
   border-radius: 0.75rem;
 }
 
 /* 6. Input surface */
 .glass-input {
-  background: rgba(7, 17, 31, 0.6);
+  background: rgba(8, 11, 16, 0.6);
   border: 1px solid var(--border-1);
   color: var(--text-primary);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -198,8 +199,8 @@
   color: var(--text-muted);
 }
 .glass-input:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: rgba(108, 151, 217, 0.55);
+  box-shadow: 0 0 0 3px rgba(63, 123, 201, 0.14);
   outline: none;
 }
 
@@ -212,7 +213,7 @@
 .liquid-card-hover:hover {
   transform: translateY(-2px);
   border-color: var(--border-2);
-  box-shadow: 0 14px 42px rgba(2, 8, 18, 0.6);
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.6);
 }
 
 /* 8. Ambient environment — barely-there depth cues */
@@ -230,13 +231,13 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(44, 69, 104, 0.7);
+  background: rgba(58, 68, 80, 0.75);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 96, 143, 0.8);
+  background: rgba(90, 102, 117, 0.85);
   border: 2px solid transparent;
   background-clip: padding-box;
 }

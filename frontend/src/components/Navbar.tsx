@@ -5,7 +5,8 @@ import {
   Layers, 
   Activity, 
   ChevronDown, 
-  Sparkles
+  Sparkles,
+  Bookmark
 } from 'lucide-react';
 import { SUPPORTED_CHAINS } from '../services/sentinelApi';
 import type { NetworkChainId } from '../types/sentinel';
@@ -18,6 +19,8 @@ interface NavbarProps {
   onSearch: (address: string) => void;
   onQuickPreset: (addressKey: string) => void;
   isInvestigating?: boolean;
+  onOpenWatchlist?: () => void;
+  watchCount?: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -28,6 +31,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSearch,
   onQuickPreset,
   isInvestigating = false,
+  onOpenWatchlist,
+  watchCount = 0,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [showPresetsDropdown, setShowPresetsDropdown] = useState(false);
@@ -133,7 +138,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Chain & Presets Controls */}
         <div className="flex items-center gap-2">
-          
+
+          {/* Watchlist */}
+          {onOpenWatchlist && (
+            <button
+              type="button"
+              onClick={onOpenWatchlist}
+              className="relative px-2.5 py-1.5 rounded-xl text-xs font-medium liquid-pill text-ink hover:bg-ink/10 transition flex items-center gap-1.5"
+              title="Open local watchlist"
+            >
+              <Bookmark className="w-3.5 h-3.5 text-ink-2" />
+              <span className="hidden xl:inline text-[11px]">Watchlist</span>
+              {watchCount > 0 && (
+                <span className="text-[9px] font-mono bg-accent/15 text-accent border border-accent/25 rounded-md px-1">
+                  {watchCount}
+                </span>
+              )}
+            </button>
+          )}
+
           {/* Chain Selector */}
           <div className="relative hidden sm:block">
             <select

@@ -239,7 +239,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                 {isExpanded && (
                   <div className="px-5 pb-5 pt-1 border-t border-[var(--border-1)] space-y-3 animate-in fade-in duration-150">
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
-                      <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
+                      <span className="text-[10px] font-bold tracking-wider uppercase text-ink-2">
                         Why am I seeing this?
                       </span>
                       <div className="flex items-center gap-2">
@@ -283,8 +283,8 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                     {/* Tripartite */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                       <div className="liquid-glass-subtle rounded-xl p-3 border-l-2 border-l-accent">
-                        <span className="text-accent font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 mb-1">
-                          <CheckCircle2 className="w-3 h-3" /> Observed
+                        <span className="text-ink-2 font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 mb-1">
+                          <CheckCircle2 className="w-3 h-3 text-ok" /> Observed
                         </span>
                         <ul className="text-[10.5px] text-ink-2 space-y-1">
                           {f.tripartite.observed.slice(0, 3).map((o, i) => (

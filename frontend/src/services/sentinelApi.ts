@@ -1066,10 +1066,21 @@ function extractCurrentExposures(findings: RawEngineFinding[], subjectAddress: s
   // that represent actionable, revocable state right now. Passive/probe
   // findings (proxy detection, admin metadata, plain approvals) are context,
   // not exposures, and must not inflate this list or the blast radius.
-  const exposureFindings = findings.filter(f =>
-    f.knowledgeType === 'INFERRED' &&
-    ['UNLIMITED_ALLOWANCE', 'CURRENT_TOKEN_EXPOSURE', 'APPROVAL_WITHOUT_CURRENT_BALANCE'].includes(f.findingType)
-  );
+  // A zero-balance CURRENT_TOKEN_EXPOSURE record is a passive state
+  // observation (tracked token, nothing to drain right now) — it must not
+  // become an exposure item merely because the token was tracked.
+  const exposureFindings = findings.filter(f => {
+    if (f.knowledgeType !== 'INFERRED') return false;
+    if (!['UNLIMITED_ALLOWANCE', 'CURRENT_TOKEN_EXPOSURE', 'APPROVAL_WITHOUT_CURRENT_BALANCE'].includes(f.findingType)) return false;
+    if (f.findingType === 'CURRENT_TOKEN_EXPOSURE') {
+      try {
+        return BigInt(f.explanationInputs?.currentBalance ?? '0') > 0n;
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  });
 
   return exposureFindings.map((f, idx) => {
     let type: CurrentExposureItem['type'] = 'DANGEROUS_PERMISSION';

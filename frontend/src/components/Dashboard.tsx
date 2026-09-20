@@ -7,6 +7,8 @@ import {
   FileSearch,
   Grid3X3,
   Sparkles,
+  Target,
+  Clock,
 } from 'lucide-react';
 import type { InvestigationReport, Finding, CurrentExposureItem } from '../types/sentinel';
 import { InvestigationHeader } from './InvestigationHeader';
@@ -17,17 +19,22 @@ import { CoverageView } from './CoverageView';
 import { EvidenceDetailPanel } from './EvidenceDetailPanel';
 import { GroundedExplanationCard } from './GroundedExplanationCard';
 import { EvidenceTable } from './EvidenceTable';
+import { BlastRadiusView } from './BlastRadiusView';
+import { RiskTimeline, timelineCounts } from './RiskTimeline';
+import { CrossChainIdentity } from './CrossChainIdentity';
 
 /**
  * Information architecture — ONE source of truth per concept:
- *   OVERVIEW  summarizes  ·  ACTIVITY shows history  ·  SECURITY shows current state
- *   EVIDENCE GRAPH visualizes relationships  ·  EVIDENCE lists records
- *   COVERAGE explains what could/could not be established  ·  AI ANALYSIS explains
+ *   OVERVIEW summarizes  ·  ACTIVITY shows history  ·  SECURITY shows current state
+ *   BLAST RADIUS shows impact  ·  RISK TIMELINE shows settled events  ·  EVIDENCE GRAPH visualizes
+ *   EVIDENCE lists records  ·  COVERAGE explains what could/could not be established  ·  AI ANALYSIS explains
  */
 export type DashboardSection =
   | 'overview'
   | 'activity'
   | 'security'
+  | 'blast'
+  | 'timeline'
   | 'graph'
   | 'evidence'
   | 'coverage'
@@ -36,19 +43,28 @@ export type DashboardSection =
 interface DashboardProps {
   report: InvestigationReport;
   initialSection?: DashboardSection;
+  isWatched?: boolean;
+  onToggleWatch?: () => void;
 }
 
 const SECTIONS: Array<{ id: DashboardSection; label: string; icon: React.ReactNode }> = [
   { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
   { id: 'activity', label: 'Activity', icon: <History className="w-3.5 h-3.5" /> },
   { id: 'security', label: 'Security', icon: <ShieldAlert className="w-3.5 h-3.5" /> },
+  { id: 'blast', label: 'Blast Radius', icon: <Target className="w-3.5 h-3.5" /> },
+  { id: 'timeline', label: 'Risk Timeline', icon: <Clock className="w-3.5 h-3.5" /> },
   { id: 'graph', label: 'Evidence Graph', icon: <GitBranch className="w-3.5 h-3.5" /> },
   { id: 'evidence', label: 'Evidence', icon: <FileSearch className="w-3.5 h-3.5" /> },
   { id: 'coverage', label: 'Coverage', icon: <Grid3X3 className="w-3.5 h-3.5" /> },
   { id: 'ai', label: 'AI Analysis', icon: <Sparkles className="w-3.5 h-3.5" /> },
 ];
 
-export const Dashboard: React.FC<DashboardProps> = ({ report, initialSection = 'overview' }) => {
+export const Dashboard: React.FC<DashboardProps> = ({
+  report,
+  initialSection = 'overview',
+  isWatched = false,
+  onToggleWatch,
+}) => {
   const [section, setSection] = useState<DashboardSection>(initialSection);
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
   const [highlightEvidenceId, setHighlightEvidenceId] = useState<string | null>(null);
@@ -67,12 +83,36 @@ export const Dashboard: React.FC<DashboardProps> = ({ report, initialSection = '
 
   const counts: Partial<Record<DashboardSection, string>> = {
     security: String(report.findings.length),
+    blast: String(report.currentExposures.length),
+    timeline: String(timelineCounts(report).total),
     evidence: String(report.evidenceRecords?.length ?? report.findings.length),
   };
 
+  const hasActiveDanger =
+    report.currentExposures.length > 0 &&
+    report.findings.some(
+      (f) => f.status === 'ACTIVE' && (f.severity === 'CRITICAL' || f.severity === 'HIGH'),
+    );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <InvestigationHeader report={report} />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative">
+      {/* Red ethereal atmosphere — only when ACTIVE HIGH/CRITICAL exposure exists. */}
+      {hasActiveDanger && (
+        <div
+          aria-hidden
+          className="fixed inset-0 pointer-events-none -z-[1]"
+          style={{
+            background:
+              'radial-gradient(920px 480px at 82% -6%, rgba(248, 113, 113, 0.07) 0%, transparent 60%), radial-gradient(640px 420px at -8% 88%, rgba(248, 113, 113, 0.05) 0%, transparent 55%)',
+          }}
+        />
+      )}
+
+      <InvestigationHeader
+        report={report}
+        isWatched={isWatched}
+        onToggleWatch={onToggleWatch}
+      />
 
       {/* Section navigation — normal layout flow. No sticky/fixed/negative
           margins: a sticky bar floating over the translucent navbar was the
@@ -128,12 +168,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ report, initialSection = '
         </div>
       )}
 
+      {section === 'blast' && (
+        <BlastRadiusView report={report} onOpenEvidence={openEvidence} />
+      )}
+
+      {section === 'timeline' && (
+        <RiskTimeline report={report} onOpenEvidence={openEvidence} />
+      )}
+
       {section === 'graph' && (
         <EvidenceGraph
           key={`${report.targetAddress}-${report.investigatedAt}`}
           nodes={report.evidenceGraph.nodes}
           edges={report.evidenceGraph.edges}
           onOpenEvidence={openEvidence}
+          findings={report.findings}
+          onOpenFinding={(f) => setSelectedFinding(f)}
         />
       )}
 
@@ -178,6 +228,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ report, initialSection = '
           targetAddress={report.targetAddress}
           chainName={report.chain.name}
           onOpenEvidence={openEvidence}
+          blockExplorerUrl={report.chain.blockExplorer}
         />
       )}
     </div>
@@ -321,6 +372,9 @@ const OverviewSection: React.FC<{
           </div>
         )}
       </section>
+
+      {/* Cross-chain identity honesty note (deterministic, evidence-scoped) */}
+      <CrossChainIdentity report={report} />
     </div>
   );
 };

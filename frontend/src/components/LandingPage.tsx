@@ -75,7 +75,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-ink mb-3">
           SENTINEL
         </h1>
-        <p className="text-xl sm:text-3xl lg:text-4xl font-medium text-accent tracking-tight mb-6">
+        <p className="text-xl sm:text-3xl lg:text-4xl font-medium text-ink-2 tracking-tight mb-6">
           From Alert to Evidence.
         </p>
 
@@ -228,7 +228,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-accent-deep">
               <Eye className="w-5 h-5" />
             </div>
-            <div className="text-[10px] text-accent uppercase tracking-wider mb-1 font-semibold">Pillar 1</div>
+            <div className="text-[10px] text-ink-3 uppercase tracking-wider mb-1 font-semibold">Pillar 1</div>
             <h3 className="text-base font-bold text-ink mb-2">Evidence Decompression</h3>
             <p className="text-xs text-ink-2 leading-relaxed">
               Every finding is anchored strictly to verified EVM storage slots, decoded calldata, and transaction receipts — eliminating black-box guesswork.
@@ -240,7 +240,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-accent-deep">
               <Compass className="w-5 h-5" />
             </div>
-            <div className="text-[10px] text-accent uppercase tracking-wider mb-1 font-semibold">Pillar 2</div>
+            <div className="text-[10px] text-ink-3 uppercase tracking-wider mb-1 font-semibold">Pillar 2</div>
             <h3 className="text-base font-bold text-ink mb-2">Confidence Classes</h3>
             <p className="text-xs text-ink-2 leading-relaxed">
               Strict epistemics: <span className="text-ink font-medium">Observed facts</span> (on-chain truth) vs. <span className="text-ink font-medium">Inferred risks</span> (deductions) vs. <span className="text-ink font-medium">Unknowns</span> (bounds).
@@ -252,7 +252,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center mb-4 text-accent-deep">
               <Zap className="w-5 h-5" />
             </div>
-            <div className="text-[10px] text-accent uppercase tracking-wider mb-1 font-semibold">Pillar 3</div>
+            <div className="text-[10px] text-ink-3 uppercase tracking-wider mb-1 font-semibold">Pillar 3</div>
             <h3 className="text-base font-bold text-ink mb-2">History vs. Exposure</h3>
             <p className="text-xs text-ink-2 leading-relaxed">
               Past transactions do not equal current danger. Sentinel isolates the exact liquid dollar blast radius currently drainable through active rights.

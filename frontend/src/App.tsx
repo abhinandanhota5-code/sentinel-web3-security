@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import type { NetworkChainId, InvestigationReport } from './types/sentinel';
-import { SentinelService, PRESET_COMPROMISED_WALLET, PRESET_MULTIPLI_PROTOCOL } from './services/sentinelApi';
+import { SentinelService, PRESET_COMPROMISED_WALLET } from './services/sentinelApi';
+import {
+  getWatchlist,
+  addToWatchlist,
+  removeFromWatchlist,
+  isWatchlisted,
+} from './services/watchlist';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { Dashboard } from './components/Dashboard';
 import { ProtocolHealthView } from './components/ProtocolHealthView';
+import { WatchlistPanel } from './components/WatchlistPanel';
 import { ShieldCheck, AlertTriangle, X } from 'lucide-react';
 
 export function App() {
@@ -14,6 +21,22 @@ export function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [failedAddress, setFailedAddress] = useState<string | null>(null);
+  const [watchlistOpen, setWatchlistOpen] = useState(false);
+  const [watchlistRev, setWatchlistRev] = useState(0);
+  void watchlistRev;
+
+  const isWatched = isWatchlisted(report.targetAddress);
+  const watchCount = getWatchlist().length;
+
+  const toggleWatch = () => {
+    const target = report.targetAddress;
+    if (isWatchlisted(target)) {
+      removeFromWatchlist(target);
+    } else {
+      addToWatchlist(target, report.chain.id, report.ensName || report.contractName);
+    }
+    setWatchlistRev((v) => v + 1);
+  };
 
   const handleInvestigate = async (address: string, chain: NetworkChainId = selectedChain) => {
     setIsLoading(true);
@@ -46,6 +69,11 @@ export function App() {
     setCurrentView('dashboard');
   };
 
+  const handleWatchAddress = (address: string, chain: NetworkChainId) => {
+    setWatchlistOpen(false);
+    handleInvestigate(address, chain);
+  };
+
   return (
     <div className="min-h-screen text-ink flex flex-col relative overflow-x-hidden ambient-mesh">
       
@@ -69,6 +97,8 @@ export function App() {
         onSearch={(addr) => handleInvestigate(addr, selectedChain)}
         onQuickPreset={handleQuickPreset}
         isInvestigating={isLoading}
+        onOpenWatchlist={() => setWatchlistOpen(true)}
+        watchCount={watchCount}
       />
 
       {/* Main Content Area */}
@@ -142,18 +172,29 @@ export function App() {
           <Dashboard
             report={report}
             initialSection="overview"
+            isWatched={isWatched}
+            onToggleWatch={toggleWatch}
           />
         )}
 
         {currentView === 'protocol' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <ProtocolHealthView
-              health={report.protocolHealth || PRESET_MULTIPLI_PROTOCOL.protocolHealth}
+              health={report.protocolHealth}
               coverage={report.coverage}
             />
           </div>
         )}
       </main>
+
+      {/* Global Watchlist drawer (local, client-side only) */}
+      <WatchlistPanel
+        open={watchlistOpen}
+        onClose={() => setWatchlistOpen(false)}
+        onOpenAddress={handleWatchAddress}
+        contextAddress={report?.targetAddress}
+        contextChain={report?.chain.id}
+      />
 
       {/* Floating Liquid Footer */}
       <footer className="border-t border-[var(--border-1)] bg-ink/5 py-6 text-xs text-ink-3 mt-auto">
@@ -168,7 +209,7 @@ export function App() {
           <div className="flex items-center gap-3 text-[11px] text-ink-3">
             <span>Autonomous Protocol Security</span>
             <span>•</span>
-            <span className="text-accent">From Alert to Evidence</span>
+            <span className="text-ink-3">From Alert to Evidence</span>
           </div>
         </div>
       </footer>

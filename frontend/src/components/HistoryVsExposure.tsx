@@ -44,7 +44,7 @@ export const HistoryVsExposure: React.FC<HistoryVsExposureProps> = ({
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] tracking-wider uppercase text-accent mb-1 font-medium">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full liquid-pill text-[10px] tracking-wider uppercase text-ink-2 mb-1 font-medium">
             Epistemic Distinction
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">

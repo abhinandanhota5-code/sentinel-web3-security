@@ -9,15 +9,23 @@ import {
   Coins,
   TrendingUp,
   ShieldAlert,
+  Bookmark,
+  BookmarkCheck,
   HelpCircle as UnknownIcon
 } from 'lucide-react';
 import type { InvestigationReport } from '../types/sentinel';
 
 interface InvestigationHeaderProps {
   report: InvestigationReport;
+  isWatched?: boolean;
+  onToggleWatch?: () => void;
 }
 
-export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report }) => {
+export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({
+  report,
+  isWatched = false,
+  onToggleWatch,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const ces = report.currentExposureSummary;
@@ -30,6 +38,10 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
   })();
   const positiveTokens = ces ? ces.tokens.filter((t) => t.positive).length : 0;
   const totalTokens = ces ? ces.tokens.length : 0;
+  // Active Vectors = the engine's deterministic activeVectors field (positive,
+  // currently-relevant state) — NOT tokens.length and NOT the broader
+  // currentExposures list, which also carries allowance-derived items.
+  const activeVectorsCount = ces ? ces.activeVectors.length : report.currentExposures.length;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(report.targetAddress);
@@ -119,6 +131,22 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
             >
               <ExternalLink className="w-4 h-4" />
             </a>
+
+            {/* Watchlist toggle */}
+            {onToggleWatch && (
+              <button
+                onClick={onToggleWatch}
+                className={`p-1.5 rounded-lg transition flex items-center gap-1 text-[10px] font-semibold cursor-pointer ${
+                  isWatched
+                    ? 'text-accent bg-accent/12 hover:bg-accent/20 border border-accent/30'
+                    : 'text-ink-3 hover:text-accent hover:bg-ink/10 border border-transparent'
+                }`}
+                title={isWatched ? 'Remove from local watchlist' : 'Add to local watchlist'}
+              >
+                {isWatched ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                <span className="hidden md:inline">{isWatched ? 'Watching' : 'Watch'}</span>
+              </button>
+            )}
           </div>
 
         </div>
@@ -157,11 +185,11 @@ export const InvestigationHeader: React.FC<InvestigationHeaderProps> = ({ report
               <ShieldAlert className="w-3.5 h-3.5 text-bad" />
               <span>Active Vectors</span>
             </div>
-            <div className={`text-2xl font-mono font-bold mt-0.5 ${report.currentExposures.length > 0 ? 'text-bad' : 'text-ink'}`}>
-              {report.currentExposures.length}
+            <div className={`text-2xl font-mono font-bold mt-0.5 ${activeVectorsCount > 0 ? 'text-bad' : 'text-ink'}`}>
+              {activeVectorsCount}
             </div>
             <div className="text-[10px] text-ink-3">
-              {report.currentExposures.length === 0
+              {activeVectorsCount === 0
                 ? 'No active finding detected'
                 : `${report.findings.filter(f => f.severity === 'CRITICAL' || f.severity === 'HIGH').length} critical/high`}
             </div>

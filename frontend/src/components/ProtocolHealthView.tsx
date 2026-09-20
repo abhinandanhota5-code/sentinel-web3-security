@@ -23,7 +23,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
         <p className="text-xs text-ink-2 mb-4">
           This address is an individual EOA or unindexed contract.
         </p>
-        <div className="text-xs font-mono text-accent">
+        <div className="text-xs font-mono text-ink-2">
           Tip: Select "Multipli Prime Yield Engine" scenario to view protocol diagnostics.
         </div>
       </div>
@@ -45,7 +45,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
       {health.isDemoData && (
         <div className="liquid-pill rounded-2xl p-2.5 px-4 flex items-center justify-between text-xs font-mono text-ink-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <Sparkles className="w-3.5 h-3.5 text-ink-3" />
             <span className="font-bold uppercase tracking-wider text-[10px]">Verified Simulation // Protocol Telemetry</span>
           </div>
           <span className="text-ink-3 text-[10px]">Sentinel Telemetry Engine</span>
@@ -57,7 +57,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold tracking-wider uppercase bg-accent/12 text-accent border border-accent/30">
+              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold tracking-wider uppercase bg-ink/8 text-ink-2 border border-[var(--border-1)]">
                 Protocol Health Audit
               </span>
               <span className="px-2 py-0.5 rounded-md text-[10px] font-mono liquid-glass-subtle text-ink-2">
@@ -67,7 +67,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-ink tracking-tight flex items-center gap-3">
               <span>{health.protocolName}</span>
-              <span className="text-base font-mono font-bold px-3 py-0.5 rounded-lg bg-accent/12 text-accent border border-accent/30">
+              <span className="text-base font-mono font-bold px-3 py-0.5 rounded-lg bg-ink/8 text-ink-2 border border-[var(--border-1)]">
                 Grade: {health.overallHealthGrade}
               </span>
             </h2>
@@ -83,7 +83,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
               <div className="text-xl font-bold font-mono text-ink mt-0.5">
                 {formatUsd(health.totalValueLockedUsd)}
               </div>
-              <div className="text-[10px] text-accent font-mono">Across all pools</div>
+              <div className="text-[10px] text-ink-3 font-mono">Across all pools</div>
             </div>
 
             <div className="pl-1">
@@ -104,7 +104,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-accent/12 border border-accent/25 flex items-center justify-center text-accent">
+              <div className="w-8 h-8 rounded-xl bg-ink/8 border border-[var(--border-1)] flex items-center justify-center text-ink-3">
                 <Key className="w-4 h-4" />
               </div>
               <div>
@@ -113,7 +113,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
               </div>
             </div>
 
-            <span className="px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-accent/12 text-accent border border-accent/25">
+            <span className="px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-ink/8 text-ink-2 border border-[var(--border-1)]">
               {health.adminConcentration.status}
             </span>
           </div>
@@ -122,7 +122,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
             <div className="grid grid-cols-3 gap-2 text-center font-mono">
               <div className="liquid-glass-subtle p-2.5 rounded-xl">
                 <div className="text-[9px] text-ink-3">Threshold</div>
-                <div className="text-base font-bold text-accent mt-0.5">
+                <div className="text-base font-bold text-ink mt-0.5">
                   {health.adminConcentration.multisigRequiredSigners}/{health.adminConcentration.multisigTotalSigners}
                 </div>
                 <div className="text-[8px] text-ink-3">{health.adminConcentration.thresholdPercentage}% Quorum</div>
@@ -138,7 +138,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
               <div className="liquid-glass-subtle p-2.5 rounded-xl">
                 <div className="text-[9px] text-ink-3">Guardian Veto</div>
-                <div className="text-base font-bold text-accent mt-0.5">
+                <div className="text-base font-bold text-ink mt-0.5">
                   {health.adminConcentration.guardianCanVeto ? 'Active' : 'None'}
                 </div>
                 <div className="text-[8px] text-ink-3">Emergency Stop</div>
@@ -155,7 +155,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
         <div className="liquid-glass rounded-3xl p-6 shadow-xl">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-1)]">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-accent/12 border border-accent/25 flex items-center justify-center text-accent">
+              <div className="w-8 h-8 rounded-xl bg-ink/8 border border-[var(--border-1)] flex items-center justify-center text-ink-3">
                 <GitFork className="w-4 h-4" />
               </div>
               <div>
@@ -164,7 +164,7 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
               </div>
             </div>
 
-            <span className="px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-accent/12 text-accent border border-accent/25">
+            <span className="px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-ink/8 text-ink-2 border border-[var(--border-1)]">
               {health.upgradeability.status}
             </span>
           </div>
@@ -177,14 +177,14 @@ export const ProtocolHealthView: React.FC<ProtocolHealthViewProps> = ({ health }
 
             <div className="flex items-center justify-between p-2.5 liquid-glass-subtle rounded-xl">
               <span className="text-ink-3">Upgrade Admin:</span>
-              <span className="text-accent text-[11px] truncate max-w-[180px]">
+              <span className="text-ink-2 text-[11px] truncate max-w-[180px]">
                 {health.upgradeability.upgradeAdmin.label}
               </span>
             </div>
 
             <div className="flex items-center justify-between p-2.5 liquid-glass-subtle rounded-xl">
               <span className="text-ink-3">Timelock Enforced:</span>
-              <span className="text-accent font-bold">{health.upgradeability.timelockActive ? '48h Delay' : 'No'}</span>
+              <span className="text-ink-2 font-bold">{health.upgradeability.timelockActive ? '48h Delay' : 'No'}</span>
             </div>
 
             <div className="flex items-center justify-between p-2.5 liquid-glass-subtle rounded-xl">
