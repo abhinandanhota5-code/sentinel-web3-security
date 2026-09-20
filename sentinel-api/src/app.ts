@@ -260,6 +260,25 @@ export function buildApp(deps: AppDeps): Express {
   app.disable("x-powered-by");
   app.use(express.json({ limit: config.bodyLimit }));
 
+  // Desktop packaging only: the packaged renderer runs from a file:// page
+  // (origin "null"), so its fetches to the loopback API need an explicit,
+  // minimal JSON CORS policy. The web deployment stays same-origin and never
+  // enables this; the Electron main process sets SENTINEL_DESKTOP=1.
+  if (config.desktopCors) {
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      // Chromium Private Network Access preflight support for loopback calls.
+      res.setHeader("Access-Control-Allow-Private-Network", "true");
+      if (req.method === "OPTIONS") {
+        res.sendStatus(204);
+        return;
+      }
+      next();
+    });
+  }
+
   app.get("/healthz", (_req: Request, res: Response) => {
     res.json({
       ok: true,

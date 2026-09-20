@@ -32,6 +32,8 @@ export interface ApiConfig {
   maxEvidenceRecords: number;
   /** Max request body size for JSON parsing. */
   bodyLimit: string;
+  /** Desktop packaging: allow cross-origin JSON requests from the packaged file:// renderer. Set by the Electron main process via SENTINEL_DESKTOP=1. */
+  desktopCors: boolean;
 }
 
 function intEnv(env: NodeJS.ProcessEnv, name: string, fallback: number): number {
@@ -62,5 +64,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
     maxRetries: intEnv(env, "EXPLANATION_MAX_RETRIES", intEnv(env, "GEMINI_MAX_RETRIES", 3)),
     maxEvidenceRecords: intEnv(env, "MAX_EVIDENCE_RECORDS", 200),
     bodyLimit: env.BODY_LIMIT ?? "1mb",
+    desktopCors: env.SENTINEL_DESKTOP === "1",
   };
 }

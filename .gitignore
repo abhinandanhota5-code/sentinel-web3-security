@@ -5,3 +5,6 @@ sentinel-ai/node_modules/
 sentinel-ai/dist/
 sentinel-api/node_modules/
 sentinel-api/dist/
+/dist/
+desktop/backend/
+*.blockmap

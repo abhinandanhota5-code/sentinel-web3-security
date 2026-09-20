@@ -4,6 +4,9 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Relative asset URLs so the production build also loads from file://
+  // inside the Electron desktop package.
+  base: './',
   plugins: [
     tailwindcss(),
     react()

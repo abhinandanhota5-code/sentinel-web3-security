@@ -1,0 +1,81 @@
+name: Desktop Release Build
+
+"on":
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-macos:
+    name: macOS arm64 dmg
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --prefix frontend
+          npm install --prefix sentinel-ai
+          npm install --prefix sentinel-api
+
+      - name: Build frontend and backend bundle
+        run: npm run desktop:build
+
+      - name: Package macOS arm64 DMG
+        run: npx electron-builder --mac --arm64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinel-macos-arm64-dmg
+          path: dist/*.dmg
+          if-no-files-found: error
+
+  build-windows:
+    name: Windows x64 exe
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --prefix frontend
+          npm install --prefix sentinel-ai
+          npm install --prefix sentinel-api
+        shell: bash
+
+      - name: Build frontend and backend bundle
+        run: npm run desktop:build
+        shell: bash
+
+      - name: Package Windows x64 NSIS installer
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinel-windows-x64-exe
+          path: dist/*.exe
+          if-no-files-found: error

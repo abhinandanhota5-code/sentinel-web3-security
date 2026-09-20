@@ -1619,7 +1619,11 @@ export class SentinelService {
     address: string,
     chain: NetworkChainId = 'ethereum'
   ): Promise<InvestigationReport> {
-    const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+    // Desktop packaging: the Electron preload bridge exposes the local API
+    // base URL (a free port chosen at runtime). Web builds keep the existing
+    // Vite env / same-origin behavior.
+    const desktopRuntime = (globalThis as { sentinelDesktop?: { apiBaseUrl?: string | null } }).sentinelDesktop;
+    const apiBase = desktopRuntime?.apiBaseUrl || import.meta.env.VITE_API_BASE_URL || '';
     const endpoint = `${apiBase}/api/v1/analyze`;
 
     const res = await fetch(endpoint, {

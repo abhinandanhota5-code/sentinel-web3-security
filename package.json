@@ -2,13 +2,21 @@
   "name": "sentinel-web3-security",
   "version": "1.0.0",
   "private": true,
-  "description": "Sentinel — Web3 Security & Protocol Health",
+  "description": "Sentinel — Evidence-first Web3 security and protocol intelligence",
+  "main": "electron/main.cjs",
   "scripts": {
     "build": "npx sass --no-source-map deck/sass/theme.scss deck/theme.css --load-path=deck/sass",
     "export-ppt": "node export-ppt.js",
-    "test": "node --test"
+    "test": "node --test",
+    "desktop:bundle": "node desktop/scripts/bundle-backend.mjs",
+    "desktop:build": "npm --prefix sentinel-ai run build && npm --prefix frontend run build && npm run desktop:bundle",
+    "desktop:mac": "npm run desktop:build && electron-builder --mac --arm64 --publish never",
+    "desktop:win": "npm run desktop:build && electron-builder --win --x64 --publish never"
   },
   "devDependencies": {
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2",
     "pptxgenjs": "^4.0.1",
     "reveal.js": "5.1.0",
     "sass": "^1.77.0"

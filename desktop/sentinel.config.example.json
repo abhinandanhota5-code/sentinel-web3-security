@@ -1,0 +1,18 @@
+{
+  "_comment": "Copy this file to the Sentinel user-data directory as sentinel.config.json to configure the desktop app at runtime. This file is NEVER bundled with the app and must not be committed. Only the whitelisted keys below are read; unknown keys are ignored. Config values override environment variables exported before launch.",
+
+  "ETHERSCAN_API_KEY": "",
+  "ETHEREUM_RPC_URL": "",
+
+  "EXPLANATION_PROVIDER": "",
+  "EXPLANATION_TIMEOUT_MS": "",
+
+  "OLLAMA_BASE_URL": "http://127.0.0.1:11434",
+  "OLLAMA_MODEL": "llama3.1:8b",
+
+  "GEMINI_API_KEY": "",
+  "GEMINI_MODEL": "",
+
+  "OPENROUTER_API_KEY": "",
+  "OPENROUTER_MODEL": ""
+}
