@@ -16,7 +16,10 @@ const KIND_BY_FINDING = Object.freeze({
   TOKEN_TRANSFER: 'transfer',
   IMPORTANT_INTERACTION: 'transaction',
   ABNORMAL_CHANGE: 'activity',
-  SUSPICIOUS_ACTIVITY: 'activity'
+  SUSPICIOUS_ACTIVITY: 'activity',
+  EXTERNAL_INTELLIGENCE_MATCH: 'external_intelligence',
+  SUSPECT_TRANSACTION_OUTBOUND: 'network_exposure',
+  SUSPECT_TRANSACTION_INBOUND: 'network_exposure'
 });
 
 function firstDefined(...values) {

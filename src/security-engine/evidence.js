@@ -1,4 +1,4 @@
-const STATUSES = Object.freeze(['OBSERVED', 'INFERRED', 'UNKNOWN']);
+const STATUSES = Object.freeze(['OBSERVED', 'EXTERNAL', 'INFERRED', 'UNKNOWN']);
 const SEVERITIES = Object.freeze(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'UNKNOWN']);
 
 function finding({ findingType, status, severity = 'INFO', entity, chain, evidence = {}, explanationInputs = {}, limitations = [] }) {

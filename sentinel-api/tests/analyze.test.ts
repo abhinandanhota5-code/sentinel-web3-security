@@ -277,6 +277,51 @@ void test("analyze: verbatim allowance string survives the adapter", async () =>
   }
 });
 
+void test("analyze: EXTERNAL fraud intelligence and INFERRED network propagation flow correctly", async () => {
+  const suspectAddr = "0x6666666666666666666666666666666666666666";
+  const customBundle: EngineBundle = {
+    schemaVersion: "1.0",
+    bundleType: "SENTINEL_EVIDENCE",
+    dataMode: "DEMO",
+    chain: "ethereum",
+    address: WALLET,
+    addressType: "EOA",
+    evidence: [
+      finding({
+        id: "E1",
+        kind: "external_intelligence",
+        findingType: "EXTERNAL_INTELLIGENCE_MATCH",
+        knowledgeType: "EXTERNAL",
+        severity: "HIGH",
+        evidence: { source: "I4C_NCRP", designation: "MULE_ACCOUNT", provenance: "CFCFRMS complaint" },
+      }),
+      finding({
+        id: "E2",
+        kind: "network_exposure",
+        findingType: "SUSPECT_TRANSACTION_OUTBOUND",
+        knowledgeType: "INFERRED",
+        severity: "HIGH",
+        evidence: { counterpartyAddress: suspectAddr, claim: "Observed outbound transfer to suspect" },
+      }),
+    ],
+  };
+  const app = buildTestApp(customBundle, mockProvider());
+  const s = await startServer(app);
+  try {
+    const { status, body } = await analyze(s.baseUrl, { address: WALLET, chain: "ethereum" });
+    assert.equal(status, 200);
+    const evidence = body.evidence as { records: Array<{ knowledgeType: string; source: { locator: string } }> };
+    const external = evidence.records.find((r) => r.knowledgeType === "EXTERNAL");
+    assert.ok(external);
+    assert.match(external.source.locator, /^external:I4C_NCRP/);
+    const inferred = evidence.records.find((r) => r.knowledgeType === "INFERRED");
+    assert.ok(inferred);
+    assert.match(inferred.source.locator, /^rule:SUSPECT_TRANSACTION_OUTBOUND/);
+  } finally {
+    await s.close();
+  }
+});
+
 // ------------------------------------------------- UNKNOWN + failures
 
 void test("analyze: RPC failure stays UNKNOWN and is never a positive finding", async () => {

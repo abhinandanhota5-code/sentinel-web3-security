@@ -8,7 +8,7 @@
  */
 
 /** How a fact is known. */
-export type KnowledgeType = "OBSERVED" | "INFERRED" | "UNKNOWN";
+export type KnowledgeType = "OBSERVED" | "EXTERNAL" | "INFERRED" | "UNKNOWN";
 
 /**
  * An explicitly represented absence of knowledge.

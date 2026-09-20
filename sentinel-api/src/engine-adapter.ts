@@ -32,7 +32,7 @@ export interface EngineFinding {
   id: string;
   kind?: string;
   findingType: string;
-  knowledgeType: "OBSERVED" | "INFERRED" | "UNKNOWN";
+  knowledgeType: "OBSERVED" | "EXTERNAL" | "INFERRED" | "UNKNOWN";
   severity?: string;
   entity?: string;
   chain?: string;
@@ -125,7 +125,9 @@ export function adaptFinding(
   const locator =
     finding.knowledgeType === "INFERRED"
       ? `rule:${finding.findingType}`
-      : deriveLocator(dataMode);
+      : finding.knowledgeType === "EXTERNAL"
+        ? `external:${((finding.evidence as { source?: string } | undefined)?.source) ?? "intelligence"}`
+        : deriveLocator(dataMode);
   return {
     id: finding.id,
     kind: "engine_finding",

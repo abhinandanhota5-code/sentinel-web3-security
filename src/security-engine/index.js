@@ -7,6 +7,8 @@ const { EtherscanBlockchainProvider, EtherscanApiError } = require('./etherscan-
 const { RpcBlockchainProvider, CompositeBlockchainProvider } = require('./rpc-provider');
 const { createEthereumProvider } = require('./factory');
 
+const fraudIntelligence = require('./fraud-intelligence');
+
 module.exports = {
   BlockchainProvider,
   DemoBlockchainProvider,
@@ -21,5 +23,6 @@ module.exports = {
   CompositeBlockchainProvider,
   createEthereumProvider,
   STATUSES,
-  SEVERITIES
+  SEVERITIES,
+  ...fraudIntelligence
 };
